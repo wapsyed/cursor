@@ -9,8 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# 
-Bibliotecas ou pacotes
+# Biblioteca e pacotes
+
 ```{r}
 install.packages("tidyverse")
 library(tidyverse)
@@ -31,14 +31,12 @@ z
 multi = x * y
 multi
 
-# Variáveis textuais
+# Variáveis textuais (caracteres, string)
 
 a = "Olá"
-
 b = "Tudo bem?"
 
-
-# Lógicos
+# Variáveis Lógicas
 t = TRUE
 f = FALSE
 
@@ -47,13 +45,11 @@ ff = FALSE
 
 aa = "Olá"
 
-# Comparacoes
+# Comparações lógicas (booleanas)
 t == f #Igual
 t != f #Diferente
-aa == a 
-
-x < y #menor
-
+aa == a #Igual
+x < y # Menor
 x <= 5 # menor ou igual
 
 ```
@@ -63,68 +59,51 @@ x <= 5 # menor ou igual
 # Vetores
 i = c(7, 5, 9, 10)
 j = c("Olá", "Caneta", "Qualificacao")
-
 h = c(7, "olá", 78)
-
 ```
 
 
 ```{r}
-#Dataframe simples
-dados <- data.frame(
-  Nome = c("João", "Maria", "Pedro"),
-  Idade = c(25, 30, 35),
-  Altura = c(1.75, 1.65, 1.80)
-)
 
-
+#Dataframe simples -----
 data = data.frame(
   Nome = c("Elaine", "Inês", "Liz", "Luisa"),
   Altura = c(1.59, 1.60, 1.65, 1.73),
   Idade = c(30, 25, 31, 32)
 )
 
-data
-
-view(data)
-View(data)
-
-glimpse(data)
-
+#Visualizando o dataframe ----
+print(data) #No documento ou console
+data #No documento ou console
+glimpse(data) #No documento ou console (descrição mais completa do dataframe)
+view(data) # em nova janela
 ```
 
 
 ```{r}
-#Matriz
-data = as.matrix(data)
-data = as.data.frame(data)
-data
-
+#Matriz numérica
+matrix = as.matrix(data)
+data_dr = as.data.frame(data)
 ```
 
 
 ```{r}
 # Trabalhando com dataframes -----
-
-#Tabela, dataframe
-d
-as.data.frame(d)
-as.data.frame(c)
+#Transformando outros formatos em dataframe
+as.data.frame(matrix) #dataframe wide
+as.data.frame(i) #dataframe com coluna numérica
+as.data.frame(j) #dataframe com coluna textual
+as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
 ```
 
-
+# Manipulação com o R base
 ```{r}
 # Acessando colunas do data frame
 data$Nome
 data$Idade
-
 # Adicionando uma nova coluna ao data frame
 data$Peso = c(70, 65, 80, 20)
 
-```
-
-
-```{r}
 # Removendo uma coluna do data frame
 data = data[ , -4]
 
@@ -139,24 +118,24 @@ data_ordenados <- data[order(data$Idade), ]
 
 ```
 
+# Manipulação com o tidyverse
 
 ```{r}
-# Tidyverse ----
+# Filtrando linhas ----
+idade = filter(data, Idade >= 30)
+idade_nome = filter(idade, Nome == "Inês")
 
-# Filtrando linhas
-as.data.frame(data)
-
+# Usando o pipe "%>%"
 data %>%
-  filter(Idade >= 30)
-
-data %>% 
+  filter(Idade >= 30) %>% 
   filter(Nome != "Inês")
 
+#Filtrando mais de um valor usando | (OU) e "%in% c()" 
 data %>% 
   filter(Nome == "Inês" | Nome == "Elaine")
 
 data %>% 
-  filter(Nome %in% c("Inês", "Elaine"))
+  filter(Nome %in% c("Inês", "Elaine")) # "Filtrando os valores "Ines" e "Elaine" dentro (%in%) da coluna "Nome" 
 
 ```
 

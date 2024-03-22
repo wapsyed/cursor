@@ -141,9 +141,13 @@ data %>%
 
 
 ```{r}
-# Selecionando colunas
+# Selecionando colunas ----
+# Selecionar colunas específicas
+data %>%
+  select(Nome, Altura) 
+# Selecionar da coluna Nome (1) à coluna Peso (3)
 data %>% 
-  select(Nome, Idade)
+  select(Nome:Peso) 
 
 data %>% 
   select(-Idade)
@@ -156,9 +160,7 @@ data %>%
 
 ```{r}
 # Criando novas variáveis
-
 data$Peso = c(70, 65, 80, 20)
-
 
 data = data %>% 
   mutate(Altura = as.double(Altura),

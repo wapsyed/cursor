@@ -1,0 +1,330 @@
+---
+title: "Curso"
+output: html_document
+date: "2024-03-07"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 
+Bibliotecas ou pacotes
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+#Operações básicas -----
+
+#Variáveis numéricas
+x = 5
+
+y = 7
+
+z = y + x
+
+z
+
+multi = x * y
+multi
+
+# Variáveis textuais
+
+a = "Olá"
+
+b = "Tudo bem?"
+
+
+# Lógicos
+t = TRUE
+f = FALSE
+
+tt = TRUE
+ff = FALSE
+
+aa = "Olá"
+
+# Comparacoes
+t == f #Igual
+t != f #Diferente
+aa == a 
+
+x < y #menor
+
+x <= 5 # menor ou igual
+
+```
+
+
+```{r}
+# Vetores
+i = c(7, 5, 9, 10)
+j = c("Olá", "Caneta", "Qualificacao")
+
+h = c(7, "olá", 78)
+
+```
+
+
+```{r}
+#Dataframe simples
+dados <- data.frame(
+  Nome = c("João", "Maria", "Pedro"),
+  Idade = c(25, 30, 35),
+  Altura = c(1.75, 1.65, 1.80)
+)
+
+
+data = data.frame(
+  Nome = c("Elaine", "Inês", "Liz", "Luisa"),
+  Altura = c(1.59, 1.60, 1.65, 1.73),
+  Idade = c(30, 25, 31, 32)
+)
+
+data
+
+view(data)
+View(data)
+
+glimpse(data)
+
+```
+
+
+```{r}
+#Matriz
+data = as.matrix(data)
+data = as.data.frame(data)
+data
+
+```
+
+
+```{r}
+# Trabalhando com dataframes -----
+
+#Tabela, dataframe
+d
+as.data.frame(d)
+as.data.frame(c)
+```
+
+
+```{r}
+# Acessando colunas do data frame
+data$Nome
+data$Idade
+
+# Adicionando uma nova coluna ao data frame
+data$Peso = c(70, 65, 80, 20)
+
+```
+
+
+```{r}
+# Removendo uma coluna do data frame
+data = data[ , -4]
+
+# Filtrando linhas do data frame
+
+# [linha, coluna]
+
+data_jovens = data[data$Idade < 30, ]
+
+# Ordenando o data frame por uma coluna
+data_ordenados <- data[order(data$Idade), ]
+
+```
+
+
+```{r}
+# Tidyverse ----
+
+# Filtrando linhas
+as.data.frame(data)
+
+data %>%
+  filter(Idade >= 30)
+
+data %>% 
+  filter(Nome != "Inês")
+
+data %>% 
+  filter(Nome == "Inês" | Nome == "Elaine")
+
+data %>% 
+  filter(Nome %in% c("Inês", "Elaine"))
+
+```
+
+
+```{r}
+# Selecionando colunas
+data %>% 
+  select(Nome, Idade)
+
+data %>% 
+  select(-Idade)
+
+data %>% 
+  select(!Idade)
+
+```
+
+
+```{r}
+# Criando novas variáveis
+
+data$Peso = c(70, 65, 80, 20)
+
+
+data = data %>% 
+  mutate(Altura = as.double(Altura),
+         Idade = as.double(Idade),
+         IMC = Peso / (Altura^2))
+
+
+```
+
+
+```{r}
+# Resumindo dados
+data %>% 
+  summarize(Media_Idade = mean(Idade))
+```
+
+
+```{r}
+# Ordenando dados
+data %>% 
+  arrange(Idade)
+data %>% 
+  arrange(desc(Idade))
+
+
+
+data_2 = data %>% 
+  arrange(Altura) %>% 
+  filter(Idade >= 30,
+         Peso >= 50) %>% 
+  select(-Nome) %>% 
+  mutate(peso_x_idade = Peso * Idade) %>%
+  summarise(mean_peso = mean(Peso))
+
+data_2
+```
+
+
+```{r}
+### Tabela real ------
+
+data_long = sipni_cobertura_uf_1994_2023 
+
+view(data_long)
+
+data_wide = data_long %>% 
+  pivot_wider(., names_from = ano, values_from = cobertura)
+
+view(data_wide)
+
+# Explorando dados
+dim(data_long)
+
+#Summary statistics
+summary(data_long)
+
+#Count occurrences by variable
+install.packages("janitor")
+library(janitor)
+
+data_long %>% 
+  count(ano) 
+
+table(data_long$ano)
+```
+
+
+```{r}
+# Média, mediana, mínimo e máximo de uma variável numérica
+data_long %>% 
+  select(cobertura, uf, ano, imuno) %>% 
+  filter(uf %in% c("São Paulo", "Pernambuco"),
+         imuno != "Ignorado",
+         cobertura > 0) %>% 
+  group_by(uf, imuno) %>% 
+  summarise(
+    mean = mean(cobertura),
+    median = median(cobertura),
+    max = max(cobertura),
+    min = min(cobertura)
+  )
+
+
+sp_pe = data_long %>% 
+  select(cobertura, uf, ano, imuno) %>% 
+  filter(uf %in% c("São Paulo", "Pernambuco"),
+         imuno != "Ignorado",
+         cobertura > 0)
+
+library(esquisse)
+
+# esquisser(sp_pe)
+
+ggplot(sp_pe) +
+ aes(x = ano, y = cobertura, colour = uf) +
+ geom_line() +
+ scale_color_hue(direction = 1) +
+ theme_minimal() +
+ facet_wrap(vars(imuno))
+
+
+
+```
+
+
+```{r}
+mediana <- median(tabela_longa$variavel_numerica)
+minimo <- min(tabela_longa$variavel_numerica)
+maximo <- max(tabela_longa$variavel_numerica)
+
+# Desvio padrão e variância
+desvio_padrao <- sd(tabela_longa$variavel_numerica)
+variancia <- var(tabela_longa$variavel_numerica)
+
+# data_long %>% 
+#   tabyl(ano) %>% 
+#   adorn_totals("row") %>%
+#   adorn_pct_formatting() %>% 
+#   ggplot(aes(x = ano, y = n)) +
+#   geom_bar(stat = "identity") +
+#   coord_flip()
+
+```
+
+
+
+```{r}
+
+install.packages("esquisse")
+install.packages("htmltools")
+
+library(esquisse)
+library(tidyverse)
+
+esquisser(dados)
+
+dados = sipni_cobertura_uf_1994_2023
+
+dados %>%
+ filter(nome %in% "SAO PAULO") %>%
+ ggplot() +
+  aes(x = ano, y = cobertura, colour = nome) +
+  geom_line() +
+  scale_color_hue(direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(imuno))
+```
+

@@ -312,31 +312,118 @@ data %>%
 ```
 
 
-#Dados reais
+# Trabalhando com dados reais
 
+## Importando e padronizando tabela
 ```{r}
-### Tabela real ------
-data_long = sipni_cobertura_uf_1994_2023 
+#Importando a tabela ----
 
-view(data_long)
+tabelageralunicef %>% 
+  mutate(unicef_region = if_else(is.na(unicef_region), region, unicef_region),
+         cov = if_else(is.na(cov), coverage, cov),
+         country = if_else(is.na(country), region, country)) %>% 
+  select(!c(region, coverage))
+  #write.csv("cobertura_vacinal_unicef.csv", row.names = F)
 
-data_wide = data_long %>% 
-  pivot_wider(., names_from = ano, values_from = cobertura)
 
-view(data_wide)
+#Pelo readr
+cobertura_vacinal_unicef <- read_csv("cobertura_vacinal_unicef.csv") 
+#Manual: File > Import Dataset > From text (readr)
+cobertura_vacinal_unicef
 
-# Explorando dados
-dim(data_long)
+data_long = cobertura_vacinal_unicef 
+
+```
+
+## Explorando dados
+```{r}
+# Explorando dados -----
+
+# Tabela completa
+view(data_long) 
+
+# Descrição geral
+glimpse(data_long)
+
+# Primeiras 10 linhas
+head(data_long, 10)
+
+# Últimas 10 linhas
+tail(data_long, 10)
 
 #Summary statistics
 summary(data_long)
 
-#Count occurrences by variable
+#Níveis de colunas
+unique(data_long$unicef_region)
+unique(data_long$country)
+unique(data_long$vaccine)
+
+#Contar linhas por coluna
+data_long %>% count(country) 
+data_long %>% count(vaccine) 
+data_long %>% count(unicef_region) 
+
+table(data_long$country)
+janitor::tabyl(data_long,country)
+
+# Dados faltantes
+skim(data_long) # Por que são faltantes? Precisamos deles?
+```
+
+
+```{r}
+# Padronizando a tabela ----
 
 data_long %>% 
-  count(ano) 
+  select(name = country, 
+         country_abrev = iso3, 
+         year, 
+         vaccine, 
+         coverage = cov, 
+         region = unicef_region) %>% 
+  
+  mutate(
+         # Anotando dados
+         type = if_else(name == region, # Se o nome for igual à região,
+                        "region",       # então ele é uma região,
+                        "country"),     # caso contrário, é um país.
+         
+         # Vacinas por doenças
+         diseases = case_when(vaccine == "BCG" ~ "Tuberculosis",
+                              vaccine == "DTP1" ~ "Difteria, Tetanus, Pertussis",
+                              vaccine == "DT3" ~ "Difteria, Tetanus, Pertussis",
+                              vaccine == "HEPB3" ~ "Hepatitis B",
+                              vaccine == "HEPBB" ~ "Hepatitis B",
+                              vaccine == "HIB3" ~ "Haemophilus influenzae B",
+                              vaccine == "IPV1" ~ "Poliomielitis",
+                              vaccine == "MCV1" ~ "Measles",
+                              vaccine == "MCV2" ~ "Measles",
+                              vaccine == "PCV3" ~ "Pneumococcus",
+                              vaccine == "POL3" ~ "Poliomielitis",
+                              vaccine == "RCV1" ~ "Rotavirus",
+                              vaccine == "ROTAC" ~ "Rotavirus",
+                              vaccine == "YFV" ~ "Yellow fever",
+                              TRUE ~ region
+                              ),
+         
+         # Abreviação para nome completo
+         region_complete = case_when(region == "EAPR" ~ "East Asia and Pacific", 
+                              region == "ECAR" ~ "Europe and Central Asia",
+                              region == "MENA" ~ "Middle East and North Africa",
+                              region == "ESAR" ~ "Eastern and Southern Africa",
+                              region == "LACR" ~ "Latin America and Caribbean",
+                              region == "Non-programme" ~ "Non-programme",
+                              region == "ROSA" ~ "South Asia",
+                              region == "WCAR" ~ "West and Central Africa",
+                              TRUE ~ region
+  ))
 
-table(data_long$ano)
+
+
+#Tabela larga
+data_wide = data_long %>% 
+   pivot_wider(., names_from = year, values_from = cov)
 ```
 
 

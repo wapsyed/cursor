@@ -7,6 +7,8 @@ date: "`r Sys.Date()`"
 # Biblioteca e pacotes
 
 ```{r}
+options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
+
 # Baixar pacotes do CRAN para a biblioteca
 install.packages("tidyverse")
 install.packages("skimr")

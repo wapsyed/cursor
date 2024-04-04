@@ -1,1 +1,0 @@
-{"frames":[{"func":"count(is.na(data_long))","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in UseMethod(\"count\") : \n  método não aplicável para 'count' aplicado a um objeto de classe \"c('matrix', 'array', 'logical')\"\n"}

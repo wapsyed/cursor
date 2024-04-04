@@ -1,5 +1,0 @@
-"0","count(is.na(data_long))
-"
-"2","Error in UseMethod(""count"") : 
-  método não aplicável para 'count' aplicado a um objeto de classe ""c('matrix', 'array', 'logical')""
-"

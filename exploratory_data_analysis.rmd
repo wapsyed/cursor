@@ -286,7 +286,7 @@ data %>%
   summarize(Media_idade = mean(idade))
 ```
 
-
+## Ordenando dados
 ```{r}
 # Ordenando dados
 data %>% 
@@ -295,7 +295,10 @@ data %>%
   arrange(desc(idade))
 data %>% 
   arrange(-idade)
+```
 
+## Fazendo múltiplas operações de uma vez
+```{r}
 # Múltiplas operações em uma caixa
 data %>% 
   arrange(altura) %>% 
@@ -309,9 +312,10 @@ data %>%
 ```
 
 
+#Dados reais
+
 ```{r}
 ### Tabela real ------
-
 data_long = sipni_cobertura_uf_1994_2023 
 
 view(data_long)

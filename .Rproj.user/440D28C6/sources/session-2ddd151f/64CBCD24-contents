@@ -1,13 +1,8 @@
 ---
 title: "Curso"
 output: html_document
-date: "2024-03-07"
+date: "`r Sys.Date()`"
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 
 # Biblioteca e pacotes
 

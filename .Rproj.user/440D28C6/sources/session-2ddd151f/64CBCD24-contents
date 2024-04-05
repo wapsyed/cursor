@@ -16,15 +16,16 @@ install.packages("tidyverse")
 install.packages("skimr")
 install.packages("janitor")
 install.packages('showtext', dependencies = TRUE)
-install.packages("esquisser")
+install.packages("esquisse")
+install.packages("ggthemes")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
 library(skimr) #Diagnóstico de tabela
 library(janitor) #Limpeza de tabelas
-library(esquisser) #Plotagem de gráficos prática
+library(esquisse) #Plotagem de gráficos prática
 library(showtext) # Fontes 
-
+library(ggthemes)
 
 ```
 
@@ -330,16 +331,20 @@ tabelageralunicef %>%
   select(!c(region, coverage)) %>% 
   write.csv("cobertura_vacinal_unicef.csv", row.names = F)
 
-view(a)
 
 
+
+
+```
+
+
+```{r}
 #Pelo readr
 cobertura_vacinal_unicef <- read_csv("cobertura_vacinal_unicef.csv") 
 #Manual: File > Import Dataset > From text (readr)
 cobertura_vacinal_unicef
 
 data_long = cobertura_vacinal_unicef 
-
 ```
 
 ## Explorando dados

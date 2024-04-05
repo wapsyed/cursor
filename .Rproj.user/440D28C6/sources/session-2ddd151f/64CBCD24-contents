@@ -325,9 +325,12 @@ data %>%
 tabelageralunicef %>% 
   mutate(unicef_region = if_else(is.na(unicef_region), region, unicef_region),
          cov = if_else(is.na(cov), coverage, cov),
-         country = if_else(is.na(country), region, country)) %>% 
-  select(!c(region, coverage))
-  #write.csv("cobertura_vacinal_unicef.csv", row.names = F)
+         country = if_else(is.na(country), region, country),
+         iso3 = if_else(is.na(country), region, country)) %>% 
+  select(!c(region, coverage)) %>% 
+  write.csv("cobertura_vacinal_unicef.csv", row.names = F)
+
+view(a)
 
 
 #Pelo readr
@@ -389,9 +392,11 @@ data_long_standardized = data_long %>%
   
   mutate(
          # Anotando dados
-         type = if_else(name == region, # Se o nome for igual à região,
+         type = if_else(is.na(region), # Se o nome for igual à região,
                         "region",       # então ele é uma região,
                         "country"),     # caso contrário, é um país.
+         
+         region = if_else(is.na(region), name, region),
          
          # Vacinas por doenças
          diseases = case_when(vaccine == "BCG" ~ "Tuberculosis",
@@ -408,7 +413,7 @@ data_long_standardized = data_long %>%
                               vaccine == "RCV1" ~ "Rotavirus",
                               vaccine == "ROTAC" ~ "Rotavirus",
                               vaccine == "YFV" ~ "Yellow fever",
-                              TRUE ~ region
+                              TRUE ~ vaccine
                               ),
          
          # Abreviação para nome completo
@@ -444,7 +449,9 @@ latin_2000_2023 = data_long_standardized %>%
     mean = mean(coverage),
     median = median(coverage),
     max = max(coverage),
-    min = min(coverage)
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
   ) %>% 
   ungroup()
 ```
@@ -541,6 +548,25 @@ plot = latin_2000_2023 %>%
 
 
 ```{r}
+esquisser(data_long_standardized)
+
+
+data_long_standardized %>%
+ filter(year >= 2012& year <= 2022) %>%
+ filter(region %in% "LACR") %>%
+ ggplot() +
+  aes(x = year, y = coverage, colour = name) +
+  geom_line() +
+  theme_minimal() +
+  facet_wrap(vars(vaccine), scales = "free_x") +
+  scale_color_npg()
+
+  
+```
+
+
+
+```{r}
 
 # Filtrar tabela
 latin_2000_2023 %>%
@@ -565,7 +591,8 @@ latin_2000_2023 %>%
                         high = "#4DBBD5B2") + 
   
   # Labels, titulo, subtitulo, titulo dos eixos
-  labs(title = "",
+  labs(
+     title = "",
      subtitle = "",
      y = "",
      x = "",
@@ -600,9 +627,9 @@ latin_2000_2023 %>%
                                color = "black"),
     
     #Margens do gráfico
-    plot.margin = unit(c(0.5, #Top
-                         1, #Right
-                         0.5, #Bottom
+    plot.margin = unit(c(0, #Top
+                         0, #Right
+                         0, #Bottom
                          0), #Left 
                        "cm") #Unidade) 
   ) +
@@ -635,17 +662,11 @@ pal_npg("nrc", alpha = 0.7)(10)
 pal_npg("nrc", alpha = 0.7)(10) %>% 
   show_col()
 
+
 ```
 
 
 ```{r}
-mediana <- median(tabela_longa$variavel_numerica)
-minimo <- min(tabela_longa$variavel_numerica)
-maximo <- max(tabela_longa$variavel_numerica)
-
-# Desvio padrão e variância
-desvio_padrao <- sd(tabela_longa$variavel_numerica)
-variancia <- var(tabela_longa$variavel_numerica)
 
 # data_long %>% 
 #   tabyl(ano) %>% 

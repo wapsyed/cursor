@@ -4,8 +4,10 @@ output: html_document
 date: "`r Sys.Date()`"
 ---
 
-# Biblioteca e pacotes
+OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools > Global options > R Markdown and unselect “Show output inline for all R Markdown documents” 
 
+
+# Biblioteca e pacotes
 ```{r}
 options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 
@@ -13,11 +15,16 @@ options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 install.packages("tidyverse")
 install.packages("skimr")
 install.packages("janitor")
+install.packages('showtext', dependencies = TRUE)
+install.packages("esquisser")
 
 # Chamando os pacotes da biblioteca
-library(tidyverse)
-library(skimr)
-library(janitor)
+library(tidyverse) #Metapacote 
+library(skimr) #Diagnóstico de tabela
+library(janitor) #Limpeza de tabelas
+library(esquisser) #Plotagem de gráficos prática
+library(showtext) # Fontes 
+
 
 ```
 
@@ -372,7 +379,7 @@ skim(data_long) # Por que são faltantes? Precisamos deles?
 ```{r}
 # Padronizando a tabela ----
 
-data_long %>% 
+data_long_standardized = data_long %>% 
   select(name = country, 
          country_abrev = iso3, 
          year, 
@@ -419,45 +426,214 @@ data_long %>%
 
 
 #Tabela larga
-data_wide = data_long %>% 
-   pivot_wider(., names_from = year, values_from = cov)
+data_wide = data_long_standardized %>% 
+   pivot_wider(names_from = year, 
+               values_from = coverage)
 ```
 
 
 ```{r}
 # Média, mediana, mínimo e máximo de uma variável numérica
-data_long %>% 
-  select(cobertura, uf, ano, imuno) %>% 
-  filter(uf %in% c("São Paulo", "Pernambuco"),
-         imuno != "Ignorado",
-         cobertura > 0) %>% 
-  group_by(uf, imuno) %>% 
+
+latin_2000_2023 = data_long_standardized %>% 
+  drop_na(coverage) %>% 
+  filter(str_detect(region_complete, "Latin"),
+         between(year, 2000, 2023)) %>% 
+  group_by(vaccine, name) %>% 
   summarise(
-    mean = mean(cobertura),
-    median = median(cobertura),
-    max = max(cobertura),
-    min = min(cobertura)
-  )
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage)
+  ) %>% 
+  ungroup()
+```
+
+## Visualização
+```{r}
+#Visualização rápida
+esquisser(latin_2000_2023)
+
+# Melhorando o gráfico -----
+
+# Mudando a fonte
+font_add_google("Montserrat", # Importe a fonte Montserrat
+                "montserrat") # como "montserrat"
+showtext_auto() #Inicializar fonte
 
 
-sp_pe = data_long %>% 
-  select(cobertura, uf, ano, imuno) %>% 
-  filter(uf %in% c("São Paulo", "Pernambuco"),
-         imuno != "Ignorado",
-         cobertura > 0)
+# Filtrar tabela
+plot = latin_2000_2023 %>%
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+ 
+  #Criar base do gráfico
+  ggplot() +
+  aes(x = median, y = name, colour = median) + #Aesthetics (o que cada elemento representa)
+  
+  #Geometria
+  geom_point(shape = "circle", 
+             size = 1) + 
+  
+  #Tema, aparência
+  theme_light() + 
+  
+  #Escala de cores
+  scale_colour_gradient(low = "#DC0000B2", 
+                        high = "#4DBBD5B2") + 
+  
+  # Labels, titulo, subtitulo, titulo dos eixos
+  labs(title = "Vacinação em países da América Latina",
+     subtitle = "Sarampo, MCV1, Dose 1, entre 2000 e 2023",
+     y = "Países",
+     x = "Mediana",
+     tag = "Figure A.",
+     caption = "Fonte: Feito pela UPVacina") +
+  
+  # Aparência especifica
+  theme(
+    
+    #Texto geral
+    text = element_text(family = "montserrat", 
+                        color = "black"), 
+    
+    #Título, subtítulo e tag
+    plot.title = element_text(size = 12, 
+                              face = "bold", 
+                              hjust = 0,
+                              vjust = 0.5),
+    plot.subtitle = element_text(size = 10),
+    plot.tag.position = "topleft",
+    plot.tag = element_text(vjust = 5,
+                            size = 12, 
+                            face = "bold"),
+    #Eixos
+    axis.title.x = element_text(size = 10,
+                                angle = 0,
+                                color = "black"),
+    axis.text.x = element_text(color = "black",
+                               size = 8,
+                               angle = 90),
+    axis.text.y = element_text(size = 8,
+                               color = "black"),
+    
+    #Margens do gráfico
+    plot.margin = unit(c(0.5, #Top
+                         1, #Right
+                         0.5, #Bottom
+                         0), #Left 
+                       "cm") #Unidade) 
+  ) +
+  
+  #Marcações
+  #Linhas
+  geom_hline(yintercept = "Brazil", colour = "blue") +
+  geom_hline(yintercept = "Haiti", colour = "red") +
+  geom_vline(xintercept = 95,
+             colour = "black",
+             size = 1,
+             linetype = 1
+             )
 
-library(esquisse)
 
-# esquisser(sp_pe)
-
-ggplot(sp_pe) +
- aes(x = ano, y = cobertura, colour = uf) +
- geom_line() +
- scale_color_hue(direction = 1) +
- theme_minimal() +
- facet_wrap(vars(imuno))
+#ggsave(plot, file = "sarampo_lacr_2000_2023.png", width = 960, height = 600, units = "px")
+```
 
 
+```{r}
+
+# Filtrar tabela
+latin_2000_2023 %>%
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+ 
+  #Criar base do gráfico
+  ggplot() +
+  aes(x = , 
+      y = , 
+      colour = ) + #Aesthetics (o que cada elemento representa)
+  
+  #Geometria
+  geom_point(shape = "circle", 
+             size = 1) + 
+  
+  #Tema, aparência
+  theme_light() + 
+  
+  #Escala de cores
+  scale_colour_gradient(low = "#DC0000B2", 
+                        high = "#4DBBD5B2") + 
+  
+  # Labels, titulo, subtitulo, titulo dos eixos
+  labs(title = "",
+     subtitle = "",
+     y = "",
+     x = "",
+     tag = "",
+     caption = "Fonte:") +
+  
+  # Aparência especifica
+  theme(
+    
+    #Texto geral
+    text = element_text(family = "", 
+                        color = ""), 
+    
+    #Título, subtítulo e tag
+    plot.title = element_text(size = 12, 
+                              face = "bold", 
+                              hjust = 0,
+                              vjust = 0.5),
+    plot.subtitle = element_text(size = 10),
+    plot.tag.position = "topleft",
+    plot.tag = element_text(vjust = 5,
+                            size = 12, 
+                            face = "bold"),
+    #Eixos
+    axis.title.x = element_text(size = 10,
+                                angle = 0,
+                                color = "black"),
+    axis.text.x = element_text(color = "black",
+                               size = 8,
+                               angle = 90),
+    axis.text.y = element_text(size = 8,
+                               color = "black"),
+    
+    #Margens do gráfico
+    plot.margin = unit(c(0.5, #Top
+                         1, #Right
+                         0.5, #Bottom
+                         0), #Left 
+                       "cm") #Unidade) 
+  ) +
+  
+  #Marcações
+  #Linhas
+  geom_hline(yintercept = "Brazil", 
+             colour = "blue") +
+  geom_hline(yintercept = "Haiti", 
+              colour = "red") +
+  geom_vline(xintercept = 95,
+             colour = "black",
+             size = 1,
+             linetype = 1
+             )
+
+
+```
+
+
+
+```{r}
+#Mudando a paleta
+install.packages("ggsci")
+library(ggsci)
+vignette("ggsci") 
+
+library("scales")
+pal_npg("nrc", alpha = 0.7)(10)
+pal_npg("nrc", alpha = 0.7)(10) %>% 
+  show_col()
 
 ```
 

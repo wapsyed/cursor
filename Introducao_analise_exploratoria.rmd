@@ -98,8 +98,8 @@ tibble = tribble(
   "Luiza",  1.73,   32 
   )
 
-#VisuaBeatrizando o dataframe -----
-# A diferença de cada objeto está na visuaBeatrização no console.
+#Visualizando o dataframe -----
+# A diferença de cada objeto está na visualização no console.
 # Com print()
 print(data) #No documento ou console
 print(tibble)

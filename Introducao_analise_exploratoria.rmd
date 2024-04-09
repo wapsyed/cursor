@@ -448,13 +448,48 @@ data_long_standardized = data_long %>%
                               TRUE ~ region
   ))
 
-
+#Salvar tabela
+data_long_standardized %>% 
+  saveRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
 
 #Tabela larga
 data_wide = data_long_standardized %>% 
    pivot_wider(names_from = year, 
                values_from = coverage)
 ```
+
+
+## Unindo tabelas
+```{r}
+#Tabela com vacinação
+data_long_standardized = cobertura_vacinal_unicef_padronizada 
+
+#Tabela com mortes por doenças imunopreníveis, por país, ano, sexo e idade
+Deaths_infectious_diseases # mais de 2 milhões de linhas
+
+#Reduzir tabela
+Deaths_infectious_diseases_filtered = Deaths_infectious_diseases %>% 
+  filter(age == "All",
+         sex == "All") %>%  # 904 mil linhas
+  select(who_region_name, who_region_code, name, total_deaths:death_disease) 
+
+#Unir tabelas ------
+#Quais colunas são iguais?
+glimpse(data_long_standardized)
+glimpse(Deaths_infectious_diseases_filtered)
+
+#Unir tabelas
+
+data_long_standardized %>% 
+  inner_join(Deaths_infectious_diseases,
+             #by = "name"
+             by = join_by(name, diseases == death_disease))
+
+
+
+
+```
+
 
 
 ```{r}
@@ -475,6 +510,7 @@ latin_2000_2023 = data_long_standardized %>%
   ) %>% 
   ungroup()
 ```
+
 
 ## Visualização
 ```{r}

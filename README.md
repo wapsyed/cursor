@@ -7,7 +7,7 @@ Slides: [Link](https://docs.google.com/presentation/d/e/2PACX-1v)
 Desenvolvemos um curso para tornar o aprendizado de uma das linguagens de programação e análise de dados mais populares mais acessível, especialmente para aqueles que não têm formação em áreas de exatas, como TI e ciência da computação. Esta linguagem é amplamente utilizada por cientistas devido à sua variedade de ferramentas para análise de dados em ciências biológicas e da saúde. Com uma abordagem prática e interativa, os participantes explorarão conceitos e ferramentas para realizar análises de dados de forma simples e intuitiva. Além disso, terão acesso a um grupo de discussão para compartilhar dúvidas e ideias, criando um ambiente colaborativo e de aprendizado mútuo.
 
 **Público alvo:**
-Alunos de graduação e pós-graduação em ciências biológicas e da saúde.
+Alunos de graduação e pós-graduação em ciências biológicas e da saúde. Não é necessário ter conhecimento prévio sobre estatística e programação.
 
 **Inscrições:** As inscrições serão realizadas pelo formulário online e será restrita a 10 participantes, com o valor de R$100,00 por pessoa.  Os participantes serão selecionados e receberão um e-mail sobre o status da inscrição, com o código do PIX para efetivar o pagamento.
 Não foi selecionado nesta edição? Não se preocupe. Queremos abrir duas turmas por mês! Então, fique atento aos nossos posts no Instagram (@wasimvacinas) e ao seu e-mail.

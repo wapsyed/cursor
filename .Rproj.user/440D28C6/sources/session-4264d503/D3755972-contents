@@ -19,6 +19,7 @@ options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 # install.packages("esquisse")
 # install.packages("ggthemes")
 # install.packages("plotly")
+install.packages("ggrepel")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
@@ -28,6 +29,7 @@ library(esquisse) #Plotagem de gráficos prática
 library(showtext) # Fontes 
 library(ggthemes)
 library(plotly)
+library(ggrepel)
 ```
 
 
@@ -288,11 +290,24 @@ data_2 %>%
 data_2 %>% 
   select(nome:peso) 
 
+#Retirando coluna
 data_2 %>% 
-  select(-idade) #Retirando coluna
+  select(-idade) 
 
 data_2 %>%   
-  select(!idade) #Retirando coluna
+  select(!idade)
+
+#Reordenando coluna
+data_2 %>%   
+  select(idade, everything())
+
+#Renomeando coluna
+data_2 %>%   
+  select(age = idade, everything())
+
+#Renomeando coluna com rename
+data_2 %>%   
+  rename(age = idade) #Retirando coluna
 
 ```
 
@@ -473,7 +488,7 @@ glimpse(Deaths_infectious_diseases) # mais de 2 milhões de linhas
 
 #Reduzir tabela
 Deaths_infectious_diseases_filtered = Deaths_infectious_diseases %>% 
-  filter(age == "All",
+  filter(age == "[All]",
          sex == "All") %>%  # 904 mil linhas
   select(who_region_name, who_region_code, name, year, total_deaths:death_disease) 
 
@@ -496,10 +511,9 @@ data_long_annotated = data_long_standardized %>%
 
 glimpse(data_long_annotated)
 
+#Salvar
 data_long_annotated %>% 
-  group_by(name, disease_vac) %>% 
-  arrange(year)
-
+  saveRDS(file = "cobertura_vacinal_anotada.rds")
 
 ```
 
@@ -547,7 +561,6 @@ latin_2000_2023 %>% #Dataframe
        y = "Países") 
 
 ```
-
 
 ## Visualização rápida com o Esquisse
 
@@ -676,6 +689,9 @@ vaccination = data_long_annotated %>%
     y = coverage),
     colour = "#4DBBD5B2",
     linewidth = 2) +
+    geom_text(aes(x = year, y = coverage, label = coverage),
+            vjust = -0.5,
+            size = 3) +
     theme_minimal()
 
 
@@ -685,6 +701,9 @@ deaths = data_long_annotated %>%
     ggplot() +
   aes(x = year, y = total_deaths) +
   geom_col(fill = "#DC0000B2") +
+  geom_text(aes(label = total_deaths),
+            vjust = -0.5,
+            size = 2) +
   theme_minimal() +
   theme(text = element_text(size = 10))
 
@@ -727,35 +746,84 @@ data_long_annotated %>%
   theme_minimal() +
   facet_wrap(vars(vaccine))
 
-
-
 ```
 
 
-
-
-
-
+# Múltiplos gráficos
 ```{r}
-esquisser(data_long_standardized)
-
+# Múltiplos gráficos ----
+#Todas as linhas
 data_long_standardized %>%
  filter(year >= 2012& year <= 2022) %>%
  filter(region %in% "LACR") %>%
  ggplot() +
-  aes(x = year, y = coverage, colour = name) +
+  aes(x = year, y = coverage, color = name) +
   geom_line() +
   theme_minimal() +
-  facet_wrap(vars(vaccine), scales = "free_x") +
-  scale_color_npg()
+  facet_wrap(vars(vaccine), scales = "free_x") 
+
+#Highlight linhas específicas
+#install.packages("gghighlight")
+library(gghighlight)
+
+data_long_standardized %>%
+ filter(year >= 2012 & year <= 2022,
+        region %in% c("LACR")) %>%
+  
+ ggplot() +
+  geom_line(aes(x = year, 
+      y = coverage,
+      colour = name),
+      linewidth = 2) +
+
+  theme_minimal() +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  gghighlight(name == "Brazil", 
+              calculate_per_facet = T, #Add quando tiver facets
+              unhighlighted_params = list(linewidth = 1, 
+                                          colour = "gray90", 
+                                          alpha = 0.3))
+
+
+
+#Mortes
+data_long_annotated %>%
+ filter(year >= 2012 & year <= 2022,
+        region %in% c("LACR")) %>% 
+  select(name, year, total_deaths, disease_vac) %>% 
+  distinct() %>%
+ ggplot() +
+  geom_line(aes(x = year, 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_minimal() +
+  
+  facet_wrap(vars(disease_vac), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  #highlight
+  gghighlight(name == "Brazil", #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.3))
+
+
+
 
   
 ```
 
 
-
+# Modelo
 ```{r}
-
 # Filtrar tabela
 latin_2000_2023 %>%
   filter(vaccine %in% "MCV1") %>%
@@ -770,6 +838,8 @@ latin_2000_2023 %>%
   #Geometria
   geom_point(shape = "circle", 
              size = 1) + 
+  
+  geom_text(aes(y = ))
   
   #Tema, aparência
   theme_light() + 
@@ -838,6 +908,7 @@ latin_2000_2023 %>%
 ```
 
 
+# Cores
 
 ```{r}
 #Mudando a paleta
@@ -846,14 +917,14 @@ library(ggsci)
 vignette("ggsci") 
 
 library("scales")
-pal_npg("nrc", alpha = 0.7)(10)
+nrc = pal_npg("nrc", alpha = 0.7)(10)
 pal_npg("nrc", alpha = 0.7)(10) %>% 
   show_col()
 
 
 ```
-
-#Mudando a fonte
+ 
+# Mudando a fonte
 ```{r}
 
 # Mudando a fonte

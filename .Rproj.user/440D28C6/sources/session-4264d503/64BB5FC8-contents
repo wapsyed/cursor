@@ -21,7 +21,7 @@ Hepatitis_B = Hepatitis_B %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
   mutate(death_disease = "Hepatitis B",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 #Diphteria
@@ -42,7 +42,7 @@ Diphteria = Diphteria %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
   mutate(death_disease = "Diphteria",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 
@@ -64,7 +64,7 @@ Measles = Measles %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
   mutate(death_disease = "Measles",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 #Meningitis
@@ -85,7 +85,7 @@ Meningitis = Meningitis %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
   mutate(death_disease = "Meningitis",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 
@@ -107,7 +107,7 @@ Pertussis = Pertussis %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
  mutate(death_disease = "Pertussis",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 
@@ -129,7 +129,7 @@ Poliomyelitis = Poliomyelitis %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
 mutate(death_disease = "Poliomyelitis",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 
@@ -151,7 +151,7 @@ Tetanus = Tetanus %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
 mutate(death_disease = "Tetanus",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 #Tuberculosis
@@ -172,7 +172,7 @@ Tuberculosis = Tuberculosis %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
 mutate(death_disease = "Tuberculosis",
-         age = "All", 
+
          death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ",")))
 
 #Other infectious diseases
@@ -194,8 +194,7 @@ Other_infectious = Other_infectious %>%
          death_rate_100thousand = death_rate_per_100_000_population,
          death_rate_100thousand_age_standardized = age_standardized_death_rate_per_100_000_standard_population) %>% 
 mutate(death_disease = "Other_infectious",
-         age = "All", 
-         death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ","))) 
+       death_rate_100thousand = as.double(str_remove(death_rate_100thousand, ","))) 
 
 
 deaths_who = bind_rows(Hepatitis_B, Measles, Meningitis, Other_infectious, Diphteria, Pertussis, Poliomyelitis, Tetanus, Tuberculosis)

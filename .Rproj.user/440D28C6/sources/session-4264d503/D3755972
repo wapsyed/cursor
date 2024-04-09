@@ -3,7 +3,7 @@
     "path": "C:/Users/Wasim/Desktop/Github - Wasim/rcurso/Introducao_analise_exploratoria.rmd",
     "project_path": "Introducao_analise_exploratoria.rmd",
     "type": "r_markdown",
-    "hash": "2547184476",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1712674104954.0,
@@ -12,19 +12,20 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "517,0",
-        "scrollLine": "483",
+        "cursorPosition": "773,37",
+        "scrollLine": "746",
         "last_setup_crc32": "",
         "useRainbowParens": "true",
         "working_dir": "project",
-        "content_preview_inline": "true"
+        "content_preview_inline": "true",
+        "docOutlineVisible": "1"
     },
     "folds": "",
-    "lastKnownWriteTime": 1712686373,
+    "lastKnownWriteTime": 1712690986,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1712686373361,
+    "last_content_update": 1712690986076,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -19,7 +19,6 @@ options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 # install.packages("esquisse")
 # install.packages("ggthemes")
 # install.packages("plotly")
-install.packages("ggrepel")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
@@ -27,9 +26,10 @@ library(skimr) #Diagnóstico de tabela
 library(janitor) #Limpeza de tabelas
 library(esquisse) #Plotagem de gráficos prática
 library(showtext) # Fontes 
-library(ggthemes)
-library(plotly)
-library(ggrepel)
+library(ggthemes) #Temas de ggplot
+library(plotly) #Gráficos interativos
+library(patchwork) #Unir gráficos
+library(gghighlight)
 ```
 
 
@@ -351,7 +351,6 @@ data %>%
             mean_imc = mean(imc))
 ```
 
-
 # Trabalhando com dados reais
 
 ## Importando e padronizando tabela
@@ -407,14 +406,25 @@ data_long %>% count(country)
 data_long %>% count(vaccine) 
 data_long %>% count(unicef_region) 
 
+#Tabela de frequências
 table(data_long$country)
-janitor::tabyl(data_long,country)
-
-# Dados faltantes
-skim(data_long) # Por que são faltantes? Precisamos deles?
+tabyl(data_long, country)
 ```
 
 
+### Dados faltantes
+```{r}
+# Dados faltantes ----
+skim(data_long) # Por que são faltantes? Precisamos deles?
+
+# Como são essas linhas?
+data_long %>% 
+  filter(!complete.cases(.)) %>% 
+  view()
+
+```
+
+### Padronizando tabela
 ```{r}
 # Padronizando a tabela ----
 
@@ -552,6 +562,10 @@ latin_2000_2023 %>% #Dataframe
   #Geometrias
   geom_point() +
   
+  geom_text(aes(x = median, 
+                y = name, 
+                label = median)) +
+  
   #Tema
   theme_light() +
   
@@ -562,14 +576,14 @@ latin_2000_2023 %>% #Dataframe
 
 ```
 
-## Visualização rápida com o Esquisse
+### Visualização rápida com o Esquisse
 
 ```{r}
 #Visualização rápida
-esquisser(latin_2000_2023)
+#esquisser(latin_2000_2023)
 ```
 
-##Melhorando o gráfico
+### Melhorando o gráfico
 
 ```{r}
 # Melhorando o gráfico -----
@@ -587,16 +601,33 @@ plot =
   
   #Geometria
   geom_point(shape = "circle", 
-             size = 1) + 
+             size = 1) +
+  #Highlight (add sempre após geom_)
+  gghighlight(median > 95,
+              label_key = name,
+              label_params = list(size = 3),
+              unhighlighted_params = list(colour = "red")) +
+  
+  #Labels
+  geom_text(aes(x = median, 
+                y = name, 
+                label = median),
+              hjust = -0.5,
+              size = 3,
+              color = "black") +
+  
+  #Marcações
+  #Linhas
+  geom_vline(xintercept = 95,
+             colour = "black",
+             size = 1,
+             linetype = 1) +
   
   #Tema, aparência
   theme_light() + 
   
-  #Escala de cores
-  scale_colour_gradient(low = "#DC0000B2", 
-                        high = "#4DBBD5B2") + 
-  
   # Labels, titulo, subtitulo, titulo dos eixos
+    
   labs(title = "Vacinação em países da América Latina",
      subtitle = "Sarampo, MCV1, Dose 1, entre 2000 e 2023",
      y = "Países",
@@ -643,40 +674,32 @@ plot =
                          0.5, #Bottom
                          0), #Left 
                        "cm") #Unidade) 
-  ) +
+  )
   
-  #Escala
-  scale_colour_gradient(limits = c(0, 100), 
-                        breaks = c(0, 25, 50, 75, 100),
-                        labels = c(0, 25, 50, 75, 100)) +
-  
-  #Marcações
-  #Linhas
-  geom_hline(yintercept = "Brazil", colour = "blue", linetype = 2) +
-  geom_hline(yintercept = "Jamaica", colour = "red", linetype = 2) +
-  geom_vline(xintercept = 95,
-             colour = "black",
-             size = 1,
-             linetype = 1
-             )
+  #Escala de cores
+  # scale_colour_manual(low = "#DC0000B2", 
+  #                       high = "#4DBBD5B2",
+  #                       breaks = c(90, 100)) +
+  # scale_colour_steps(low = "#DC0000B2", 
+  #                       high = "#4DBBD5B2")
 
 
 #Visualizar
 plot
 
-#Salvar
+ #Salvar
 ggsave(plot, file = "sarampo_lacr_2000_2023.png", width = 10, height = 5)
 ```
 
 
-## Gráfico interativo
+### Gráfico interativo
 
 ```{r}
 plot %>% ggplotly()
 ```
 
 
-## Unindo gráficos
+### Unindo gráficos
 ```{r}
 #Unindo gráficos -----
 #Criar gráficos
@@ -688,10 +711,12 @@ vaccination = data_long_annotated %>%
     x = year,
     y = coverage),
     colour = "#4DBBD5B2",
-    linewidth = 2) +
-    geom_text(aes(x = year, y = coverage, label = coverage),
+    linewidth = 1) +
+    geom_text(aes(x = year, 
+                  y = coverage, 
+                  label = coverage),
             vjust = -0.5,
-            size = 3) +
+            size = 2) +
     theme_minimal()
 
 
@@ -708,7 +733,10 @@ deaths = data_long_annotated %>%
   theme(text = element_text(size = 10))
 
 #Unir gráficos
-library(patchwork)
+(vaccination / deaths) 
+(vaccination + deaths) 
+
+#Salvar
 (vaccination / deaths) %>% 
   ggsave(file = "Sarampo_Brasil_1980_2023.png", width = 5, height = 5)
 
@@ -717,23 +745,43 @@ library(patchwork)
 
 ### Boxplots
 ```{r}
-#Boxplot simples
-data_long_annotated %>% 
+#Boxplot simples por ano
+boxplot_years = data_long_annotated %>% 
   filter(type == "country",
          vaccine == "MCV1",
-         year %in% c(2000, 2022)) %>% 
+         year %in% c(1990, 2000, 2010, 2020)) %>% 
   
   
  ggplot() +
-  aes(x = region_complete, y = coverage, fill = region_complete) +
+  aes(x = region_complete, 
+      y = coverage, 
+      fill = region_complete,
+      label = name) +
   geom_boxplot() +
-  scale_fill_viridis_d(option = "plasma", direction = 1) +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45,
                                    vjust = 1,
                                    hjust = 1),
         plot.margin = unit(c(1, 1, 1, 1), "cm")) +
-  facet_wrap(vars(year))
+  facet_wrap(vars(year), ncol = 4)
+
+#Boxplot simples de ano
+boxplot_regions = data_long_annotated %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(1990, 2000, 2010, 2020)) %>% 
+  mutate(year = as.factor(year)) %>% 
+ ggplot() +
+  aes(x = year, y = coverage, fill = year, label = name) +
+  geom_boxplot() +
+  geom_jitter() +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
+  scale_color_distiller(palette = "Set2", direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(region))
+
+boxplot_regions %>%  ggplotly()
 
 #Boxplot por vacina
 data_long_annotated %>% 
@@ -749,7 +797,7 @@ data_long_annotated %>%
 ```
 
 
-# Múltiplos gráficos
+## Múltiplos gráficos
 ```{r}
 # Múltiplos gráficos ----
 #Todas as linhas
@@ -820,6 +868,11 @@ data_long_annotated %>%
 
   
 ```
+
+
+
+
+
 
 
 # Modelo

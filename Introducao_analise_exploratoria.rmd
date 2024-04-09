@@ -561,13 +561,6 @@ esquisser(latin_2000_2023)
 ```{r}
 # Melhorando o gráfico -----
 
-# Mudando a fonte
-font_add_google("Montserrat", # Importe a fonte Montserrat
-                "montserrat") # como "montserrat"
-# showtext_auto() #Inicializar fonte
-# showtext_opts(dpi = 300) #Manter qualidade ao salvar gráfico
-
-
 plot = 
   
   # Manipular tabela
@@ -596,6 +589,7 @@ plot =
      y = "Países",
      x = "Mediana (Cobertura %)",
      tag = "Figure A.",
+     colour = "Cobertura vacinal",
      caption = "Fonte: Feito pela UPVacina") +
   
   # Aparência especifica
@@ -615,6 +609,11 @@ plot =
     plot.tag = element_text(vjust = 5,
                             size = 12, 
                             face = "bold"),
+    
+    #Legenda
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10),
+    
     #Eixos
     axis.title.x = element_text(size = 10,
                                 angle = 0,
@@ -633,6 +632,11 @@ plot =
                        "cm") #Unidade) 
   ) +
   
+  #Escala
+  scale_colour_gradient(limits = c(0, 100), 
+                        breaks = c(0, 25, 50, 75, 100),
+                        labels = c(0, 25, 50, 75, 100)) +
+  
   #Marcações
   #Linhas
   geom_hline(yintercept = "Brazil", colour = "blue", linetype = 2) +
@@ -642,8 +646,13 @@ plot =
              size = 1,
              linetype = 1
              )
-  
-ggsave(plot, file = "sarampo_lacr_2000_2023.png", width = 960, height = 600, units = "px")
+
+
+#Visualizar
+plot
+
+#Salvar
+ggsave(plot, file = "sarampo_lacr_2000_2023.png", width = 10, height = 5)
 ```
 
 
@@ -844,16 +853,14 @@ pal_npg("nrc", alpha = 0.7)(10) %>%
 
 ```
 
-
+#Mudando a fonte
 ```{r}
 
-# data_long %>% 
-#   tabyl(ano) %>% 
-#   adorn_totals("row") %>%
-#   adorn_pct_formatting() %>% 
-#   ggplot(aes(x = ano, y = n)) +
-#   geom_bar(stat = "identity") +
-#   coord_flip()
+# Mudando a fonte
+font_add_google("Montserrat", # Importe a fonte Montserrat
+                "montserrat") # como "montserrat"
+#showtext_auto() #Inicializar fonte
+# showtext_opts(dpi = 300) #Manter qualidade ao salvar gráfico
 
 ```
 

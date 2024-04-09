@@ -1,7 +1,7 @@
 {
     "id": "6D33CF1E",
-    "path": "C:/Users/Wasim/Desktop/Github - Wasim/rcurso/Deaths.R",
-    "project_path": "Deaths.R",
+    "path": "C:/Users/Wasim/Desktop/Github - Wasim/rcurso/WHO_Deaths_padronizacao.R",
+    "project_path": "WHO_Deaths_padronizacao.R",
     "type": "r_source",
     "hash": "0",
     "contents": "",
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "15,2",
-        "scrollLine": "0"
+        "cursorPosition": "194,54",
+        "scrollLine": "171"
     },
     "folds": "",
-    "lastKnownWriteTime": 1712599318,
+    "lastKnownWriteTime": 1712602790,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1712599318428,
+    "last_content_update": 1712602790989,
     "read_only": false,
     "read_only_alternatives": []
 }

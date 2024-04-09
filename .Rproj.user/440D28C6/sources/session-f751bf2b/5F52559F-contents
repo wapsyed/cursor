@@ -448,7 +448,7 @@ data_long_standardized = data_long %>%
                               TRUE ~ region
   ))
 
-
+saveRDS(data_long_standardized, file = "cobertura_vacinal_unicef_padronizada.rds")
 
 #Tabela larga
 data_wide = data_long_standardized %>% 
@@ -475,6 +475,31 @@ latin_2000_2023 = data_long_standardized %>%
   ) %>% 
   ungroup()
 ```
+
+
+
+#Unindo tabelas
+```{r}
+#Importar
+deaths_who = read_rds("Deaths_infectious_diseases.rds")
+
+#Filtrar
+deaths_who_all = deaths_who %>% 
+  filter(age == "All",
+         sex == "All")
+
+deaths_who %>% glimpse()
+
+#Unir somente linhas correspondentes em ambas as tabelas
+data_long_standardized %>% 
+  inner_join(deaths_who_all,
+             by = "name")
+
+
+
+```
+
+
 
 ## Visualização
 ```{r}

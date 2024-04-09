@@ -346,7 +346,7 @@ tabelageralunicef %>%
   mutate(unicef_region = if_else(is.na(unicef_region), region, unicef_region),
          cov = if_else(is.na(cov), coverage, cov),
          country = if_else(is.na(country), region, country),
-         iso3 = if_else(is.na(country), region, country)) %>% 
+         iso3 = if_else(is.na(country), region, iso3)) %>% 
   select(!c(region, coverage)) %>% 
   write.csv("cobertura_vacinal_unicef.csv", row.names = F)
 
@@ -462,30 +462,42 @@ data_wide = data_long_standardized %>%
 ## Unindo tabelas
 ```{r}
 #Tabela com vacinação
-data_long_standardized = cobertura_vacinal_unicef_padronizada 
+
+data_long_standardized = readRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
+data_long_standardized
 
 #Tabela com mortes por doenças imunopreníveis, por país, ano, sexo e idade
-Deaths_infectious_diseases # mais de 2 milhões de linhas
+Deaths_infectious_diseases = readRDS(file = "Deaths_infectious_diseases.rds")
+glimpse(Deaths_infectious_diseases) # mais de 2 milhões de linhas
 
 #Reduzir tabela
 Deaths_infectious_diseases_filtered = Deaths_infectious_diseases %>% 
   filter(age == "All",
          sex == "All") %>%  # 904 mil linhas
-  select(who_region_name, who_region_code, name, total_deaths:death_disease) 
+  select(who_region_name, who_region_code, name, year, total_deaths:death_disease) 
 
 #Unir tabelas ------
-#Quais colunas são iguais?
+
+#Quais colunas são iguais e têm nomes diferentes?
 glimpse(data_long_standardized)
 glimpse(Deaths_infectious_diseases_filtered)
 
 #Unir tabelas
+data_long_annotated = data_long_standardized %>% 
+    rename(disease_vac = diseases) %>% 
+  inner_join(Deaths_infectious_diseases_filtered,
+             #by = "name") #Unir por uma coluna
+             
+             by = join_by(name, #Unir por mais colunas
+                          year,
+                          disease_vac == death_disease
+                          ))
 
-data_long_standardized %>% 
-  inner_join(Deaths_infectious_diseases,
-             #by = "name"
-             by = join_by(name, diseases == death_disease))
+glimpse(data_long_annotated)
 
-
+data_long_annotated %>% 
+  group_by(name, disease_vac) %>% 
+  arrange(year)
 
 
 ```

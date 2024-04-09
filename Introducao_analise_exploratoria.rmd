@@ -18,6 +18,7 @@ options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 # install.packages('showtext', dependencies = TRUE)
 # install.packages("esquisse")
 # install.packages("ggthemes")
+# install.packages("plotly")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
@@ -26,7 +27,7 @@ library(janitor) #Limpeza de tabelas
 library(esquisse) #Plotagem de gráficos prática
 library(showtext) # Fontes 
 library(ggthemes)
-
+library(plotly)
 ```
 
 
@@ -502,12 +503,10 @@ data_long_annotated %>%
 
 ```
 
-
-
 ```{r}
 # Média, mediana, mínimo e máximo de uma variável numérica
 
-latin_2000_2023 = data_long_standardized %>% 
+latin_2000_2023 = data_long_annotated %>% 
   drop_na(coverage) %>% 
   filter(str_detect(region_complete, "Latin"),
          between(year, 2000, 2023)) %>% 
@@ -526,19 +525,53 @@ latin_2000_2023 = data_long_standardized %>%
 
 ## Visualização
 ```{r}
+#Gráfico simples
+latin_2000_2023 %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = name,
+      color = median) +
+  
+  #Geometrias
+  geom_point() +
+  
+  #Tema
+  theme_light() +
+  
+  #Labels
+  labs(title = "Título",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "Países") 
+
+```
+
+
+## Visualização rápida com o Esquisse
+
+```{r}
 #Visualização rápida
 esquisser(latin_2000_2023)
+```
 
+##Melhorando o gráfico
+
+```{r}
 # Melhorando o gráfico -----
 
 # Mudando a fonte
 font_add_google("Montserrat", # Importe a fonte Montserrat
                 "montserrat") # como "montserrat"
-showtext_auto() #Inicializar fonte
+# showtext_auto() #Inicializar fonte
+# showtext_opts(dpi = 300) #Manter qualidade ao salvar gráfico
 
 
-# Filtrar tabela
-plot = latin_2000_2023 %>%
+plot = 
+  
+  # Manipular tabela
+  latin_2000_2023 %>%
   filter(vaccine %in% "MCV1") %>%
   mutate(name = fct_reorder(name, median)) %>% 
  
@@ -561,7 +594,7 @@ plot = latin_2000_2023 %>%
   labs(title = "Vacinação em países da América Latina",
      subtitle = "Sarampo, MCV1, Dose 1, entre 2000 e 2023",
      y = "Países",
-     x = "Mediana",
+     x = "Mediana (Cobertura %)",
      tag = "Figure A.",
      caption = "Fonte: Feito pela UPVacina") +
   
@@ -588,7 +621,7 @@ plot = latin_2000_2023 %>%
                                 color = "black"),
     axis.text.x = element_text(color = "black",
                                size = 8,
-                               angle = 90),
+                               angle = 0),
     axis.text.y = element_text(size = 8,
                                color = "black"),
     
@@ -602,22 +635,100 @@ plot = latin_2000_2023 %>%
   
   #Marcações
   #Linhas
-  geom_hline(yintercept = "Brazil", colour = "blue") +
-  geom_hline(yintercept = "Haiti", colour = "red") +
+  geom_hline(yintercept = "Brazil", colour = "blue", linetype = 2) +
+  geom_hline(yintercept = "Jamaica", colour = "red", linetype = 2) +
   geom_vline(xintercept = 95,
              colour = "black",
              size = 1,
              linetype = 1
              )
-
-
-#ggsave(plot, file = "sarampo_lacr_2000_2023.png", width = 960, height = 600, units = "px")
+  
+ggsave(plot, file = "sarampo_lacr_2000_2023.png", width = 960, height = 600, units = "px")
 ```
+
+
+## Gráfico interativo
+
+```{r}
+plot %>% ggplotly()
+```
+
+
+## Unindo gráficos
+```{r}
+#Unindo gráficos -----
+#Criar gráficos
+vaccination = data_long_annotated %>% 
+  filter(name == "Brazil",
+         vaccine == "MCV1") %>% 
+    ggplot() +
+  geom_line(mapping = aes(
+    x = year,
+    y = coverage),
+    colour = "#4DBBD5B2",
+    linewidth = 2) +
+    theme_minimal()
+
+
+deaths = data_long_annotated %>% 
+  filter(name == "Brazil",
+         vaccine == "MCV1") %>% 
+    ggplot() +
+  aes(x = year, y = total_deaths) +
+  geom_col(fill = "#DC0000B2") +
+  theme_minimal() +
+  theme(text = element_text(size = 10))
+
+#Unir gráficos
+library(patchwork)
+(vaccination / deaths) %>% 
+  ggsave(file = "Sarampo_Brasil_1980_2023.png", width = 5, height = 5)
+
+```
+
+
+### Boxplots
+```{r}
+#Boxplot simples
+data_long_annotated %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(2000, 2022)) %>% 
+  
+  
+ ggplot() +
+  aes(x = region_complete, y = coverage, fill = region_complete) +
+  geom_boxplot() +
+  scale_fill_viridis_d(option = "plasma", direction = 1) +
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45,
+                                   vjust = 1,
+                                   hjust = 1),
+        plot.margin = unit(c(1, 1, 1, 1), "cm")) +
+  facet_wrap(vars(year))
+
+#Boxplot por vacina
+data_long_annotated %>% 
+  filter(type == "country",
+         year == 2000) %>% 
+ ggplot() +
+  aes(x = "", y = coverage, fill = region_complete) +
+  geom_boxplot() +
+  scale_fill_viridis_d(option = "plasma", direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(vaccine))
+
+
+
+```
+
+
+
+
 
 
 ```{r}
 esquisser(data_long_standardized)
-
 
 data_long_standardized %>%
  filter(year >= 2012& year <= 2022) %>%

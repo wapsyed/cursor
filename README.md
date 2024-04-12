@@ -1,5 +1,5 @@
 # Ciência de dados da saúde com o R
-Slides: [Link](https://docs.google.com/presentation/d/e/2PACX-1v)
+Slides: [Link](https://docs.google.com/presentation/d/10lQTfw8OPG2ok83Tc9ctVhnDyhQ8GB-olWmQ17Zxs6k/edit?usp=drivesdk)
 
 **Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina e Projeto Halo.
 

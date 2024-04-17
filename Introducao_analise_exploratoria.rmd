@@ -11,21 +11,21 @@ OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools > G
 ```{r}
 options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 
-# Baixar pacotes do CRAN para a biblioteca
+# Baixar pacotes do CRAN para a biblioteca (Para descomentar, use Ctrl + Shift + C)
 # install.packages("tidyverse")
 # install.packages("skimr")
 # install.packages("janitor")
-# install.packages('showtext', dependencies = TRUE)
 # install.packages("esquisse")
 # install.packages("ggthemes")
 # install.packages("plotly")
+# install.packages("gghighlight")
+# install.packages("patchwork")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
 library(skimr) #Diagnóstico de tabela
 library(janitor) #Limpeza de tabelas
 library(esquisse) #Plotagem de gráficos prática
-library(showtext) # Fontes 
 library(ggthemes) #Temas de ggplot
 library(plotly) #Gráficos interativos
 library(patchwork) #Unir gráficos
@@ -44,19 +44,27 @@ y = 7
 z = y + x
 multi = x * y
 multi
+```
 
+
+```{r}
 # Variáveis textuais (caracteres, string)
-
 a = "Olá"
 b = "Tudo bem?"
+```
 
+
+```{r}
 # Variáveis Lógicas
 t = TRUE
 f = FALSE
 tt = TRUE
 ff = FALSE
 aa = "Olá"
+```
 
+
+```{r}
 # Comparações lógicas (booleanas)
 t == f #Igual
 t != f #Diferente
@@ -91,7 +99,10 @@ data = data.frame(
   altura = c(1.59, 1.60, 1.65, 1.73),
   idade = c(30, 25, 31, 32)
 )
+```
 
+
+```{r}
 #Tibble
 tibble = tribble(
   ~nome, ~altura, ~idade,
@@ -100,7 +111,10 @@ tibble = tribble(
   "Beatriz",    1.65,  31,
   "Luiza",  1.73,   32 
   )
+```
 
+
+```{r}
 #Visualizando o dataframe -----
 # A diferença de cada objeto está na visualização no console.
 # Com print()
@@ -242,17 +256,19 @@ tibble_2 = add_row(tibble,
                    altura = 1.85)
 
 #Adicionar coluna
-data_2 = add_column(data,
+data_2 = add_column(data_2,
                     peso = c(50,
                              80,
                              40,
-                             100))
+                             100,
+                            70))
 
 tibble_2 = add_column(tibble_2,
                       peso = c(50,
                                80,
                                40,
-                               100))
+                               100,
+                               70))
 ```
 
 ## Filtrando linhas e usando o pipe
@@ -267,7 +283,6 @@ data %>%                   # Tenho este objeto
   filter(nome != "Júlia")   # E então vou filtrar os indivíduos que não incluam a "Júlia"
 
 # Filtrando mais de um valor usando | (OU) e "%in% c()"
-
 data %>%                   #Tenho este objeto
   filter(nome == "Júlia" | # E então vou filtrar indivíduos que tenham o nome "Júlia" OU 
            nome == "Gabriela") #"Gabriela"
@@ -314,59 +329,49 @@ data_2 %>%
 ## mutate(): Criando e realizando operações com novas variáveis
 ```{r}
 # Criando novas variáveis
-data_2 %>% 
+data_2 = data_2 %>% 
   mutate(imc = peso / (altura^2))
+
+data_2 %>% 
+  mutate(sexo = "feminino")
 
 ```
 
 ## summarize(): resumindo estatísticas
 ```{r}
 # Resumindo dados
-data %>% 
+data_2 %>% 
   summarize(Media_idade = mean(idade))
 ```
 
 ## Ordenando dados
 ```{r}
 # Ordenando dados
-data %>% 
+data_2 %>% 
   arrange(idade)
-data %>% 
+data_2 %>% 
   arrange(desc(idade))
-data %>% 
+data_2 %>% 
   arrange(-idade)
 ```
 
 ## Fazendo múltiplas operações de uma vez
 ```{r}
 # Múltiplas operações em uma caixa
-data %>% 
+data_2 %>% 
   arrange(altura) %>% 
   filter(idade >= 30,
          peso >= 50) %>% 
   select(-nome) %>% 
   mutate(imc = round(imc, 1),
          peso_x_idade = peso * idade) %>%
-  summarise(mean_peso = mean(peso),
-            mean_imc = mean(imc))
+  summarise(mean_peso = mean(peso) %>% round(1),
+            mean_imc = mean(imc) %>% round(1))
 ```
 
 # Trabalhando com dados reais
 
 ## Importando e padronizando tabela
-```{r}
-#Importando a tabela ----
-
-tabelageralunicef %>% 
-  mutate(unicef_region = if_else(is.na(unicef_region), region, unicef_region),
-         cov = if_else(is.na(cov), coverage, cov),
-         country = if_else(is.na(country), region, country),
-         iso3 = if_else(is.na(country), region, iso3)) %>% 
-  select(!c(region, coverage)) %>% 
-  write.csv("cobertura_vacinal_unicef.csv", row.names = F)
-
-```
-
 
 ```{r}
 #Pelo readr
@@ -395,7 +400,10 @@ tail(data_long, 10)
 
 #Summary statistics
 summary(data_long)
+```
 
+
+```{r}
 #Níveis de colunas
 unique(data_long$unicef_region)
 unique(data_long$country)
@@ -529,7 +537,6 @@ data_long_annotated %>%
 
 ```{r}
 # Média, mediana, mínimo e máximo de uma variável numérica
-
 latin_2000_2023 = data_long_annotated %>% 
   drop_na(coverage) %>% 
   filter(str_detect(region_complete, "Latin"),
@@ -549,8 +556,8 @@ latin_2000_2023 = data_long_annotated %>%
 
 ## Visualização
 ```{r}
-#Gráfico simples
-latin_2000_2023 %>% #Dataframe
+#Gráfico de pontos simples
+pontos = latin_2000_2023 %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
@@ -576,11 +583,41 @@ latin_2000_2023 %>% #Dataframe
 
 ```
 
+```{r}
+#Gráfico de barras simples
+barras = latin_2000_2023 %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = name,
+      fill = median) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = name, 
+                label = median)) +
+  
+  #Tema
+  theme_light() +
+  
+  #Labels
+  labs(title = "Título",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "Países") 
+
+barras
+```
+
+
 ### Visualização rápida com o Esquisse
 
 ```{r}
 #Visualização rápida
-#esquisser(latin_2000_2023)
+esquisser(latin_2000_2023)
 ```
 
 ### Melhorando o gráfico
@@ -603,7 +640,7 @@ plot =
   geom_point(shape = "circle", 
              size = 1) +
   #Highlight (add sempre após geom_)
-  gghighlight(median > 95,
+  gghighlight(median >= 95,
               label_key = name,
               label_params = list(size = 3),
               unhighlighted_params = list(colour = "red")) +
@@ -620,8 +657,8 @@ plot =
   #Linhas
   geom_vline(xintercept = 95,
              colour = "black",
-             size = 1,
-             linetype = 1) +
+             size =0.2,
+             linetype = 2) +
   
   #Tema, aparência
   theme_light() + 
@@ -640,7 +677,7 @@ plot =
   theme(
     
     #Texto geral
-    text = element_text(family = "montserrat", 
+    text = element_text(family = "sans",  #sans, mono, serif
                         color = "black"), 
     
     #Título, subtítulo e tag
@@ -687,8 +724,8 @@ plot =
 #Visualizar
 plot
 
- #Salvar
-ggsave(plot, file = "sarampo_lacr_2000_2023.png", width = 10, height = 5)
+#Salvar
+ggsave(plot, file = "Sarampo_LatinAmerica_2000_2023.png", width = 10, height = 5)
 ```
 
 
@@ -765,7 +802,34 @@ boxplot_years = data_long_annotated %>%
                                    hjust = 1),
         plot.margin = unit(c(1, 1, 1, 1), "cm")) +
   facet_wrap(vars(year), ncol = 4)
+boxplot_years
+```
 
+## Cores
+```{r}
+# Cores
+#Mudando a paleta
+library(ggsci)
+library(scales)
+vignette("ggsci") 
+
+nrc = pal_npg("nrc", #Especificar paleta
+              alpha = 0.7)(8) #Gerar 10 cores com transparencia = 70%
+
+nrc %>% 
+  show_col()
+
+nrc3 = c(nrc, nrc, nrc)
+nrc3 %>% 
+  show_col()
+
+boxplot_years + scale_fill_npg()
+
+```
+
+
+
+```{r}
 #Boxplot simples de ano
 boxplot_regions = data_long_annotated %>% 
   filter(type == "country",
@@ -773,26 +837,40 @@ boxplot_regions = data_long_annotated %>%
          year %in% c(1990, 2000, 2010, 2020)) %>% 
   mutate(year = as.factor(year)) %>% 
  ggplot() +
-  aes(x = year, y = coverage, fill = year, label = name) +
+  aes(x = year, y = coverage, fill = year) +
   geom_boxplot() +
-  geom_jitter() +
+  geom_jitter(aes(label = name),
+              alpha = 0.2,
+              na.rm = T) +
   scale_fill_brewer(palette = "Set2", direction = 1) +
   scale_color_distiller(palette = "Set2", direction = 1) +
   theme_minimal() +
-  facet_wrap(vars(region))
+  facet_wrap(vars(who_region_name)) +
+  scale_fill_npg()
 
-boxplot_regions %>%  ggplotly()
+boxplot_regions
 
+boxplot_regions %>%  
+  ggplotly()
+```
+
+
+```{r}
 #Boxplot por vacina
 data_long_annotated %>% 
   filter(type == "country",
          year == 2000) %>% 
  ggplot() +
-  aes(x = "", y = coverage, fill = region_complete) +
+  aes(x = "", y = coverage, fill = who_region_name) +
   geom_boxplot() +
   scale_fill_viridis_d(option = "plasma", direction = 1) +
   theme_minimal() +
-  facet_wrap(vars(vaccine))
+  facet_wrap(vars(vaccine), 
+             nrow = 1) +
+  labs(x = "Regiões",
+       y = "Cobertura",
+       titulo = "Cobertura vacinal por região, em 2000") +
+  scale_fill_lancet() 
 
 ```
 
@@ -808,17 +886,41 @@ data_long_standardized %>%
   aes(x = year, y = coverage, color = name) +
   geom_line() +
   theme_minimal() +
-  facet_wrap(vars(vaccine), scales = "free_x") 
+  facet_wrap(vars(vaccine), scales = "free_x")
+```
 
+
+```{r}
 #Highlight linhas específicas
-#install.packages("gghighlight")
-library(gghighlight)
+br_cov = data_long_standardized %>%
+ filter(year >= 2012 & year <= 2022,
+        name %in% c("Brazil", "Colombia")) %>%
+ ggplot() +
+  aes(x = year, 
+      y = coverage,
+      colour = name) +
+  
+  geom_line(linewidth = 2) +
 
-data_long_standardized %>%
+  theme_minimal() +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  labs(title = "Cobertura vacinal, por vacina")  +
+  
+  scale_color_colorblind()
+
+br_cov
+```
+
+
+```{r}
+#Método 2
+br_cov = data_long_standardized %>%
  filter(year >= 2012 & year <= 2022,
         region %in% c("LACR")) %>%
-  
  ggplot() +
+  
   geom_line(aes(x = year, 
       y = coverage,
       colour = name),
@@ -828,22 +930,27 @@ data_long_standardized %>%
   
   facet_wrap(vars(vaccine)) + 
   
+  labs(title = "Cobertura vacinal, por vacina") +
+  
   gghighlight(name == "Brazil", 
               calculate_per_facet = T, #Add quando tiver facets
               unhighlighted_params = list(linewidth = 1, 
                                           colour = "gray90", 
                                           alpha = 0.3))
 
+br_cov
+```
 
 
+```{r}
 #Mortes
-data_long_annotated %>%
+br_mortes = data_long_annotated %>%
  filter(year >= 2012 & year <= 2022,
         region %in% c("LACR")) %>% 
-  select(name, year, total_deaths, disease_vac) %>% 
+  select(name, year, total_deaths, death_rate_100thousand, disease_vac) %>% 
   distinct() %>%
  ggplot() +
-  geom_line(aes(x = year, 
+  geom_line(aes(x = round(year, 0), 
       y = total_deaths,
       colour = name),
       linewidth = 2) +
@@ -854,26 +961,29 @@ data_long_annotated %>%
              scales = "free", 
              nrow = 3) + 
   
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
   #highlight
-  gghighlight(name == "Brazil", #Linhas somente com name == "Brazil'
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
               
               calculate_per_facet = T, #Add quando tiver facets
               
               unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
                                           colour = "gray90", 
-                                          alpha = 0.3))
+                                          alpha = 0.5)) + 
+  scale_color_aaas()
 
-
-
+br_mortes
 
   
 ```
 
-
-
-
-
-
+```{r}
+# Unir gráficos
+ggsave(br_cov + br_mortes, file = "br_cov_mortes.png")
+```
 
 # Modelo
 ```{r}
@@ -955,31 +1065,13 @@ latin_2000_2023 %>%
              colour = "black",
              size = 1,
              linetype = 1
-             )
-
-
-```
-
-
-# Cores
-
-```{r}
-#Mudando a paleta
-install.packages("ggsci")
-library(ggsci)
-vignette("ggsci") 
-
-library("scales")
-nrc = pal_npg("nrc", alpha = 0.7)(10)
-pal_npg("nrc", alpha = 0.7)(10) %>% 
-  show_col()
+             ) 
 
 
 ```
  
 # Mudando a fonte
 ```{r}
-
 # Mudando a fonte
 font_add_google("Montserrat", # Importe a fonte Montserrat
                 "montserrat") # como "montserrat"

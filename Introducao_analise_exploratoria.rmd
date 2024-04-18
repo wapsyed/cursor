@@ -446,9 +446,14 @@ data_long_standardized = data_long %>%
   
   mutate(
          # Anotando dados
-         type = if_else(is.na(region), # Se o nome for igual à região,
+         year = as.integer(year),
+         type = if_else(name == region, # Se o nome for igual à região,
                         "region",       # então ele é uma região,
                         "country"),     # caso contrário, é um país.
+         
+         country_abrev = if_else(name == region, # Se o nome for igual à região,
+                        name,       # então ele é uma região,
+                        country_abrev),     # caso contrário, é um país.
          
          region = if_else(is.na(region), name, region),
          
@@ -496,10 +501,29 @@ data_wide = data_long_standardized %>%
 ## Unindo tabelas
 ```{r}
 #Tabela com vacinação
-
 data_long_standardized = readRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
 data_long_standardized
 
+#Tabela com dados gerais de paises
+paises_anotados = readRDS(file = "paises_anotados.rds")
+paises_anotados
+
+#Unindo tabelas
+data_long_annotated = data_long_standardized %>% 
+  inner_join(paises_anotados, by = "name")
+
+glimpse(data_long_annotated) #Colunas duplicadas
+
+data_long_annotated = data_long_standardized %>% 
+  inner_join(paises_anotados %>% 
+               select(-region_complete), by = "name")
+
+glimpse(data_long_annotated)
+
+```
+
+
+```{r}
 #Tabela com mortes por doenças imunopreníveis, por país, ano, sexo e idade
 Deaths_infectious_diseases = readRDS(file = "Deaths_infectious_diseases.rds")
 glimpse(Deaths_infectious_diseases) # mais de 2 milhões de linhas
@@ -508,18 +532,16 @@ glimpse(Deaths_infectious_diseases) # mais de 2 milhões de linhas
 Deaths_infectious_diseases_filtered = Deaths_infectious_diseases %>% 
   filter(age == "[All]",
          sex == "All") %>%  # 904 mil linhas
-  select(who_region_name, who_region_code, name, year, total_deaths:death_disease) 
-
-#Unir tabelas ------
+  select(name, year, total_deaths:death_disease) 
 
 #Quais colunas são iguais e têm nomes diferentes?
 glimpse(data_long_standardized)
 glimpse(Deaths_infectious_diseases_filtered)
 
 #Unir tabelas
-data_long_annotated = data_long_standardized %>% 
+data_long_annotated = data_long_annotated %>% 
     rename(disease_vac = diseases) %>% 
-  inner_join(Deaths_infectious_diseases_filtered,
+  left_join(Deaths_infectious_diseases_filtered,
              #by = "name") #Unir por uma coluna
              
              by = join_by(name, #Unir por mais colunas
@@ -528,6 +550,14 @@ data_long_annotated = data_long_standardized %>%
                           ))
 
 glimpse(data_long_annotated)
+```
+
+
+Organizar colunas
+```{r}
+#Organizar colunas
+data_long_annotated = data_long_annotated %>% 
+  select(type, name, country_abrev, continent, region, region_complete, year, everything())
 
 #Salvar
 data_long_annotated %>% 
@@ -536,11 +566,13 @@ data_long_annotated %>%
 ```
 
 ```{r}
+# Estatísticas de cada país em um continente
 # Média, mediana, mínimo e máximo de uma variável numérica
 latin_2000_2023 = data_long_annotated %>% 
   drop_na(coverage) %>% 
   filter(str_detect(region_complete, "Latin"),
-         between(year, 2000, 2023)) %>% 
+         between(year, 2000, 2023),
+         type == "country") %>% 
   group_by(vaccine, name) %>% 
   summarise(
     mean = mean(coverage),
@@ -551,12 +583,98 @@ latin_2000_2023 = data_long_annotated %>%
     var = var(coverage)
   ) %>% 
   ungroup()
+
+latin_2000_2023
+```
+
+
+```{r}
+# Estatísticas de cada continente
+continentes = data_long_annotated %>% 
+  drop_na(coverage,
+          continent) %>% 
+  filter(between(year, 2000, 2023),
+         type == "country") %>% 
+  group_by(vaccine, continent) %>% 
+  summarise(
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
+  ) %>% 
+  ungroup()
+
+
+continentes
 ```
 
 
 ## Visualização
 ```{r}
 #Gráfico de pontos simples
+pontos = continentes %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = continent,
+      color = continent) +
+  
+  #Geometrias
+  geom_point() +
+  
+  geom_text(aes(x = median, 
+                y = continent, 
+                label = median)) +
+  
+  #Tema
+  theme_light() +
+  
+  #Labels
+  labs(title = "Cobertura vacinal",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "Continentes") 
+
+pontos
+
+```
+
+```{r}
+#Gráfico de pontos simples
+barras = continentes %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = continent,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = continent, 
+                label = median)) +
+  
+  #Tema
+  theme_light() +
+  
+  #Labels
+  labs(title = "Cobertura vacinal",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "Continentes") 
+
+barras
+
+```
+
+Por país
+```{r}
+#Gráfico de barras simples
 pontos = latin_2000_2023 %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
@@ -581,7 +699,9 @@ pontos = latin_2000_2023 %>% #Dataframe
        x = "Mediana (Cobertura vacinal%)",
        y = "Países") 
 
+pontos
 ```
+
 
 ```{r}
 #Gráfico de barras simples
@@ -748,13 +868,17 @@ vaccination = data_long_annotated %>%
     x = year,
     y = coverage),
     colour = "#4DBBD5B2",
-    linewidth = 1) +
+    linewidth = 2) +
     geom_text(aes(x = year, 
                   y = coverage, 
                   label = coverage),
             vjust = -0.5,
             size = 2) +
-    theme_minimal()
+    theme_minimal() +
+  labs(title = "Cobertura vacinal contra o sarampo, Brasil",
+       x = "Ano",
+       y = "Cobertura vacinal (%)") +
+   ylim(0, 110)
 
 
 deaths = data_long_annotated %>% 
@@ -767,7 +891,11 @@ deaths = data_long_annotated %>%
             vjust = -0.5,
             size = 2) +
   theme_minimal() +
-  theme(text = element_text(size = 10))
+  theme(text = element_text(size = 10)) +
+    labs(title = "Mortes por sarampo, Brasil",
+       x = "Ano",
+       y = "Mortes") +
+   ylim(0, 3400)
 
 #Unir gráficos
 (vaccination / deaths) 
@@ -775,7 +903,7 @@ deaths = data_long_annotated %>%
 
 #Salvar
 (vaccination / deaths) %>% 
-  ggsave(file = "Sarampo_Brasil_1980_2023.png", width = 5, height = 5)
+  ggsave(file = "Sarampo_Brasil_1980_2023.png", width = 10, height = 5)
 
 ```
 
@@ -783,29 +911,35 @@ deaths = data_long_annotated %>%
 ### Boxplots
 ```{r}
 #Boxplot simples por ano
+
 boxplot_years = data_long_annotated %>% 
   filter(type == "country",
          vaccine == "MCV1",
-         year %in% c(1990, 2000, 2010, 2020)) %>% 
+         year %in% c(1990, 2000, 2010, 2019)) %>% 
   
   
  ggplot() +
-  aes(x = region_complete, 
+  aes(x = "", 
       y = coverage, 
-      fill = region_complete,
-      label = name) +
+      fill = continent) +
   geom_boxplot() +
   scale_fill_brewer(palette = "Set2", direction = 1) +
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45,
                                    vjust = 1,
                                    hjust = 1),
-        plot.margin = unit(c(1, 1, 1, 1), "cm")) +
-  facet_wrap(vars(year), ncol = 4)
-boxplot_years
+        plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        legend.position = "top") +
+  facet_wrap(vars(year), ncol = 4) +
+  labs(x = "Região UNICEF",
+       y = "Cobertura vacinal (%)",
+       fill = "Região UNICEF")
+
+#Visualizar
+boxplot_years 
 ```
 
-## Cores
+Cores
 ```{r}
 # Cores
 #Mudando a paleta
@@ -817,10 +951,6 @@ nrc = pal_npg("nrc", #Especificar paleta
               alpha = 0.7)(8) #Gerar 10 cores com transparencia = 70%
 
 nrc %>% 
-  show_col()
-
-nrc3 = c(nrc, nrc, nrc)
-nrc3 %>% 
   show_col()
 
 boxplot_years + scale_fill_npg()
@@ -845,7 +975,7 @@ boxplot_regions = data_long_annotated %>%
   scale_fill_brewer(palette = "Set2", direction = 1) +
   scale_color_distiller(palette = "Set2", direction = 1) +
   theme_minimal() +
-  facet_wrap(vars(who_region_name)) +
+  facet_wrap(vars(continent)) +
   scale_fill_npg()
 
 boxplot_regions
@@ -859,9 +989,9 @@ boxplot_regions %>%
 #Boxplot por vacina
 data_long_annotated %>% 
   filter(type == "country",
-         year == 2000) %>% 
+         year == 2015) %>% 
  ggplot() +
-  aes(x = "", y = coverage, fill = who_region_name) +
+  aes(x = "", y = coverage, fill = continent) +
   geom_boxplot() +
   scale_fill_viridis_d(option = "plasma", direction = 1) +
   theme_minimal() +
@@ -887,11 +1017,16 @@ data_long_standardized %>%
   geom_line() +
   theme_minimal() +
   facet_wrap(vars(vaccine), scales = "free_x")
+
+
+#Fica muito poluído
 ```
 
 
 ```{r}
 #Highlight linhas específicas
+
+#Método 1
 br_cov = data_long_standardized %>%
  filter(year >= 2012 & year <= 2022,
         name %in% c("Brazil", "Colombia")) %>%
@@ -906,9 +1041,11 @@ br_cov = data_long_standardized %>%
   
   facet_wrap(vars(vaccine)) + 
   
-  labs(title = "Cobertura vacinal, por vacina")  +
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)")  +
   
-  scale_color_colorblind()
+  scale_color_npg()
 
 br_cov
 ```
@@ -928,15 +1065,20 @@ br_cov = data_long_standardized %>%
 
   theme_minimal() +
   
+  theme(axis.text.x = element_text(angle = 90)) +
+  
   facet_wrap(vars(vaccine)) + 
   
-  labs(title = "Cobertura vacinal, por vacina") +
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)") +
   
-  gghighlight(name == "Brazil", 
+  gghighlight(name %in% c("Brazil", "Colombia"), 
               calculate_per_facet = T, #Add quando tiver facets
               unhighlighted_params = list(linewidth = 1, 
                                           colour = "gray90", 
-                                          alpha = 0.3))
+                                          alpha = 0.3)) +
+  scale_color_npg()
 
 br_cov
 ```
@@ -949,6 +1091,7 @@ br_mortes = data_long_annotated %>%
         region %in% c("LACR")) %>% 
   select(name, year, total_deaths, death_rate_100thousand, disease_vac) %>% 
   distinct() %>%
+  drop_na(total_deaths) %>% 
  ggplot() +
   geom_line(aes(x = round(year, 0), 
       y = total_deaths,
@@ -973,7 +1116,7 @@ br_mortes = data_long_annotated %>%
               unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
                                           colour = "gray90", 
                                           alpha = 0.5)) + 
-  scale_color_aaas()
+  scale_color_npg()
 
 br_mortes
 
@@ -987,6 +1130,9 @@ ggsave(br_cov + br_mortes, file = "br_cov_mortes.png")
 
 # Modelo
 ```{r}
+
+# Gráfico com pontos -------
+
 # Filtrar tabela
 latin_2000_2023 %>%
   filter(vaccine %in% "MCV1") %>%
@@ -1067,8 +1213,86 @@ latin_2000_2023 %>%
              linetype = 1
              ) 
 
+```
+ 
+ 
+# Analisando a distribuição
+```{r}
+
+#Quantos países por continente registraram os dados na UNICEF?
+
+#Todos os continentes juntos
+data_long_annotated %>%
+ filter(type == "country",
+        continent != "Other") %>% 
+ select(coverage, year, continent, vaccine) %>% 
+ drop_na(coverage) %>% 
+ ggplot() +
+  aes(x = year, fill = continent) +
+  geom_histogram(bins = 43L) +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(vaccine))
+
+# Continentes separados
+data_long_annotated %>%
+ filter(type == "country",
+        continent != "Other") %>% 
+ select(coverage, year, continent, vaccine) %>% 
+ drop_na(coverage) %>% 
+ ggplot() +
+  aes(x = year, fill = continent) +
+  geom_histogram(bins = 43L) +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  facet_grid(continent ~ vaccine, scales = "free")
+
+
+#Quantos países aumentaram sua cobertura vacinal em cada decada?
+
+data_long_annotated %>%
+ filter(type == "country",
+        continent != "Other",
+        year %in% c(1990, 2000, 2010, 2019)) %>%
+ ggplot() +
+  aes(x = coverage, fill = continent) +
+  geom_histogram(bins = 10L) +
+  scale_fill_brewer(palette = "Accent", direction = 1) +
+  theme_minimal() +
+  theme(plot.caption = element_text(size = 13L),
+        legend.position = "top",
+        strip.text.y = element_text(angle = 0, 
+                                    hjust = 0)) +
+  facet_grid(~disease_vac~year, scales = "free")
 
 ```
+
+
+ 
+
+#Gapminder
+```{r}
+install.packages("gapminder")
+library(gapminder)
+
+gapminder %>% 
+  filter(year %in% c(1952, 1982, 2002)) %>% 
+ggplot() +
+  aes(
+    x = gdpPercap,
+    y = lifeExp,
+    colour = continent,
+    size = pop,
+    group = country
+  ) +
+  geom_point(shape = "circle") +
+  scale_color_hue(direction = 1) +
+  scale_x_continuous(trans = "log10") +
+  theme_minimal() +
+  facet_wrap(vars(year), scales = "free_x") +
+  gghighlight(country == "China")
+```
+
  
 # Mudando a fonte
 ```{r}

@@ -20,6 +20,7 @@ options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 # install.packages("plotly")
 # install.packages("gghighlight")
 # install.packages("patchwork")
+install.packages("polyglotr")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
@@ -30,11 +31,11 @@ library(ggthemes) #Temas de ggplot
 library(plotly) #Gráficos interativos
 library(patchwork) #Unir gráficos
 library(gghighlight)
+library(polyglotr)
 ```
 
 
-# Conhecendo o R
-## Operações básicas
+# Operações básicas
 ```{r}
 #Operações básicas -----
 
@@ -132,6 +133,7 @@ glimpse(tibble)
 # Com view(). A tabela abrirá em uma nova janela
 view(data) 
 view(tibble)
+
 ```
 
 
@@ -191,7 +193,7 @@ matrix_dr
 
 ```
 
-#Listas
+## Listas
 
 ```{r}
 #Criando a lista
@@ -239,7 +241,7 @@ data_ordenados <- data_2[order(data_2$idade), ]
 data_ordenados
 ```
 
-# Manipulação com o tidyverse
+# Tidyverse
 
 
 ## Adicionando linhas e colunas
@@ -383,6 +385,8 @@ data_long = cobertura_vacinal_unicef
 ```
 
 ## Explorando dados
+
+### Visualizando tabelas
 ```{r}
 # Explorando dados -----
 
@@ -498,7 +502,7 @@ data_wide = data_long_standardized %>%
 ```
 
 
-## Unindo tabelas
+### Unindo tabelas
 ```{r}
 #Tabela com vacinação
 data_long_standardized = readRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
@@ -565,6 +569,17 @@ data_long_annotated %>%
 
 ```
 
+### Traduzindo
+
+```{r}
+
+create_translation_table(data_long_annotated$continent, "pt")
+
+```
+
+
+
+### Estatísticas descritivas
 ```{r}
 # Estatísticas de cada país em um continente
 # Média, mediana, mínimo e máximo de uma variável numérica
@@ -589,8 +604,8 @@ latin_2000_2023
 
 
 ```{r}
-# Estatísticas de cada continente
-continentes = data_long_annotated %>% 
+# Cobertura vacinal: Estatísticas de cada continente
+continentes_vac = data_long_annotated %>% 
   drop_na(coverage,
           continent) %>% 
   filter(between(year, 2000, 2023),
@@ -606,16 +621,48 @@ continentes = data_long_annotated %>%
   ) %>% 
   ungroup()
 
+#Visualizar
+continentes_vac
+```
 
-continentes
+```{r}
+# Mortes cumulativas
+# Estatísticas de cada continente
+continentes_mortes = data_long_annotated %>% 
+  drop_na(total_deaths,
+          continent) %>% 
+  filter(between(year, 2000, 2023),
+         type == "country") %>% 
+  group_by(disease_vac, continent) %>% 
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  arrange(disease_vac, - cumulativo) %>% 
+  ungroup()
+
+continentes_mortes
 ```
 
 
-## Visualização
+
+# Visualização
+
+## Vacinação
+
+### Gráfico de pontos simples
+
+Por continente 
 ```{r}
 #Gráfico de pontos simples
-pontos = continentes %>% #Dataframe
+continentes_pontos_vac = continentes_vac %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
+  mutate(continent = fct_reorder(continent, median)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
@@ -626,7 +673,7 @@ pontos = continentes %>% #Dataframe
   #Geometrias
   geom_point() +
   
-  geom_text(aes(x = median, 
+  geom_label(aes(x = median, 
                 y = continent, 
                 label = median)) +
   
@@ -638,14 +685,51 @@ pontos = continentes %>% #Dataframe
        x = "Mediana (Cobertura vacinal%)",
        y = "Continentes") 
 
-pontos
+continentes_pontos_vac
 
 ```
 
+
+Por país
+
 ```{r}
 #Gráfico de pontos simples
-barras = continentes %>% #Dataframe
+pontos = latin_2000_2023 %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = name,
+      color = median) +
+  
+  #Geometrias
+  geom_point() +
+  
+  geom_text(aes(x = median, #Use geom_label para visualizar melhor
+                y = name, 
+                label = median)) +
+  
+  #Tema
+  theme_light() +
+  
+  #Labels
+  labs(title = "Cobertura vacinal",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "Países")
+
+pontos
+```
+
+
+### Gráfico de barras
+
+Por continente
+```{r}
+#Gráfico de barras simples
+continente_barras_vac = continentes_vac %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  mutate(continent = fct_reorder(continent, median)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
@@ -665,47 +749,17 @@ barras = continentes %>% #Dataframe
   
   #Labels
   labs(title = "Cobertura vacinal",
-       x = "Mediana (Cobertura vacinal%)",
+       x = "Mediana (Cobertura vacinal %)",
        y = "Continentes") 
 
-barras
+continente_barras_vac
 
 ```
 
 Por país
 ```{r}
 #Gráfico de barras simples
-pontos = latin_2000_2023 %>% #Dataframe
-  filter(vaccine %in% "MCV1") %>%
-  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
-  
-  #Mapeando os eixos
-  aes(x = median,
-      y = name,
-      color = median) +
-  
-  #Geometrias
-  geom_point() +
-  
-  geom_text(aes(x = median, 
-                y = name, 
-                label = median)) +
-  
-  #Tema
-  theme_light() +
-  
-  #Labels
-  labs(title = "Título",
-       x = "Mediana (Cobertura vacinal%)",
-       y = "Países") 
-
-pontos
-```
-
-
-```{r}
-#Gráfico de barras simples
-barras = latin_2000_2023 %>% #Dataframe
+pais_barras_vac = latin_2000_2023 %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
@@ -729,7 +783,45 @@ barras = latin_2000_2023 %>% #Dataframe
        x = "Mediana (Cobertura vacinal%)",
        y = "Países") 
 
-barras
+pais_barras_vac
+```
+
+## Mortes
+
+Por continente 
+```{r}
+#Gráfico de pontos simples
+barras_mortes = continentes_mortes %>% #Dataframe
+  filter(disease_vac == "Measles") %>% 
+  mutate(continent = fct_reorder(continent, cumulativo)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = continent,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = continent, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_light() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "Continentes") +
+  
+  #Eixo x
+  xlim(0, 21000) #Aumentar limites
+  
+barras_mortes
+
 ```
 
 
@@ -737,7 +829,8 @@ barras
 
 ```{r}
 #Visualização rápida
-esquisser(latin_2000_2023)
+latin_2000_2023 %>% 
+  esquisser()
 ```
 
 ### Melhorando o gráfico
@@ -852,7 +945,8 @@ ggsave(plot, file = "Sarampo_LatinAmerica_2000_2023.png", width = 10, height = 5
 ### Gráfico interativo
 
 ```{r}
-plot %>% ggplotly()
+plot %>% 
+  ggplotly()
 ```
 
 

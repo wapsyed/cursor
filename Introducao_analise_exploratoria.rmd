@@ -1,13 +1,16 @@
 ---
 title: "Curso"
-output: html_document
+output: 
+  html_document: 
+    toc: true
+    df_print: default
 date: "`r Sys.Date()`"
 ---
 
-OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools > Global options > R Markdown and unselect “Show output inline for all R Markdown documents” 
+OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> Global options \> R Markdown and unselect “Show output inline for all R Markdown documents”
 
+# 1. Biblioteca e pacotes
 
-# Biblioteca e pacotes
 ```{r}
 options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 
@@ -20,7 +23,7 @@ options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 # install.packages("plotly")
 # install.packages("gghighlight")
 # install.packages("patchwork")
-install.packages("polyglotr")
+# install.packages("ggsci")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
@@ -30,12 +33,12 @@ library(esquisse) #Plotagem de gráficos prática
 library(ggthemes) #Temas de ggplot
 library(plotly) #Gráficos interativos
 library(patchwork) #Unir gráficos
-library(gghighlight)
-library(polyglotr)
+library(gghighlight) #Marcar pontos e linhas 
+library(ggsci) #Paleta de cores 
 ```
 
+# 2. Operações básicas
 
-# Operações básicas
 ```{r}
 #Operações básicas -----
 
@@ -47,13 +50,11 @@ multi = x * y
 multi
 ```
 
-
 ```{r}
 # Variáveis textuais (caracteres, string)
 a = "Olá"
 b = "Tudo bem?"
 ```
-
 
 ```{r}
 # Variáveis Lógicas
@@ -63,7 +64,6 @@ tt = TRUE
 ff = FALSE
 aa = "Olá"
 ```
-
 
 ```{r}
 # Comparações lógicas (booleanas)
@@ -78,6 +78,7 @@ x <= 5 # menor ou igual
 ```
 
 ## Vetores
+
 ```{r}
 # Vetores
 i = c(7, 5, 9, 10) #Numérico
@@ -91,6 +92,7 @@ h
 ```
 
 ## Dataframes e tibbles
+
 ```{r}
 #Dataframes e tibbles -----
 
@@ -102,7 +104,6 @@ data = data.frame(
 )
 ```
 
-
 ```{r}
 #Tibble
 tibble = tribble(
@@ -113,7 +114,6 @@ tibble = tribble(
   "Luiza",  1.73,   32 
   )
 ```
-
 
 ```{r}
 #Visualizando o dataframe -----
@@ -136,8 +136,8 @@ view(tibble)
 
 ```
 
+## Estatísticas gerais da tabela
 
-Estatísticas gerais da tabela
 ```{r}
 # Estatísticas gerais 
 summary(tibble)
@@ -153,7 +153,8 @@ as.data.frame(j) #dataframe com coluna textual
 as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
 ```
 
-Convertendo de wide para long
+## Convertendo de wide para long e long para wide
+
 ```{r}
 # Trabalhando com dataframes -----
 #Transformando outros formatos em dataframe
@@ -211,9 +212,8 @@ df_list
 
 ```
 
-
-
 ## Manipulação de tabelas com o R base
+
 ```{r}
 # Acessando colunas do data frame
 data$nome
@@ -241,10 +241,10 @@ data_ordenados <- data_2[order(data_2$idade), ]
 data_ordenados
 ```
 
-# Tidyverse
-
+# 3. Tidyverse
 
 ## Adicionando linhas e colunas
+
 ```{r}
 #Adicionar linha
 data_2 = add_row(data, 
@@ -263,7 +263,7 @@ data_2 = add_column(data_2,
                              80,
                              40,
                              100,
-                            70))
+                             70))
 
 tibble_2 = add_column(tibble_2,
                       peso = c(50,
@@ -273,7 +273,8 @@ tibble_2 = add_column(tibble_2,
                                70))
 ```
 
-## Filtrando linhas e usando o pipe
+## filter(): Filtrando linhas e usando o pipe
+
 ```{r}
 # Filtrando linhas ----
 idade = filter(data, idade >= 30)
@@ -297,6 +298,7 @@ data %>%
 ```
 
 ## select(): Selecionando colunas
+
 ```{r}
 # Selecionando colunas ----
 # Selecionar colunas específicas
@@ -329,6 +331,7 @@ data_2 %>%
 ```
 
 ## mutate(): Criando e realizando operações com novas variáveis
+
 ```{r}
 # Criando novas variáveis
 data_2 = data_2 %>% 
@@ -340,13 +343,15 @@ data_2 %>%
 ```
 
 ## summarize(): resumindo estatísticas
+
 ```{r}
 # Resumindo dados
 data_2 %>% 
   summarize(Media_idade = mean(idade))
 ```
 
-## Ordenando dados
+## arrange(): Ordenando dados
+
 ```{r}
 # Ordenando dados
 data_2 %>% 
@@ -357,7 +362,8 @@ data_2 %>%
   arrange(-idade)
 ```
 
-## Fazendo múltiplas operações de uma vez
+## %\>%: Fazendo múltiplas operações de uma vez
+
 ```{r}
 # Múltiplas operações em uma caixa
 data_2 %>% 
@@ -371,7 +377,7 @@ data_2 %>%
             mean_imc = mean(imc) %>% round(1))
 ```
 
-# Trabalhando com dados reais
+# 4. Trabalhando com dados reais
 
 ## Importando e padronizando tabela
 
@@ -387,6 +393,7 @@ data_long = cobertura_vacinal_unicef
 ## Explorando dados
 
 ### Visualizando tabelas
+
 ```{r}
 # Explorando dados -----
 
@@ -406,7 +413,6 @@ tail(data_long, 10)
 summary(data_long)
 ```
 
-
 ```{r}
 #Níveis de colunas
 unique(data_long$unicef_region)
@@ -423,8 +429,8 @@ table(data_long$country)
 tabyl(data_long, country)
 ```
 
-
 ### Dados faltantes
+
 ```{r}
 # Dados faltantes ----
 skim(data_long) # Por que são faltantes? Precisamos deles?
@@ -437,6 +443,7 @@ data_long %>%
 ```
 
 ### Padronizando tabela
+
 ```{r}
 # Padronizando a tabela ----
 
@@ -447,6 +454,8 @@ data_long_standardized = data_long %>%
          vaccine, 
          coverage = cov, 
          region = unicef_region) %>% 
+  
+  
   
   mutate(
          # Anotando dados
@@ -479,6 +488,7 @@ data_long_standardized = data_long %>%
                               TRUE ~ vaccine
                               ),
          
+         
          # Abreviação para nome completo
          region_complete = case_when(region == "EAPR" ~ "East Asia and Pacific", 
                               region == "ECAR" ~ "Europe and Central Asia",
@@ -501,8 +511,8 @@ data_wide = data_long_standardized %>%
                values_from = coverage)
 ```
 
-
 ### Unindo tabelas
+
 ```{r}
 #Tabela com vacinação
 data_long_standardized = readRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
@@ -525,7 +535,6 @@ data_long_annotated = data_long_standardized %>%
 glimpse(data_long_annotated)
 
 ```
-
 
 ```{r}
 #Tabela com mortes por doenças imunopreníveis, por país, ano, sexo e idade
@@ -556,8 +565,8 @@ data_long_annotated = data_long_annotated %>%
 glimpse(data_long_annotated)
 ```
 
+**Organizar colunas**
 
-Organizar colunas
 ```{r}
 #Organizar colunas
 data_long_annotated = data_long_annotated %>% 
@@ -569,17 +578,8 @@ data_long_annotated %>%
 
 ```
 
-### Traduzindo
-
-```{r}
-
-create_translation_table(data_long_annotated$continent, "pt")
-
-```
-
-
-
 ### Estatísticas descritivas
+
 ```{r}
 # Estatísticas de cada país em um continente
 # Média, mediana, mínimo e máximo de uma variável numérica
@@ -601,7 +601,6 @@ latin_2000_2023 = data_long_annotated %>%
 
 latin_2000_2023
 ```
-
 
 ```{r}
 # Cobertura vacinal: Estatísticas de cada continente
@@ -625,6 +624,10 @@ continentes_vac = data_long_annotated %>%
 continentes_vac
 ```
 
+### Mortes cumulativas
+
+**Por continente**
+
 ```{r}
 # Mortes cumulativas
 # Estatísticas de cada continente
@@ -647,17 +650,43 @@ continentes_mortes = data_long_annotated %>%
   ungroup()
 
 continentes_mortes
+
 ```
 
+**Por país**
 
+```{r}
+# Mortes cumulativas
+# Estatísticas de cada continente
+paises_mortes = data_long_annotated %>% 
+  drop_na(total_deaths,
+          name) %>% 
+  filter(between(year, 2000, 2023),
+         type == "country") %>% 
+  group_by(disease_vac, name) %>% 
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  arrange(disease_vac, desc(cumulativo)) %>% 
+  ungroup()
 
-# Visualização
+paises_mortes
+```
+
+# 5. Visualização
 
 ## Vacinação
 
 ### Gráfico de pontos simples
 
-Por continente 
+**Por continente**
+
 ```{r}
 #Gráfico de pontos simples
 continentes_pontos_vac = continentes_vac %>% #Dataframe
@@ -682,15 +711,14 @@ continentes_pontos_vac = continentes_vac %>% #Dataframe
   
   #Labels
   labs(title = "Cobertura vacinal",
-       x = "Mediana (Cobertura vacinal%)",
+       x = "Mediana (Cobertura vacinal %)",
        y = "Continentes") 
 
 continentes_pontos_vac
 
 ```
 
-
-Por país
+**Por país**
 
 ```{r}
 #Gráfico de pontos simples
@@ -721,10 +749,10 @@ pontos = latin_2000_2023 %>% #Dataframe
 pontos
 ```
 
-
 ### Gráfico de barras
 
-Por continente
+**Por continente**
+
 ```{r}
 #Gráfico de barras simples
 continente_barras_vac = continentes_vac %>% #Dataframe
@@ -756,7 +784,8 @@ continente_barras_vac
 
 ```
 
-Por país
+**Por país**
+
 ```{r}
 #Gráfico de barras simples
 pais_barras_vac = latin_2000_2023 %>% #Dataframe
@@ -781,14 +810,15 @@ pais_barras_vac = latin_2000_2023 %>% #Dataframe
   #Labels
   labs(title = "Título",
        x = "Mediana (Cobertura vacinal%)",
-       y = "Países") 
+       y = "Países")
 
 pais_barras_vac
 ```
 
 ## Mortes
 
-Por continente 
+**Por continente**
+
 ```{r}
 #Gráfico de pontos simples
 barras_mortes = continentes_mortes %>% #Dataframe
@@ -818,19 +848,54 @@ barras_mortes = continentes_mortes %>% #Dataframe
        y = "Continentes") +
   
   #Eixo x
-  xlim(0, 21000) #Aumentar limites
+  xlim(0, 21000) #Aumentar limites 
   
-barras_mortes
+barras_mortes 
 
 ```
 
+```{r}
+
+#Gráfico de pontos simples
+paises_barras_mortes = paises_mortes %>% #Dataframe
+  filter(disease_vac == "Measles") %>% 
+  mutate(name = fct_reorder(name, cumulativo)) %>% 
+  slice_max(order_by = cumulativo, n = 10) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = name,
+      fill = name) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = name, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_light() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "Continentes") +
+  
+  #Eixo x
+  xlim(0, 21000) #Aumentar limites
+  
+paises_barras_mortes
+```
 
 ### Visualização rápida com o Esquisse
 
 ```{r}
 #Visualização rápida
 latin_2000_2023 %>% 
-  esquisser()
+  esquisser() 
 ```
 
 ### Melhorando o gráfico
@@ -924,7 +989,7 @@ plot =
                          0.5, #Bottom
                          0), #Left 
                        "cm") #Unidade) 
-  )
+  ) 
   
   #Escala de cores
   # scale_colour_manual(low = "#DC0000B2", 
@@ -941,16 +1006,15 @@ plot
 ggsave(plot, file = "Sarampo_LatinAmerica_2000_2023.png", width = 10, height = 5)
 ```
 
-
 ### Gráfico interativo
 
 ```{r}
 plot %>% 
-  ggplotly()
+  ggplotly() 
 ```
 
-
 ### Unindo gráficos
+
 ```{r}
 #Unindo gráficos -----
 #Criar gráficos
@@ -1001,8 +1065,8 @@ deaths = data_long_annotated %>%
 
 ```
 
-
 ### Boxplots
+
 ```{r}
 #Boxplot simples por ano
 
@@ -1034,6 +1098,7 @@ boxplot_years
 ```
 
 Cores
+
 ```{r}
 # Cores
 #Mudando a paleta
@@ -1050,8 +1115,6 @@ nrc %>%
 boxplot_years + scale_fill_npg()
 
 ```
-
-
 
 ```{r}
 #Boxplot simples de ano
@@ -1078,7 +1141,6 @@ boxplot_regions %>%
   ggplotly()
 ```
 
-
 ```{r}
 #Boxplot por vacina
 data_long_annotated %>% 
@@ -1098,8 +1160,8 @@ data_long_annotated %>%
 
 ```
 
-
 ## Múltiplos gráficos
+
 ```{r}
 # Múltiplos gráficos ----
 #Todas as linhas
@@ -1115,7 +1177,6 @@ data_long_standardized %>%
 
 #Fica muito poluído
 ```
-
 
 ```{r}
 #Highlight linhas específicas
@@ -1143,7 +1204,6 @@ br_cov = data_long_standardized %>%
 
 br_cov
 ```
-
 
 ```{r}
 #Método 2
@@ -1176,7 +1236,6 @@ br_cov = data_long_standardized %>%
 
 br_cov
 ```
-
 
 ```{r}
 #Mortes
@@ -1222,7 +1281,8 @@ br_mortes
 ggsave(br_cov + br_mortes, file = "br_cov_mortes.png")
 ```
 
-# Modelo
+# 6. Modelo
+
 ```{r}
 
 # Gráfico com pontos -------
@@ -1308,11 +1368,10 @@ latin_2000_2023 %>%
              ) 
 
 ```
- 
- 
-# Analisando a distribuição
-```{r}
 
+# Analisando a distribuição
+
+```{r}
 #Quantos países por continente registraram os dados na UNICEF?
 
 #Todos os continentes juntos
@@ -1326,7 +1385,8 @@ data_long_annotated %>%
   geom_histogram(bins = 43L) +
   scale_fill_hue(direction = 1) +
   theme_minimal() +
-  facet_wrap(vars(vaccine))
+  facet_wrap(vars(vaccine)) +
+  scale_fill_npg()
 
 # Continentes separados
 data_long_annotated %>%
@@ -1361,10 +1421,8 @@ data_long_annotated %>%
 
 ```
 
+# Gapminder
 
- 
-
-#Gapminder
 ```{r}
 install.packages("gapminder")
 library(gapminder)
@@ -1387,8 +1445,8 @@ ggplot() +
   gghighlight(country == "China")
 ```
 
- 
 # Mudando a fonte
+
 ```{r}
 # Mudando a fonte
 font_add_google("Montserrat", # Importe a fonte Montserrat
@@ -1397,4 +1455,3 @@ font_add_google("Montserrat", # Importe a fonte Montserrat
 # showtext_opts(dpi = 300) #Manter qualidade ao salvar gráfico
 
 ```
-

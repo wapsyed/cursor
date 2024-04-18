@@ -885,12 +885,12 @@ paises_barras_mortes = paises_mortes %>% #Dataframe
        y = "Continentes") +
   
   #Eixo x
-  xlim(0, 21000) #Aumentar limites
+  xlim(0, 21000) #Aumentar limites 
   
 paises_barras_mortes
 ```
 
-### Visualização rápida com o Esquisse
+## Visualização rápida com o Esquisse
 
 ```{r}
 #Visualização rápida
@@ -898,7 +898,7 @@ latin_2000_2023 %>%
   esquisser() 
 ```
 
-### Melhorando o gráfico
+## Melhorando o gráfico
 
 ```{r}
 # Melhorando o gráfico -----
@@ -912,7 +912,7 @@ plot =
  
   #Criar base do gráfico
   ggplot() +
-  aes(x = median, y = name, colour = median) + #Aesthetics (o que cada elemento representa)
+  aes(x = median, y = name, colour = median) + #Aesthetics (mapping)
   
   #Geometria
   geom_point(shape = "circle", 
@@ -1006,14 +1006,14 @@ plot
 ggsave(plot, file = "Sarampo_LatinAmerica_2000_2023.png", width = 10, height = 5)
 ```
 
-### Gráfico interativo
+## Gráfico interativo
 
 ```{r}
 plot %>% 
   ggplotly() 
 ```
 
-### Unindo gráficos
+## Unindo gráficos
 
 ```{r}
 #Unindo gráficos -----
@@ -1069,7 +1069,6 @@ deaths = data_long_annotated %>%
 
 ```{r}
 #Boxplot simples por ano
-
 boxplot_years = data_long_annotated %>% 
   filter(type == "country",
          vaccine == "MCV1",
@@ -1087,9 +1086,11 @@ boxplot_years = data_long_annotated %>%
                                    vjust = 1,
                                    hjust = 1),
         plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        legend.position = "top") +
+        legend.position = "right") +
   facet_wrap(vars(year), ncol = 4) +
-  labs(x = "Região UNICEF",
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Primeira dose (MCV1)",
+      x = "Região UNICEF",
        y = "Cobertura vacinal (%)",
        fill = "Região UNICEF")
 
@@ -1097,7 +1098,7 @@ boxplot_years = data_long_annotated %>%
 boxplot_years 
 ```
 
-Cores
+## Paleta de cores científica
 
 ```{r}
 # Cores
@@ -1137,6 +1138,9 @@ boxplot_regions = data_long_annotated %>%
 
 boxplot_regions
 
+```
+
+```{# Gráfico interativo}
 boxplot_regions %>%  
   ggplotly()
 ```
@@ -1156,7 +1160,7 @@ data_long_annotated %>%
   labs(x = "Regiões",
        y = "Cobertura",
        titulo = "Cobertura vacinal por região, em 2000") +
-  scale_fill_lancet() 
+  scale_fill_lancet()  
 
 ```
 
@@ -1171,9 +1175,9 @@ data_long_standardized %>%
  ggplot() +
   aes(x = year, y = coverage, color = name) +
   geom_line() +
-  theme_minimal() +
-  facet_wrap(vars(vaccine), scales = "free_x")
-
+  theme_minimal() + 
+  facet_wrap(vars(vaccine), scales = "free_x") 
+ 
 
 #Fica muito poluído
 ```
@@ -1200,9 +1204,9 @@ br_cov = data_long_standardized %>%
        x = "Ano",
        y = "Cobertura (%)")  +
   
-  scale_color_npg()
+  scale_color_npg() 
 
-br_cov
+br_cov 
 ```
 
 ```{r}
@@ -1232,7 +1236,7 @@ br_cov = data_long_standardized %>%
               unhighlighted_params = list(linewidth = 1, 
                                           colour = "gray90", 
                                           alpha = 0.3)) +
-  scale_color_npg()
+  scale_color_npg() 
 
 br_cov
 ```
@@ -1269,16 +1273,16 @@ br_mortes = data_long_annotated %>%
               unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
                                           colour = "gray90", 
                                           alpha = 0.5)) + 
-  scale_color_npg()
+  scale_color_npg() 
 
-br_mortes
+br_mortes 
 
   
 ```
 
 ```{r}
 # Unir gráficos
-ggsave(br_cov + br_mortes, file = "br_cov_mortes.png")
+ggsave(br_cov + br_mortes, file = "br_cov_mortes.png") 
 ```
 
 # 6. Modelo
@@ -1302,7 +1306,7 @@ latin_2000_2023 %>%
   geom_point(shape = "circle", 
              size = 1) + 
   
-  geom_text(aes(y = ))
+  geom_text(aes(y = )) +
   
   #Tema, aparência
   theme_light() + 
@@ -1383,7 +1387,6 @@ data_long_annotated %>%
  ggplot() +
   aes(x = year, fill = continent) +
   geom_histogram(bins = 43L) +
-  scale_fill_hue(direction = 1) +
   theme_minimal() +
   facet_wrap(vars(vaccine)) +
   scale_fill_npg()
@@ -1411,13 +1414,13 @@ data_long_annotated %>%
  ggplot() +
   aes(x = coverage, fill = continent) +
   geom_histogram(bins = 10L) +
-  scale_fill_brewer(palette = "Accent", direction = 1) +
   theme_minimal() +
   theme(plot.caption = element_text(size = 13L),
         legend.position = "top",
         strip.text.y = element_text(angle = 0, 
                                     hjust = 0)) +
-  facet_grid(~disease_vac~year, scales = "free")
+  facet_grid(~disease_vac~year, scales = "free") +
+  facet_grid(continent ~ vaccine, scales = "free")
 
 ```
 

@@ -1,15 +1,15 @@
 {
     "source_window_id": "",
     "Source": "Source",
-    "cursorPosition": "1010,0",
-    "scrollLine": "721",
+    "cursorPosition": "1015,1",
+    "scrollLine": "1007",
     "last_setup_crc32": "",
     "useRainbowParens": "true",
     "working_dir": "project",
     "content_preview_inline": "true",
     "docOutlineVisible": "1",
-    "rmdVisualMode": "true",
+    "rmdVisualMode": "false",
     "rmdVisualCollapsedChunks": "",
-    "rmdVisualModeLocation": "22674:17713",
+    "rmdVisualModeLocation": "19596:16179",
     "rmdVisualWrapConfigured": "true"
 }

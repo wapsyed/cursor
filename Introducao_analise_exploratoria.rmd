@@ -2,8 +2,11 @@
 title: "Curso"
 output: 
   html_document: 
-    toc: true
+    toc_depth: 22
+    theme: readable
     df_print: default
+    number_sections: true
+    keep_md: true
 date: "`r Sys.Date()`"
 ---
 
@@ -44,8 +47,14 @@ library(ggsci) #Paleta de cores
 
 #Variáveis numéricas
 x = 5
+x
+
 y = 7
+y
+
 z = y + x
+z
+
 multi = x * y
 multi
 ```
@@ -53,33 +62,47 @@ multi
 ```{r}
 # Variáveis textuais (characters, string)
 a = "Olá"
+a
+
 b = "Tudo bem?"
+b
 ```
 
 ```{r}
 # Variáveis Lógicas
 t = TRUE
+t
 f = FALSE
-tt = TRUE
-ff = FALSE
-aa = "Olá"
+f
+
 ```
 
 ```{r}
 # Comparações lógicas (booleanas)
-t == f #Igual
-t != f #Diferente
-aa == a #Igual
 a == b #Diferente
-
 x < y # Menor
 x > y # Maior
 x <= 5 # menor ou igual
+t == f #Igual
+t != f #Diferente
+```
+
+Se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores, elas ainda continuarão dando o mesmo resultado
+
+```{r}
+# Se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores, elas ainda continuarão dando o mesmo resultado
+tt = TRUE
+ff = FALSE
+aa = "Olá"
+
+t == tt #Igual
+f == ff #Igual
+aa == a #Igual
 ```
 
 ## Vetores
 
-Os vetores são uma sequência unidimensional que podem ser números, strings, valores lógicos, entre outros.
+Os vetores são uma **sequência unidimensional** que podem ser números, strings, valores lógicos, entre outros. Podemos criar vetores com a função c(), de "concatenar".
 
 ```{r}
 # Vetores
@@ -104,7 +127,7 @@ As **tibbles são diferentes dos dataframes** somente em sua apresentação no c
 
 Além disso, a criação do dataframe e da tibble são diferentes visualmente. Veja como a tibble é mais semelhante à forma que imputamos dados no excel.
 
-Para criar um dataframe, usamos a função data.frame().
+Para criar um dataframe, usamos a função **data.frame().**
 
 ```{r}
 #Dataframes e tibbles -----
@@ -117,7 +140,7 @@ data = data.frame(
 )
 ```
 
-E para criar uma tibble, usamos a função tribble().
+E para criar uma tibble, usamos a função **tribble().**
 
 ```{r}
 #Tibble
@@ -132,7 +155,7 @@ tibble = tribble(
 
 **É possível transformar quase todo objeto em uma tabela.**
 
-Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função as.data.frame(), será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
+Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função **as.data.frame(),** será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
 
 ```{r}
 # Vetores em dataframe
@@ -143,7 +166,7 @@ as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
 
 **Há diferentes formas de se visualizar uma tabela.**
 
-A diferença de cada objeto está na visualização no console e no documento. Teste estas linhas de código no documento e no console.
+A diferença de cada objeto está na visualização no console e no documento. **Teste estas linhas de código no documento e no console.**
 
 ```{r}
 #Visualizando o dataframe -----
@@ -251,7 +274,7 @@ matrix_dr
 
 Listas são estruturas que podem conter um conjunto de elementos de diferentes classes, como **vetores, outras listas, dataframes, e matrizes**.
 
-Elas são interessantes para organizar os objetos necessários para uma análise, e são muito comuns em análises de RNAseq, por exemplo.
+Elas são interessantes para **organizar os objetos necessários para uma análise**, e são muito comuns em análises de RNAseq, por exemplo.
 
 ```{r}
 #Criando a lista
@@ -1058,8 +1081,8 @@ paises_barras_mortes
 
 ```{r}
 #Visualização rápida
-latin_2000_2023 %>% 
-  esquisser() 
+# latin_2000_2023 %>% 
+#   esquisser() 
 ```
 
 ## Melhorando o gráfico
@@ -1468,7 +1491,7 @@ ggsave(br_cov + br_mortes, file = "br_cov_mortes.png")
 
 Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 
 # Gráfico com pontos -------
 
@@ -1556,7 +1579,7 @@ latin_2000_2023 %>%
 
 # Analisando a distribuição
 
-Quantos países por continente registraram os dados na UNICEF?
+**Quantos países por continente registraram os dados na UNICEF?**
 
 ```{r}
 #Quantos países por continente registraram os dados na UNICEF?
@@ -1575,7 +1598,7 @@ data_long_annotated %>%
   scale_fill_npg()
 ```
 
-Continentes separados
+**Continentes separados**
 
 ```{r}
 # Continentes separados
@@ -1592,7 +1615,7 @@ data_long_annotated %>%
   facet_grid(continent ~ vaccine, scales = "free")
 ```
 
-Quantos países aumentaram sua cobertura vacinal em cada decada?
+**Quantos países aumentaram sua cobertura vacinal em cada decada?**
 
 ```{r}
 #Quantos países aumentaram sua cobertura vacinal em cada decada?

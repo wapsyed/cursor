@@ -51,7 +51,7 @@ multi
 ```
 
 ```{r}
-# Variáveis textuais (caracteres, string)
+# Variáveis textuais (characters, string)
 a = "Olá"
 b = "Tudo bem?"
 ```
@@ -78,6 +78,7 @@ x <= 5 # menor ou igual
 ```
 
 ## Vetores
+Os vetores são uma sequência unidimensional que podem ser números, strings, valores lógicos, entre outros. 
 
 ```{r}
 # Vetores
@@ -89,9 +90,19 @@ j
 
 h = c(7, "olá", 78) #String
 h
+
+# O que esta função faz? Use o "?" antes da função e rode.
+?c()
 ```
 
 ## Dataframes e tibbles
+Dataframes e tibbles são tabelas comuns e consistem de linhas e colunas de diferentes classes, como números, caracteres e fatores. 
+
+As tibbles são diferentes dos dataframes somente em sua apresentação no console e facilitam muito o trabalho com tabelas grandes e largas.
+
+Além disso, a criação do dataframe e da tibble são diferentes visualmente. Veja como a tibble é mais semelhante à forma que imputamos dados no excel.
+
+Para criar um dataframe, usamos a função data.frame().
 
 ```{r}
 #Dataframes e tibbles -----
@@ -104,6 +115,8 @@ data = data.frame(
 )
 ```
 
+E para criar uma tibble, usamos a função tribble().
+
 ```{r}
 #Tibble
 tibble = tribble(
@@ -115,9 +128,20 @@ tibble = tribble(
   )
 ```
 
+É possível transformar quase todo objeto em uma tabela. Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função as.data.frame(), será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
+
+```{r}
+# Vetores em dataframe
+as.data.frame(i) #dataframe com coluna numérica
+as.data.frame(j) #dataframe com coluna textual
+as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
+```
+
+Há diferentes formas de se visualizar uma tabela. A diferença de cada objeto está na visualização no console e no documento. 
+Teste estas linhas de código no documento e no console.
+
 ```{r}
 #Visualizando o dataframe -----
-# A diferença de cada objeto está na visualização no console.
 # Com print()
 print(data) #No documento ou console
 print(tibble)
@@ -130,13 +154,22 @@ tibble
 glimpse(data) 
 glimpse(tibble)
 
-# Com view(). A tabela abrirá em uma nova janela
+# Com view(). A tabela completa com mais funcionalidades (filtragem manual, pesquisa e ordenamento) abrirá em uma nova janela
 view(data) 
 view(tibble)
 
+# Selecionando o nome do objeto e segurando Ctrl + Click.
+data
+tibble 
 ```
 
 ## Estatísticas gerais da tabela
+
+O R possui uma função muito prática de análise estatística descritiva, a summary. 
+
+No entanto, existem outros pacotes que realizam essas análises e até geram relatórios em HTML. 
+
+Um deles é o skimr, cuja função skim() gera três outputs, um semelhante ao summary, e outras duas tabelas com a quantidade de valores não disponíveis (NA), estatísticas descritivas, e um histograma.
 
 ```{r}
 # Estatísticas gerais 
@@ -147,13 +180,16 @@ summary(data)
 skim(tibble)
 skim(data)
 
-# Vetores em dataframe
-as.data.frame(i) #dataframe com coluna numérica
-as.data.frame(j) #dataframe com coluna textual
-as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
 ```
 
-## Convertendo de wide para long e long para wide
+## Pivotando tabelas: Long e Wide
+As tabelas tidy possuem dois formatos, um largo (wide) e outro longo (long). Converter uma em outra é conhecido como pivotagem, e conhecer essas funções é importantíssimo para obter, manipular e explorar dados.
+
+Para pivotar, utilizamos pivot_longer() e pivot_wider(). A pivotagem deve ser pensada com base na relação entre variáveis e seus valores. 
+
+Por exemplo, se tivermos uma tabela larga com 10 colunas com anos (de 1990 a 2000), podemos reduzi-las em uma só coluna chamada "anos", que facilitará a manipulação de dados. Isso alongará a tabela.
+
+Mas, se quisermos deixá-la mais fácil de ser interpretada por humanos, podemos pivotá-la em uma tabela larga.
 
 ```{r}
 # Trabalhando com dataframes -----
@@ -166,7 +202,10 @@ data_long = pivot_longer(data, #Tabela
              names_to = "variavel" # Estocar variáveis em uma nova coluna
              ) 
 data_long
+```
 
+
+```{r}
 # Wide table
 data_wide = pivot_wider(data_long, #Tabela
             names_from = variavel, #Dividir níveis de uma coluna em novas colunas
@@ -175,7 +214,13 @@ data_wide = pivot_wider(data_long, #Tabela
 ```
 
 ## Matrizes
+As matrizes são estruturas tabelares cujos valores são somente numéricos. Para isso, é necessário converter a coluna de "nomes" (strings) em nomes de linhas (rownames) usando o column_to_rownames(), e então converter a tabela em matriz, com o as.matrix(). 
 
+A diferença aqui é a apresentação da tabela. Enquanto dataframes e tibbles são facilmente lidas, as matrizes são mais complicadas nesse sentido. 
+
+Caso você queira manipular a matriz com as funções do tidyverse, é recomendável reconvertê-la em dataframe/tibble, manipular os dados, e depois converter novamente para matriz.
+
+É importante saber manipular matrizes para computar análises estatísticas, como o Principal Components Analysis, por exemplo.
 ```{r}
 #Matriz
 matrix = as.matrix(data) #Transformar tabela em matriz
@@ -187,6 +232,7 @@ matrix #Agora, os valores são numéricos
 
 # Reconverter para dataframe
 matrix_dr = as.data.frame(matrix)
+
 matrix_dr # Coluna "nome" continua como rownames e dificulta a manipulação.
 
 matrix_dr = rownames_to_column(matrix_dr, "nome") #Converter rownames em nova coluna

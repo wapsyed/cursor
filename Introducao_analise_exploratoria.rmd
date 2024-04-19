@@ -580,17 +580,27 @@ summary(data_long)
 ```{r}
 #Níveis de colunas
 unique(data_long$unicef_region)
-unique(data_long$country)
-unique(data_long$vaccine)
+
+unique(data_long$country) %>% 
+  head(10)
+
+unique(data_long$vaccine) %>% 
+  head(10)
 
 #Contar linhas por coluna
-data_long %>% count(country) 
-data_long %>% count(vaccine) 
-data_long %>% count(unicef_region) 
+data_long %>% count(country) %>% 
+  head(10)
+data_long %>% count(vaccine) %>% 
+  head(10)
+data_long %>% count(unicef_region) %>% 
+  head(10)
 
 #Tabela de frequências
-table(data_long$country)
-tabyl(data_long, country)
+table(data_long$country)  %>% 
+  head(10)
+
+tabyl(data_long, country) %>% 
+  head(10)
 ```
 
 ### Dados faltantes
@@ -602,7 +612,7 @@ skim(data_long) # Por que são faltantes? Precisamos deles?
 # Como são essas linhas?
 data_long %>% 
   filter(!complete.cases(.)) %>% 
-  view()
+  head(10)
 
 ```
 
@@ -932,6 +942,8 @@ continentes_pontos_vac
 #Gráfico de pontos simples
 pontos = latin_2000_2023 %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
@@ -998,6 +1010,7 @@ continente_barras_vac
 #Gráfico de barras simples
 pais_barras_vac = latin_2000_2023 %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
@@ -1063,8 +1076,7 @@ barras_mortes
 ```
 
 ```{r}
-
-#Gráfico de pontos simples
+#Gráfico de barras simples
 paises_barras_mortes = paises_mortes %>% #Dataframe
   filter(disease_vac == "Measles") %>% 
   mutate(name = fct_reorder(name, cumulativo)) %>% 
@@ -1130,14 +1142,6 @@ plot =
               label_key = name,
               label_params = list(size = 3),
               unhighlighted_params = list(colour = "red")) +
-  
-  #Labels
-  geom_text(aes(x = median, 
-                y = name, 
-                label = median),
-              hjust = -0.5,
-              size = 3,
-              color = "black") +
   
   #Marcações
   #Linhas
@@ -1225,7 +1229,6 @@ plot %>%
 
 ```{r}
 #Unindo gráficos -----
-
 vaccination = data_long_annotated %>% 
   filter(name == "Brazil",
          vaccine == "MCV1") %>% 

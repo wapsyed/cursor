@@ -5,8 +5,9 @@ account: wapsyed
 server: posit.cloud
 hostUrl: https://api.posit.cloud/v1
 appId: 8055602
-bundleId:
+bundleId: 8517080
 url: https://posit.cloud/content/8055602
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: cobertura_vacinal_unicef.csv|cobertura_vacinal_unicef_padronizada.rds|paises_anotados.rds|Deaths_infectious_diseases.rds|cobertura_vacinal_anotada.rds|Sarampo_LatinAmerica_2000_2023.png|Sarampo_Brasil_1980_2023.png|br_cov_mortes.png

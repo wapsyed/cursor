@@ -1,12 +1,11 @@
 ---
-title: "Curso"
+title: "CursoR - Introdução à análise de dados no R"
 output: 
   html_document: 
     toc_depth: 22
-    theme: readable
     df_print: default
-    number_sections: true
     keep_md: true
+    number_sections: true
 date: "`r Sys.Date()`"
 ---
 
@@ -14,7 +13,7 @@ OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> 
 
 # 1. Biblioteca e pacotes
 
-```{r}
+```{r include=FALSE}
 options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 
 # Baixar pacotes do CRAN para a biblioteca (Para descomentar, use Ctrl + Shift + C)

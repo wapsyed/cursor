@@ -11,7 +11,7 @@ date: "`r Sys.Date()`"
 
 **Link:** <https://github.com/wapsyed/cursor>
 
-**Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina e Projeto Halo.
+**Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
 
 **Descrição do curso:**
 
@@ -1526,8 +1526,8 @@ latin_2000_2023 %>%
  
   #Criar base do gráfico
   ggplot() +
-  aes(x = , 
-      y = , 
+  aes(x = x, 
+      y = y, 
       colour = ) + #Aesthetics (o que cada elemento representa)
   
   #Geometria

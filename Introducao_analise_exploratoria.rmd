@@ -78,7 +78,8 @@ x <= 5 # menor ou igual
 ```
 
 ## Vetores
-Os vetores são uma sequência unidimensional que podem ser números, strings, valores lógicos, entre outros. 
+
+Os vetores são uma sequência unidimensional que podem ser números, strings, valores lógicos, entre outros.
 
 ```{r}
 # Vetores
@@ -96,9 +97,10 @@ h
 ```
 
 ## Dataframes e tibbles
-Dataframes e tibbles são tabelas comuns e consistem de linhas e colunas de diferentes classes, como números, caracteres e fatores. 
 
-As tibbles são diferentes dos dataframes somente em sua apresentação no console e facilitam muito o trabalho com tabelas grandes e largas.
+Dataframes e tibbles são tabelas comuns e consistem de linhas e colunas de diferentes classes, como números, caracteres e fatores.
+
+As **tibbles são diferentes dos dataframes** somente em sua apresentação no console e facilitam muito o trabalho com tabelas grandes e largas.
 
 Além disso, a criação do dataframe e da tibble são diferentes visualmente. Veja como a tibble é mais semelhante à forma que imputamos dados no excel.
 
@@ -128,7 +130,9 @@ tibble = tribble(
   )
 ```
 
-É possível transformar quase todo objeto em uma tabela. Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função as.data.frame(), será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
+**É possível transformar quase todo objeto em uma tabela.**
+
+Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função as.data.frame(), será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
 
 ```{r}
 # Vetores em dataframe
@@ -137,8 +141,9 @@ as.data.frame(j) #dataframe com coluna textual
 as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
 ```
 
-Há diferentes formas de se visualizar uma tabela. A diferença de cada objeto está na visualização no console e no documento. 
-Teste estas linhas de código no documento e no console.
+**Há diferentes formas de se visualizar uma tabela.**
+
+A diferença de cada objeto está na visualização no console e no documento. Teste estas linhas de código no documento e no console.
 
 ```{r}
 #Visualizando o dataframe -----
@@ -165,11 +170,11 @@ tibble
 
 ## Estatísticas gerais da tabela
 
-O R possui uma função muito prática de análise estatística descritiva, a summary. 
+O R possui uma função muito prática de análise estatística descritiva, a **summary()**.
 
-No entanto, existem outros pacotes que realizam essas análises e até geram relatórios em HTML. 
+No entanto, existem outros pacotes que realizam essas análises e até geram relatórios em HTML.
 
-Um deles é o skimr, cuja função skim() gera três outputs, um semelhante ao summary, e outras duas tabelas com a quantidade de valores não disponíveis (NA), estatísticas descritivas, e um histograma.
+Um deles é o skimr, cuja função **skim()** gera três outputs, um semelhante ao summary, e outras duas tabelas com a quantidade de valores não disponíveis (NA), estatísticas descritivas, e um histograma.
 
 ```{r}
 # Estatísticas gerais 
@@ -183,9 +188,10 @@ skim(data)
 ```
 
 ## Pivotando tabelas: Long e Wide
-As tabelas tidy possuem dois formatos, um largo (wide) e outro longo (long). Converter uma em outra é conhecido como pivotagem, e conhecer essas funções é importantíssimo para obter, manipular e explorar dados.
 
-Para pivotar, utilizamos pivot_longer() e pivot_wider(). A pivotagem deve ser pensada com base na relação entre variáveis e seus valores. 
+As tabelas tidy possuem dois formatos, um largo (wide) e outro longo (long). Converter uma em outra é conhecido como **pivotagem**, e conhecer essas funções é importantíssimo para obter, manipular e explorar dados.
+
+Para pivotar, utilizamos **pivot_longer() e pivot_wider()**. A pivotagem deve ser pensada com base na relação entre variáveis e seus valores.
 
 Por exemplo, se tivermos uma tabela larga com 10 colunas com anos (de 1990 a 2000), podemos reduzi-las em uma só coluna chamada "anos", que facilitará a manipulação de dados. Isso alongará a tabela.
 
@@ -204,7 +210,6 @@ data_long = pivot_longer(data, #Tabela
 data_long
 ```
 
-
 ```{r}
 # Wide table
 data_wide = pivot_wider(data_long, #Tabela
@@ -214,13 +219,15 @@ data_wide = pivot_wider(data_long, #Tabela
 ```
 
 ## Matrizes
-As matrizes são estruturas tabelares cujos valores são somente numéricos. Para isso, é necessário converter a coluna de "nomes" (strings) em nomes de linhas (rownames) usando o column_to_rownames(), e então converter a tabela em matriz, com o as.matrix(). 
 
-A diferença aqui é a apresentação da tabela. Enquanto dataframes e tibbles são facilmente lidas, as matrizes são mais complicadas nesse sentido. 
+As matrizes são estruturas tabelares cujos valores são **somente numéricos**. Para isso, é necessário converter a coluna de "nomes" (strings) em nomes de linhas (rownames) usando o column_to_rownames(), e então converter a tabela em matriz, com o as.matrix().
 
-Caso você queira manipular a matriz com as funções do tidyverse, é recomendável reconvertê-la em dataframe/tibble, manipular os dados, e depois converter novamente para matriz.
+A diferença aqui é a apresentação da tabela. Enquanto dataframes e tibbles são facilmente lidas, as matrizes são mais complicadas nesse sentido.
+
+**Caso você queira manipular a matriz com as funções do tidyverse**, é recomendável reconvertê-la em dataframe/tibble, manipular os dados, e depois converter novamente para matriz.
 
 É importante saber manipular matrizes para computar análises estatísticas, como o Principal Components Analysis, por exemplo.
+
 ```{r}
 #Matriz
 matrix = as.matrix(data) #Transformar tabela em matriz
@@ -241,14 +248,16 @@ matrix_dr
 ```
 
 ## Listas
-Listas são estruturas que podem conter um conjunto de elementos de diferentes classes, como vetores, outras listas, dataframes, matrizes, etc.
+
+Listas são estruturas que podem conter um conjunto de elementos de diferentes classes, como **vetores, outras listas, dataframes, e matrizes**.
+
 Elas são interessantes para organizar os objetos necessários para uma análise, e são muito comuns em análises de RNAseq, por exemplo.
 
 ```{r}
 #Criando a lista
 lista = list(a, b, f, h, j, multi, t, data, matrix, tibble)
 
-View(lista) #Visualizando a lista
+#View(lista) #Visualizando a lista
 
 #Acessando objetos diferentes da lista
 lista[[1]] #Primeiro objeto
@@ -261,7 +270,8 @@ df_list
 ```
 
 ## Manipulação de tabelas com o R base
-O R possui funções e formas nativas de acessar e manipular tabelas. Essas operações, como as descritas abaixo, não são mais a melhor forma de trabalhar, pois são pouco intuitivas. Mas, é importante conhecê-las, pois, são utilizadas em alguns casos.
+
+O R possui funções e formas nativas de acessar e manipular tabelas. Essas operações, como as descritas abaixo, não são mais a melhor forma de trabalhar, pois são pouco intuitivas. Mas, **é importante conhecê-las**, pois, são utilizadas em alguns casos.
 
 ```{r}
 # Acessando colunas do data frame
@@ -292,11 +302,11 @@ data_ordenados
 
 # 3. Tidyverse
 
-O tidyverse é um metapacote, um pacote com diversos pacotes dentro, que facilita muito o trabalho no R. As funções conversam entre si, são padronizadas e, mais importante, são muito intuitivas.
+O tidyverse é um **metapacote**, um pacote com diversos pacotes dentro, que facilita muito o trabalho no R. As funções conversam entre si, são padronizadas e, mais importante, são muito **intuitivas**.
 
 ## Adicionando linhas e colunas
 
-Para adicionar uma linha com valores, usamos o add_row(), e para adicionar uma coluna, o add_column. Bem intuitivo, né? 
+Para adicionar uma linha com valores, usamos o add_row(), e para adicionar uma coluna, o add_column. Bem intuitivo, né?
 
 Para não alterarmos as tabelas originais, criamos uma nova variável chamada data_2 e tibble_2.
 
@@ -338,7 +348,7 @@ tibble_2
 
 ## filter(): Filtrando linhas e usando o pipe
 
-Sempre que estivermos manipulando linhas, utilizamos o verbo "filtrar". No tidyverse, mais especificamente no pacote dplyr, usamos a função filter() e estabelecemos argumentos lógicos para a filtragem.
+Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No tidyverse, mais especificamente no pacote dplyr, usamos a função filter() e estabelecemos argumentos lógicos para a filtragem.
 
 ```{r}
 # Filtrando linhas ----
@@ -348,7 +358,7 @@ idade_nome = filter(idade, nome == "Júlia")
 
 Mas, e se eu quiser filtrar usando mais operações?
 
-Temos duas formas de fazer isso. 
+Temos duas formas de fazer isso.
 
 A primeira é usando "OU" e %in% c().
 
@@ -364,7 +374,7 @@ data %>%
     "Gabriela")) 
 ```
 
-E a segunda é usando o pipe (%>%), que permite "costurar" operações e resultados. Dessa forma, não precisamos criar uma variável/objeto sempre que uma função for aplicada. 
+E a segunda é usando o **pipe (%\>%),** que permite "costurar" operações e resultados. Dessa forma, não precisamos criar uma variável/objeto sempre que uma função for aplicada. Usaremos muito o pipe nos próximos códigos.
 
 Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que não contêm um valor.
 
@@ -375,16 +385,16 @@ data %>%                   # Tenho este objeto
   filter(nome != "Júlia")   # E então vou filtrar os indivíduos que não incluam a "Júlia"
 ```
 
-
 ## select(): Selecionando colunas
 
 Da mesma forma que trabalhamos com linhas usando filter(), ao trabalhar com colunas, usamos o select().
 
-A função select é muito versátil, e além de selecionar colunas que você quer trabalhar, podemos reordená-las e renomeá-las. 
+A função select é muito versátil, e **além de selecionar colunas** que você quer trabalhar, podemos **reordená-las e renomeá-las**.
 
-Mas, cuidado, pois ao renomeá-las, se esquecermos do "everything()", ficamos somente com a coluna renomeada. 
+Mas, cuidado, pois ao renomeá-las, se esquecermos do "**everything()**", ficamos somente com a coluna renomeada.
 
-Por isso, temos a função rename(), que evita que isso aconteça.
+Por isso, temos a função **rename()**, que evita que isso aconteça.
+
 ```{r}
 # Selecionando colunas ----
 # Selecionar colunas específicas
@@ -417,16 +427,16 @@ data_2 %>%
 ```
 
 ## mutate(): Criando e realizando operações com novas variáveis
-A função mutate() permite criar ou modificar colunas e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna.
 
+A função mutate() permite criar ou modificar **colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna.
 
 ```{r}
 # Criando novas variáveis
-data_2 = data_2 %>% 
-  mutate(imc = peso / (altura^2))
+data_2 = data_2 %>%
+  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
 
 data_2 %>% 
-  mutate(sexo = "feminino")
+  mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
 
 ```
 
@@ -451,7 +461,6 @@ data_2 %>%
   arrange(idade)
 
 # Ordenando de forma decrescente
-
 #Método 1
 data_2 %>% 
   arrange(desc(idade))
@@ -462,6 +471,18 @@ data_2 %>%
 ```
 
 ## Usando o pipe para fazer múltiplas operações de uma vez
+
+Usando o pipe, podemos escrever e ler códigos em uma sequência lógica fácil.
+
+Por exemplo, abaixo:
+
+*pegamos a tabela **data_2**, **ordenamos** a altura na ordem crescente,*
+
+***filtramos** somente as pessoas com idade acima de 30 e peso acima de 50 e **retiramos** os nomes.*
+
+*Depois, **arredondamos** os valores do IMC para uma casa decimal (usando round()) e **criamos uma nova variável** chamada peso versus idade.*
+
+*Por fim, **resumimos** os dados usando a média do peso e a média do imc.*
 
 ```{r}
 # Múltiplas operações em uma caixa
@@ -475,8 +496,6 @@ data_2 %>%
   summarise(mean_peso = mean(peso) %>% round(1),
             mean_imc = mean(imc) %>% round(1))
 ```
-
-
 
 # 4. Trabalhando com dados reais
 
@@ -545,6 +564,20 @@ data_long %>%
 
 ### Padronizando tabela
 
+Para trabalharmos de forma fácil com uma tabela, precisamos padronizá-la.
+
+Isso significa que **trocaremos e reordenaremos os nomes das colunas** para fazerem mais sentido, completaremos os valores NA quando for possível (e fizer sentido), e explicitaremos algumas coisas, como o nome das doenças contra as quais as vacinas protegem, e daremos o nome completo de cada região, pois somente temos os códigos delas.
+
+**No caso dos valores NA**, sabemos que certas vacinas não estavam disponíveis para todos os países ao mesmo tempo. Por isso, deixaremos como NA e não trocaremos por 0. Valores faltantes são diferentes de 0, por mais que em muitos casos possam ser trocados.
+
+Dessa forma, utilizaremos o **if_else().** Nele, estabelecemos que, se a coluna name for igual à region, então o type será "region", caso contrário, será "country". Completaremos o mesmo com a coluna de abreviação
+
+Além disso, na tabela original, temos dados para todos os países e continentes. Ou seja, temos uma linha chamada "Brasil" e outra chamada "Latin America", por exemplo. Sabemos que o último não é um país, então **criaremos uma coluna chamada type** usando o **if_else()** para diferenciar quando quisermos trabalhar com cada tipo.
+
+Para dar os nomes completos das regiões e criar uma coluna das doenças relacionadas às vacinas, usamos o **case_when()**, que é um if_else() que aceita mais relações.
+
+Assim, *quando algo for igual a algo, chame ele de algo, se algo 2 for igual a algo 2, chame ele de algo 2, ... e se isso tudo for mentira, então deixe como está.*
+
 ```{r}
 # Padronizando a tabela ----
 
@@ -560,7 +593,7 @@ data_long_standardized = data_long %>%
   
   mutate(
          # Anotando dados
-         year = as.integer(year),
+         year = as.integer(year), #Aqui, converteremos year em número inteiro, para evitar que seja lido com decimais.
          type = if_else(name == region, # Se o nome for igual à região,
                         "region",       # então ele é uma região,
                         "country"),     # caso contrário, é um país.
@@ -569,7 +602,9 @@ data_long_standardized = data_long %>%
                         name,       # então ele é uma região,
                         country_abrev),     # caso contrário, é um país.
          
-         region = if_else(is.na(region), name, region),
+         region = if_else(is.na(region), 
+                          name, 
+                          region),
          
          # Vacinas por doenças
          diseases = case_when(vaccine == "BCG" ~ "Tuberculosis",
@@ -681,7 +716,7 @@ data_long_annotated %>%
 
 ### Estatísticas descritivas
 
-Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função drop_na(). 
+Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função drop_na().
 
 Além disso, queremos filtrar somente os dados dos países latinoamericanos entre os anos 2000 e 2023. Para isso, usamos o between() dentro da função filter(), e especificamos que queremos o type == "country", pois também temos dados da região como um todo.
 
@@ -724,8 +759,8 @@ latin_2000_2023 = data_long_annotated %>%
 latin_2000_2023
 ```
 
-**Por continente**
-Aqui, faremos o mesmo, mas para cada continente.
+**Por continente** Aqui, faremos o mesmo, mas para cada continente.
+
 ```{r}
 # Cobertura vacinal: Estatísticas de cada continente
 continentes_vac = data_long_annotated %>% 
@@ -1170,7 +1205,6 @@ vaccination = data_long_annotated %>%
 vaccination
 ```
 
-
 ```{r}
 
 #Mortes
@@ -1431,9 +1465,8 @@ ggsave(br_cov + br_mortes, file = "br_cov_mortes.png")
 ```
 
 # 6. Modelo
-Criei este
 
-
+Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
 
 ```{r}
 
@@ -1441,7 +1474,7 @@ Criei este
 
 # Filtrar tabela
 latin_2000_2023 %>%
-  filter(vaccine %in% "MCV1") %>%
+  filter(vaccine %in% c("MCV1")) %>%
   mutate(name = fct_reorder(name, median)) %>% 
  
   #Criar base do gráfico
@@ -1524,6 +1557,7 @@ latin_2000_2023 %>%
 # Analisando a distribuição
 
 Quantos países por continente registraram os dados na UNICEF?
+
 ```{r}
 #Quantos países por continente registraram os dados na UNICEF?
 
@@ -1542,6 +1576,7 @@ data_long_annotated %>%
 ```
 
 Continentes separados
+
 ```{r}
 # Continentes separados
 data_long_annotated %>%
@@ -1558,6 +1593,7 @@ data_long_annotated %>%
 ```
 
 Quantos países aumentaram sua cobertura vacinal em cada decada?
+
 ```{r}
 #Quantos países aumentaram sua cobertura vacinal em cada decada?
 
@@ -1579,6 +1615,7 @@ data_long_annotated %>%
 ```
 
 # Avançado: Dados demográficos e economicos com o Gapminder
+
 O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população.
 
 ```{r}
@@ -1596,11 +1633,11 @@ ggplot() +
     group = country
   ) +
   geom_point(shape = "circle") +
-  scale_color_hue(direction = 1) +
   scale_x_continuous(trans = "log10") +
   theme_minimal() +
   facet_wrap(vars(year), scales = "free_x") +
-  gghighlight(country == "China")
+  gghighlight(country == "China") +
+  scale_color_npg()
 ```
 
 # Mudando a fonte

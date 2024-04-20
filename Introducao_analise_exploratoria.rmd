@@ -641,6 +641,22 @@ data_long %>%
   filter(!complete.cases(.)) %>% 
   head(10)
 
+
+
+data_long %>% 
+  mutate(regiao_completa = if_else(unicef_region == "ROSA",
+                                   "South Asia",
+                                   NA),
+         regiao_completa = case_when(unicef_region == "EAPR" ~ "East Asia and Pacific", 
+                              unicef_region == "ECAR" ~ "Europe and Central Asia",
+                              unicef_region == "MENA" ~ "Middle East and North Africa",
+                              unicef_region == "ESAR" ~ "Eastern and Southern Africa",
+                              unicef_region == "LACR" ~ "Latin America and Caribbean",
+                              unicef_region == "Non-programme" ~ "Non-programme",
+                              unicef_region == "ROSA" ~ "South Asia",
+                              unicef_region == "WCAR" ~ "West and Central Africa",
+                              TRUE ~ unicef_region))
+
 ```
 
 ### Padronizando tabela
@@ -722,6 +738,9 @@ data_long_standardized = data_long %>%
 #Salvar tabela
 data_long_standardized %>% 
   saveRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
+
+data_long_standardized %>% 
+  write_csv(file = "cobertura_vacinal_unicef_padronizada.csv", row.names = F)
 
 #Tabela larga
 data_wide = data_long_standardized %>% 
@@ -818,7 +837,7 @@ latin_2000_2023 = data_long_annotated %>%
   
   drop_na(coverage) %>% 
    
-  filter(between(year, 2000, 2023),
+  filter(between(year, 2000, 2022),
          str_detect(region_complete, "Latin"),
          type == "country") %>% 
   
@@ -846,11 +865,15 @@ latin_2000_2023
 ```{r}
 # Cobertura vacinal: Estatísticas de cada continente
 continentes_vac = data_long_annotated %>% 
+  
   drop_na(coverage,
           continent) %>% 
+  
   filter(between(year, 2000, 2023),
          type == "country") %>% 
+  
   group_by(vaccine, continent) %>% 
+  
   summarise(
     mean = mean(coverage),
     median = median(coverage),
@@ -938,6 +961,8 @@ paises_mortes
 continentes_pontos_vac = continentes_vac %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
   mutate(continent = fct_reorder(continent, median)) %>% 
+  
+  
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
@@ -984,7 +1009,8 @@ pontos = latin_2000_2023 %>% #Dataframe
   
   geom_text(aes(x = median, #Use geom_label para visualizar melhor
                 y = name, 
-                label = median)) +
+                label = median),
+            hjust = -0.5) +
   
   #Tema
   theme_light() +
@@ -992,7 +1018,10 @@ pontos = latin_2000_2023 %>% #Dataframe
   #Labels
   labs(title = "Cobertura vacinal",
        x = "Mediana (Cobertura vacinal%)",
-       y = "Países")
+       y = "Países") +
+  
+  #Limites
+  xlim(60, 105)
 
 pontos
 ```
@@ -1051,15 +1080,18 @@ pais_barras_vac = latin_2000_2023 %>% #Dataframe
   
   geom_text(aes(x = median, 
                 y = name, 
-                label = median)) +
+                label = median),
+            hjust = -0.5) +
   
   #Tema
   theme_light() +
   
   #Labels
-  labs(title = "Título",
+  labs(title = "Países com cobertura vacinal para sarampo, entre 2000 e 2023",
        x = "Mediana (Cobertura vacinal%)",
-       y = "Países")
+       y = "Países") +
+  
+  xlim(0, 105)
 
 pais_barras_vac
 ```
@@ -1143,7 +1175,7 @@ paises_barras_mortes
 ```{r}
 #Visualização rápida
 # latin_2000_2023 %>% 
-#   esquisser() 
+#    esquisser() 
 ```
 
 ## Melhorando o gráfico
@@ -1337,7 +1369,9 @@ boxplot_years = data_long_annotated %>%
                                    hjust = 1),
         plot.margin = unit(c(1, 1, 1, 1), "cm"),
         legend.position = "right") +
+  
   facet_wrap(vars(year), ncol = 4) +
+  
   labs(title = "Cobertura vacinal contra o sarampo",
        subtitle = "Primeira dose (MCV1)",
       x = "Região UNICEF",
@@ -1358,12 +1392,12 @@ library(scales)
 vignette("ggsci") 
 
 nrc = pal_npg("nrc", #Especificar paleta
-              alpha = 0.7)(8) #Gerar 10 cores com transparencia = 70%
-
+              alpha = 0.7)(8) #Gerar 8 cores com transparencia = 70%
 nrc %>% 
   show_col()
 
-boxplot_years + scale_fill_npg()
+boxplot_years + 
+  scale_fill_npg()
 
 ```
 

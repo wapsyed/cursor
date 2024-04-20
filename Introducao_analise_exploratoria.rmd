@@ -1,12 +1,14 @@
 ---
 title: "CursoR - Introdução à análise de dados no R"
-author: "Autor: Wasim Aluísio Prates Syed"
-output: 
+author: 'Autor: Wasim Aluísio Prates Syed'
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
   html_document:
-    toc: yes
+    toc: true
     toc_float:
       collapsed: true
-date: "`r Sys.Date()`"
 ---
 
 **Link:** <https://github.com/wapsyed/cursor>

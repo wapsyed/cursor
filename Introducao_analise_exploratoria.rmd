@@ -41,15 +41,15 @@ OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> 
 options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
 
 # Baixar pacotes do CRAN para a biblioteca (Para descomentar, use Ctrl + Shift + C)
-# install.packages("tidyverse")
-# install.packages("skimr")
-# install.packages("janitor")
-# install.packages("esquisse")
-# install.packages("ggthemes")
-# install.packages("plotly")
-# install.packages("gghighlight")
-# install.packages("patchwork")
-# install.packages("ggsci")
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+install.packages("esquisse")
+install.packages("ggthemes")
+install.packages("plotly")
+install.packages("gghighlight")
+install.packages("patchwork")
+install.packages("ggsci")
 
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
@@ -78,8 +78,8 @@ y
 z = y + x
 z
 
-multi = x * y
-multi
+multiplicacão = x * y
+multiplicacão
 ```
 
 ```{r}
@@ -158,9 +158,10 @@ Para criar um dataframe, usamos a função **data.frame().**
 #Dataframe
 data = data.frame(
   nome = c("Gabriela", "Júlia", "Beatriz", "Luiza"),
-  altura = c(1.59, 1.60, 1.65, 1.73),
+  altura = c(1.59, 1.60, 1.78, 1.73),
   idade = c(30, 25, 31, 32)
 )
+data
 ```
 
 E para criar uma tibble, usamos a função **tribble().**
@@ -171,9 +172,11 @@ tibble = tribble(
   ~nome, ~altura, ~idade,
   "Gabriela", 1.59,   30,
   "Júlia",   1.60,   25,
-  "Beatriz",    1.65,  31,
-  "Luiza",  1.73,   32 
+  "Beatriz", 1.65,  31,
+  "Luiza",   1.73,   32 
   )
+
+tibble
 ```
 
 **É possível transformar quase todo objeto em uma tabela.**
@@ -253,6 +256,7 @@ data_long = pivot_longer(data, #Tabela
              values_to = "valor", # Estocar valores em uma nova coluna
              names_to = "variavel" # Estocar variáveis em uma nova coluna
              ) 
+data
 data_long
 ```
 
@@ -261,7 +265,7 @@ data_long
 data_wide = pivot_wider(data_long, #Tabela
             names_from = variavel, #Dividir níveis de uma coluna em novas colunas
             values_from = valor)   #Estocar valores relacionados à coluna nome e novas variáveis) 
-
+data_wide
 ```
 
 ## Matrizes
@@ -303,14 +307,14 @@ Elas são interessantes para **organizar os objetos necessários para uma análi
 #Criando a lista
 lista = list(a, b, f, h, j, multi, t, data, matrix, tibble)
 
-#View(lista) #Visualizando a lista
+View(lista) #Visualizando a lista
 
 #Acessando objetos diferentes da lista
 lista[[1]] #Primeiro objeto
 lista[[8]] #Oitavo objeto
 
 #Isolando o objeto
-df_list = lista[[8]]
+df_list = lista[[10]]
 df_list
 
 ```
@@ -398,8 +402,12 @@ Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No t
 
 ```{r}
 # Filtrando linhas ----
-idade = filter(data, idade >= 30)
-idade_nome = filter(idade, nome == "Júlia")
+filter(data, idade <= 30)
+
+idade_nome = filter(idade,
+                    nome == "Júlia")
+
+idade_nome
 ```
 
 Mas, e se eu quiser filtrar usando mais operações?
@@ -410,14 +418,21 @@ A primeira é usando "OU" e %in% c().
 
 ```{r}
 # Filtrando mais de um valor usando | (OU) e "%in% c()"
+
+
+filter(data, comparacao)
+
+data %>% filter(comparacao)
+
 data %>%                   #Tenho este objeto
   filter(nome == "Júlia" | # E então vou filtrar indivíduos que tenham o nome "Júlia" OU 
            nome == "Gabriela") #"Gabriela"
 
 data %>%  
-  filter(nome %in% c(     # Filtrando os valores "Júlia" OU "Gabriela" dentro (%in%) da coluna "nome" 
+  filter(nome %in% c(
     "Júlia", 
     "Gabriela")) 
+
 ```
 
 E a segunda é usando o **pipe (%\>%),** que permite "costurar" operações e resultados. Dessa forma, não precisamos criar uma variável/objeto sempre que uma função for aplicada. Usaremos muito o pipe nos próximos códigos.
@@ -426,9 +441,9 @@ Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente lin
 
 ```{r}
 # Usando o pipe "%>%" (lê-se "e então")
-data %>%                   # Tenho este objeto 
+gabriela = data %>%                   # Tenho este objeto 
   filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com menos de 30 anos
-  filter(nome != "Júlia")   # E então vou filtrar os indivíduos que não incluam a "Júlia"
+  filter(nome == "Gabriela")   # E então vou filtrar os indivíduos que não incluam a "Júlia"
 ```
 
 ## select(): Selecionando colunas
@@ -449,7 +464,7 @@ data_2 %>%
 
 # Selecionar da coluna nome (1) à coluna peso (3)
 data_2 %>% 
-  select(nome:peso) 
+  select(nome:idade) 
 
 #Retirando coluna
 data_2 %>% 
@@ -480,6 +495,10 @@ A função mutate() permite criar ou modificar **colunas** e imputar valores usa
 # Criando novas variáveis
 data_2 = data_2 %>%
   mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
+
+data_2 %>%
+  mutate(imc = peso / (altura^2)) %>% 
+  select(!c(altura, peso))
 
 data_2 %>% 
   mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
@@ -532,15 +551,17 @@ Por exemplo, abaixo:
 
 ```{r}
 # Múltiplas operações em uma caixa
-data_2 %>% 
+mega_pipe = data_2 %>% 
   arrange(altura) %>% 
   filter(idade >= 30,
          peso >= 50) %>% 
   select(-nome) %>% 
   mutate(imc = round(imc, 1),
          peso_x_idade = peso * idade) %>%
-  summarise(mean_peso = mean(peso) %>% round(1),
+  summarise(mean_peso = mean(peso),
+            mean_peso = round(mean_peso, 1),
             mean_imc = mean(imc) %>% round(1))
+mega_pipe
 ```
 
 # 4. Trabalhando com dados reais
@@ -590,10 +611,14 @@ unique(data_long$vaccine) %>%
   head(10)
 
 #Contar linhas por coluna
-data_long %>% count(country) %>% 
+data_long %>% 
+  count(country) %>% 
   head(10)
-data_long %>% count(vaccine) %>% 
+
+data_long %>% 
+  count(vaccine) %>% 
   head(10)
+
 data_long %>% count(unicef_region) %>% 
   head(10)
 
@@ -638,6 +663,7 @@ Assim, *quando algo for igual a algo, chame ele de algo, se algo 2 for igual a a
 # Padronizando a tabela ----
 
 data_long_standardized = data_long %>% 
+  
   select(name = country, 
          country_abrev = iso3, 
          year, 

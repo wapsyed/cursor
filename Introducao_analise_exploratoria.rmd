@@ -3,8 +3,6 @@ title: "CursoR - Introdução à análise de dados no R"
 author: 'Autor: Wasim Aluísio Prates Syed'
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: true
   html_document:
     toc: true
     toc_float:
@@ -39,26 +37,30 @@ OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> 
 
 Antes de rodarmos os códigos para as análises, é necessário instalar os pacotes cujos recursos, especialmente as funções, serão utilizados. Para isso, use o `install.packages("pacote")`[.]{.smallcaps}
 
-Nem sempre é necessário reinstalar os pacotes, pois isso toma tempo. Entretanto, é recomendável reinstalar os pacotes de vez em quando, para atualizar o pacote.
+Nem sempre é necessário reinstalar os pacotes, pois isso toma tempo. Entretanto, é recomendável reinstalar os pacotes de vez em quando, para atualizar o pacote. 
 
-```{r eval=FALSE, include=FALSE}
+Observe que o código abaixo está com # antes da função. Ao rodar pela primeira vez, retire estes # e execute.
+
+```{r message=FALSE, warning=FALSE}
 options(repos = c(CRAN = "https://cran.r-project.org"))
 
 # Baixar pacotes do CRAN para a biblioteca 
-install.packages("tidyverse")
-install.packages("skimr")
-install.packages("janitor")
-install.packages("esquisse")
-install.packages("ggthemes")
-install.packages("plotly")
-install.packages("gghighlight")
-install.packages("patchwork")
-install.packages("ggsci")
+# install.packages("tidyverse")
+# install.packages("skimr")
+# install.packages("janitor")
+# install.packages("esquisse")
+# install.packages("ggthemes")
+# install.packages("plotly")
+# install.packages("gghighlight")
+# install.packages("patchwork")
+# install.packages("ggsci")
+# install.packages("gapminder")
+
 ```
 
 Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
 library(skimr) #Diagnóstico de tabela
@@ -69,6 +71,7 @@ library(plotly) #Gráficos interativos
 library(patchwork) #Unir gráficos
 library(gghighlight) #Marcar pontos e linhas 
 library(ggsci) #Paleta de cores 
+library(gapminder)
 ```
 
 # 2. Operações básicas
@@ -135,7 +138,6 @@ E, se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores
 tt = TRUE
 ff = FALSE
 aa = "Olá"
-
 t == tt 
 f == ff 
 aa == a 
@@ -327,7 +329,7 @@ Elas são interessantes para **organizar os objetos necessários para uma análi
 #Criando a lista
 lista = list(a, b, f, h, j, multiplicacão, t, data, matrix, tibble)
 
-View(lista) #Visualizando a lista
+#View(lista) #Visualizando a lista
 
 #Acessando objetos diferentes da lista
 lista[[1]] #Primeiro objeto
@@ -1370,7 +1372,7 @@ boxplot_regions %>%
 
 ```{r}
 #Boxplot por vacina
-data_long_annotated %>% 
+cobertura_vacinal %>% 
   filter(type == "country",
          year == 2015) %>% 
  ggplot() +
@@ -1517,95 +1519,96 @@ ggsave(br_cov + br_mortes,
 
 # 6. Modelo
 
-Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
+Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. 
+Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
 
-```{r eval=FALSE, include=FALSE}
+**Selecione todo o código e segure Ctrl + Shift + C para tornar as linhas executáveis.**
 
-# Gráfico com pontos -------
+```{r}
 
-# Filtrar tabela
-latin_2000_2023 %>%
-  filter(vaccine %in% c("MCV1")) %>%
-  mutate(name = fct_reorder(name, median)) %>% 
- 
-  #Criar base do gráfico
-  ggplot() +
-  aes(x = x, 
-      y = y, 
-      colour = ) + #Aesthetics (o que cada elemento representa)
-  
-  #Geometria
-  geom_point(shape = "circle", 
-             size = 1) + 
-  
-  geom_text(aes(y = )) +
-  
-  #Tema, aparência
-  theme_light() + 
-  
-  #Escala de cores
-  scale_colour_gradient(low = "#DC0000B2", 
-                        high = "#4DBBD5B2") + 
-  
-  # Labels, titulo, subtitulo, titulo dos eixos
-  labs(
-     title = "",
-     subtitle = "",
-     y = "",
-     x = "",
-     tag = "",
-     caption = "Fonte:") +
-  
-  # Aparência especifica
-  theme(
-    
-    #Texto geral
-    text = element_text(family = "", 
-                        color = ""), 
-    
-    #Título, subtítulo e tag
-    plot.title = element_text(size = 12, 
-                              face = "bold", 
-                              hjust = 0,
-                              vjust = 0.5),
-    plot.subtitle = element_text(size = 10),
-    plot.tag.position = "topleft",
-    plot.tag = element_text(vjust = 5,
-                            size = 12, 
-                            face = "bold"),
-    #Eixos
-    axis.title.x = element_text(size = 10,
-                                angle = 0,
-                                color = "black"),
-    axis.text.x = element_text(color = "black",
-                               size = 8,
-                               angle = 90),
-    axis.text.y = element_text(size = 8,
-                               color = "black"),
-    
-    #Margens do gráfico
-    plot.margin = unit(c(0, #Top
-                         0, #Right
-                         0, #Bottom
-                         0), #Left 
-                       "cm") #Unidade) 
-  ) +
-  
-  #Marcações
-  #Linhas
-  geom_hline(yintercept = "Brazil", 
-             colour = "blue") +
-  geom_hline(yintercept = "Haiti", 
-              colour = "red") +
-  geom_vline(xintercept = 95,
-             colour = "black",
-             size = 1,
-             linetype = 1
-             ) 
+# # Filtrar tabela
+# latin_2000_2023 %>%
+#   filter(vaccine %in% c("MCV1")) %>%
+#   mutate(name = fct_reorder(name, median)) %>% 
+#  
+#   #Criar base do gráfico
+#   ggplot() +
+#   aes(x = x, 
+#       y = y, 
+#       colour = ) + #Aesthetics (o que cada elemento representa)
+#   
+#   #Geometria
+#   geom_point(shape = "circle", 
+#              size = 1) + 
+#   
+#   geom_text(aes(y = )) +
+#   
+#   #Tema, aparência
+#   theme_light() + 
+#   
+#   #Escala de cores
+#   scale_colour_gradient(low = "#DC0000B2", 
+#                         high = "#4DBBD5B2") + 
+#   
+#   # Labels, titulo, subtitulo, titulo dos eixos
+#   labs(
+#      title = "",
+#      subtitle = "",
+#      y = "",
+#      x = "",
+#      tag = "",
+#      caption = "Fonte:") +
+#   
+#   # Aparência especifica
+#   theme(
+#     
+#     #Texto geral
+#     text = element_text(family = "", 
+#                         color = ""), 
+#     
+#     #Título, subtítulo e tag
+#     plot.title = element_text(size = 12, 
+#                               face = "bold", 
+#                               hjust = 0,
+#                               vjust = 0.5),
+#     plot.subtitle = element_text(size = 10),
+#     plot.tag.position = "topleft",
+#     plot.tag = element_text(vjust = 5,
+#                             size = 12, 
+#                             face = "bold"),
+#     #Eixos
+#     axis.title.x = element_text(size = 10,
+#                                 angle = 0,
+#                                 color = "black"),
+#     axis.text.x = element_text(color = "black",
+#                                size = 8,
+#                                angle = 90),
+#     axis.text.y = element_text(size = 8,
+#                                color = "black"),
+#     
+#     #Margens do gráfico
+#     plot.margin = unit(c(0, #Top
+#                          0, #Right
+#                          0, #Bottom
+#                          0), #Left 
+#                        "cm") #Unidade) 
+#   ) +
+#   
+#   #Marcações
+#   #Linhas
+#   geom_hline(yintercept = "Brazil", 
+#              colour = "blue") +
+#   geom_hline(yintercept = "Haiti", 
+#               colour = "red") +
+#   geom_vline(xintercept = 95,
+#              colour = "black",
+#              size = 1,
+#              linetype = 1
+#              ) 
 
 ```
 
-# Analisando a distribuição
+#7. Analisando a distribuição
 
 **Quantos países por continente registraram os dados na UNICEF?**
 
@@ -1667,13 +1670,11 @@ cobertura_vacinal %>%
 
 ```
 
-# Avançado: Dados demográficos e economicos com o Gapminder
+#8. Avançado: Dados demográficos e economicos com o Gapminder
 
 O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população.
 
 ```{r}
-install.packages("gapminder")
-library(gapminder)
 
 gapminder %>% 
   filter(year %in% c(1952, 1982, 2002)) %>% 

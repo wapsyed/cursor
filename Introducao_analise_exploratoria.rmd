@@ -37,9 +37,9 @@ OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> 
 
 Antes de rodarmos os códigos para as análises, é necessário instalar os pacotes cujos recursos, especialmente as funções, serão utilizados. Para isso, use o `install.packages("pacote")`[.]{.smallcaps}
 
-Nem sempre é necessário reinstalar os pacotes, pois isso toma tempo. Entretanto, é recomendável reinstalar os pacotes de vez em quando, para atualizar o pacote. 
+Nem sempre é necessário reinstalar os pacotes, pois isso toma tempo. Entretanto, é recomendável reinstalar os pacotes de vez em quando, para atualizar o pacote.
 
-Observe que o código abaixo está com # antes da função. Ao rodar pela primeira vez, retire estes # e execute.
+Observe que o código abaixo está com \# antes da função. Ao rodar pela primeira vez, retire estes \# e execute.
 
 ```{r message=FALSE, warning=FALSE}
 options(repos = c(CRAN = "https://cran.r-project.org"))
@@ -376,11 +376,11 @@ data_ordenados
 
 O tidyverse é um **metapacote**, um pacote com diversos pacotes dentro, que facilita muito o trabalho no R. As funções conversam entre si, são padronizadas e, mais importante, são muito **intuitivas**.
 
-## Adicionando linhas e colunas
+## `add_row()` e `add_column()`: Adicionando linhas e colunas
 
-Para adicionar uma linha com valores, usamos o `add_row()`, e para adicionar uma nova coluna com valores, usamos o `add_column`. Bem intuitivo, né?
+Para adicionar uma linha com valores, usamos o `add_row()`, e para adicionar uma nova coluna com valores, usamos o `add_column()`. Bem intuitivo, né?
 
-Para não alterarmos as tabelas originais, criamos uma nova variável chamada data_2 e tibble_2. Entretanto, não é necessário sempre criar uma variável para cada operação que fizermos.
+Para não alterarmos as tabelas originais, criamos uma nova variável chamada `data_2` e `tibble_2`. Entretanto, não é necessário sempre criar uma variável para cada operação que fizermos.
 
 ```{r}
 #Adicionar linha
@@ -418,7 +418,7 @@ tibble_2 = add_column(tibble_2,
 tibble_2
 ```
 
-## filter(): Filtrando linhas e usando o pipe
+## `filter():` Filtrando linhas e usando o pipe
 
 Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No tidyverse, mais especificamente no pacote dplyr, usamos a função `filter()` e estabelecemos argumentos lógicos para a filtragem.
 
@@ -460,7 +460,7 @@ data %>%                   # Tenho este objeto
   filter(nome == "Gabriela")   # E então vou filtrar os indivíduos chamados "Gabriela"
 ```
 
-## select(): Selecionando colunas
+## `select():` Selecionando colunas
 
 Da mesma forma que trabalhamos com linhas usando `filter(),` ao trabalhar com colunas, usamos o `select()`.
 
@@ -501,7 +501,7 @@ data_2 %>%
 
 ```
 
-## mutate(): Criando e realizando operações com novas variáveis
+## `mutate():` Criando e realizando operações com novas variáveis
 
 A função `mutate()` permite **criar ou modificar colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna. Por exemplo, podemos criar a coluna imc com o IMC todos os indivíduos, que é calculado com a razão do peso e a altura ao quadrado.
 
@@ -519,7 +519,7 @@ data_2 %>%
   mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
 ```
 
-## if_else e case_when()
+## `if_else` e `case_when()`: Condições
 
 Mas, podemos também usar um argumento lógico também. Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima ou abaixo de um IMC específico. Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um IMC acima de 25, ela será considerada com sobrepeso, e se for abaixo, será classificada como normal.
 
@@ -577,7 +577,7 @@ data_2 %>%
   summarize(individuos = n())
 ```
 
-## arrange(): Ordenando dados
+## `arrange():` Ordenando dados
 
 Podemos ordenar os dados de forma crescente e decrescente usando o `arrange().`
 
@@ -596,7 +596,7 @@ data_2 %>%
   arrange(-idade)
 ```
 
-## Usando o pipe para fazer múltiplas operações de uma vez
+## Usando o `pipe` para fazer múltiplas operações de uma vez
 
 Usando o pipe, podemos escrever e ler códigos em uma sequência lógica fácil.
 
@@ -1519,8 +1519,7 @@ ggsave(br_cov + br_mortes,
 
 # 6. Modelo
 
-Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. 
-Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
+Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
 
 **Selecione todo o código e segure Ctrl + Shift + C para tornar as linhas executáveis.**
 

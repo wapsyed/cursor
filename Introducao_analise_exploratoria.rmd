@@ -33,7 +33,7 @@ Os participantes terão uma aula introdutória à ciência de dados e fundamento
 
 # Prática
 
-OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> Global options \> R Markdown and unselect “Show output inline for all R Markdown documents”
+OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> Global options \> R Markdown and unselect "Show output inline for all R Markdown documents"
 
 # 1. Biblioteca e pacotes
 

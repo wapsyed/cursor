@@ -201,4 +201,23 @@ deaths_who = bind_rows(Hepatitis_B, Measles, Meningitis, Other_infectious, Dipht
 deaths_who %>% saveRDS("Deaths_infectious_diseases.rds")
 
 
+#Tabela com mortes por doenças imunopreníveis, por país, ano, sexo e idade
+Deaths_infectious_diseases = readRDS(file = "Deaths_infectious_diseases.rds")
+glimpse(Deaths_infectious_diseases) # mais de 2 milhões de linhas
+
+Deaths_infectious_diseases %>% 
+  count(death_disease)
+
+#Reduzir tabela
+Deaths_infectious_diseases_filtered = Deaths_infectious_diseases %>% 
+  filter(age == "[All]",
+         sex == "All") %>%  # 904 mil linhas
+  select(name, year, total_deaths:death_disease) %>% 
+  left_join(paises_anotados, by = "name")
+
+Deaths_infectious_diseases_filtered %>% 
+  saveRDS(file = "Deaths_infectious_diseases_filtered.rds")
+
+#Quais colunas são iguais e têm nomes diferentes?
+glimpse(Deaths_infectious_diseases_filtered)
 

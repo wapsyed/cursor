@@ -37,10 +37,14 @@ OBS: Para apresentar de tabelas e imagens fora do Markdown, vá para o Tools \> 
 
 # 1. Biblioteca e pacotes
 
-```{r include=FALSE}
-options(repos = c(CRAN = "https://cran.r-project.org"))  # For global mirror
+Antes de rodarmos os códigos para as análises, é necessário instalar os pacotes cujos recursos, especialmente as funções, serão utilizados. Para isso, use o `install.packages("pacote")`[.]{.smallcaps}
 
-# Baixar pacotes do CRAN para a biblioteca (Para descomentar, use Ctrl + Shift + C)
+Nem sempre é necessário reinstalar os pacotes, pois isso toma tempo. Entretanto, é recomendável reinstalar os pacotes de vez em quando, para atualizar o pacote.
+
+```{r eval=FALSE, include=FALSE}
+options(repos = c(CRAN = "https://cran.r-project.org"))
+
+# Baixar pacotes do CRAN para a biblioteca 
 install.packages("tidyverse")
 install.packages("skimr")
 install.packages("janitor")
@@ -50,7 +54,11 @@ install.packages("plotly")
 install.packages("gghighlight")
 install.packages("patchwork")
 install.packages("ggsci")
+```
 
+Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.
+
+```{r}
 # Chamando os pacotes da biblioteca
 library(tidyverse) #Metapacote 
 library(skimr) #Diagnóstico de tabela
@@ -64,6 +72,10 @@ library(ggsci) #Paleta de cores
 ```
 
 # 2. Operações básicas
+
+Podemos criar variáveis de diferentes classes, como numéricas (integer, double), textuais (string/character), e muitas outras. Além disso, essas variáveis podem ser nomeadas com o nome que você quiser, como letras e palavras.
+
+Entretanto, não podem ter espaço entre si (variavel_a != variavel a) e, por mais que funcionem com palavras em portugues acentuadas ("multiplicacão"), é uma boa prática nomeá-las da forma mais simples possível.
 
 ```{r}
 #Operações básicas -----
@@ -82,14 +94,20 @@ multiplicacão = x * y
 multiplicacão
 ```
 
+As variáveis textuais são sempre definidas com aspas, mesmo sendo um número, como `string = "5"`.
+
 ```{r}
 # Variáveis textuais (characters, string)
-a = "Olá"
+a = "Olá" #Uma palavra
 a
 
-b = "Tudo bem?"
+b = "Tudo bem?" #Uma frase
 b
 ```
+
+**Operações lógicas**
+
+Podemos também criar variáveis com valores lógicos, verdadeiro (`TRUE`) ou falso (`FALSE`).
 
 ```{r}
 # Variáveis Lógicas
@@ -97,8 +115,9 @@ t = TRUE
 t
 f = FALSE
 f
-
 ```
+
+Se usarmos operadores lógicos para determinar se o conteúdo de uma variável é igual (`==`), diferente (`!=`), maior (`>`) ou menor (`<`), os resultados retornarão `TRUE` ou `FALSE`.
 
 ```{r}
 # Comparações lógicas (booleanas)
@@ -110,17 +129,16 @@ t == f #Igual
 t != f #Diferente
 ```
 
-Se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores, elas ainda continuarão dando o mesmo resultado
+E, se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores, elas ainda continuarão dando o mesmo resultado.
 
 ```{r}
-# Se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores, elas ainda continuarão dando o mesmo resultado
 tt = TRUE
 ff = FALSE
 aa = "Olá"
 
-t == tt #Igual
-f == ff #Igual
-aa == a #Igual
+t == tt 
+f == ff 
+aa == a 
 ```
 
 ## Vetores
@@ -148,9 +166,7 @@ Dataframes e tibbles são tabelas comuns e consistem de linhas e colunas de dife
 
 As **tibbles são diferentes dos dataframes** somente em sua apresentação no console e facilitam muito o trabalho com tabelas grandes e largas.
 
-Além disso, a criação do dataframe e da tibble são diferentes visualmente. Veja como a tibble é mais semelhante à forma que imputamos dados no excel.
-
-Para criar um dataframe, usamos a função **data.frame().**
+Além disso, a criação do dataframe e da tibble são diferentes visualmente. Enquanto no dataframe usamos a função `data.frame()` para criar colunas com linhas definidas por um vetor, na tibble esse código é semelhante à forma que imputamos dados no excel.
 
 ```{r}
 #Dataframes e tibbles -----
@@ -181,7 +197,7 @@ tibble
 
 **É possível transformar quase todo objeto em uma tabela.**
 
-Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função **as.data.frame(),** será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
+Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função `as.data.frame()`, será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
 
 ```{r}
 # Vetores em dataframe
@@ -219,11 +235,11 @@ tibble
 
 ## Estatísticas gerais da tabela
 
-O R possui uma função muito prática de análise estatística descritiva, a **summary()**.
+O R possui uma função muito prática de análise estatística descritiva, a `summary()`.
 
 No entanto, existem outros pacotes que realizam essas análises e até geram relatórios em HTML.
 
-Um deles é o skimr, cuja função **skim()** gera três outputs, um semelhante ao summary, e outras duas tabelas com a quantidade de valores não disponíveis (NA), estatísticas descritivas, e um histograma.
+Um deles é o skimr, cuja função `skim()` gera três outputs, um semelhante ao summary, e outras duas tabelas com a quantidade de valores não disponíveis (NA), estatísticas descritivas, e um histograma.
 
 ```{r}
 # Estatísticas gerais 
@@ -240,11 +256,9 @@ skim(data)
 
 As tabelas tidy possuem dois formatos, um largo (wide) e outro longo (long). Converter uma em outra é conhecido como **pivotagem**, e conhecer essas funções é importantíssimo para obter, manipular e explorar dados.
 
-Para pivotar, utilizamos **pivot_longer() e pivot_wider()**. A pivotagem deve ser pensada com base na relação entre variáveis e seus valores.
+Para pivotar, utilizamos `pivot_longer()` e `pivot_wider()`. A pivotagem deve ser pensada com base na relação entre variáveis e seus valores.
 
 Por exemplo, se tivermos uma tabela larga com 10 colunas com anos (de 1990 a 2000), podemos reduzi-las em uma só coluna chamada "anos", que facilitará a manipulação de dados. Isso alongará a tabela.
-
-Mas, se quisermos deixá-la mais fácil de ser interpretada por humanos, podemos pivotá-la em uma tabela larga.
 
 ```{r}
 # Trabalhando com dataframes -----
@@ -260,6 +274,8 @@ data
 data_long
 ```
 
+Mas, se quisermos deixá-la mais fácil de ser interpretada por humanos, podemos pivotá-la em uma tabela larga.
+
 ```{r}
 # Wide table
 data_wide = pivot_wider(data_long, #Tabela
@@ -270,13 +286,13 @@ data_wide
 
 ## Matrizes
 
-As matrizes são estruturas tabelares cujos valores são **somente numéricos**. Para isso, é necessário converter a coluna de "nomes" (strings) em nomes de linhas (rownames) usando o column_to_rownames(), e então converter a tabela em matriz, com o as.matrix().
+É importante saber manipular matrizes para computar análises estatísticas, como a Principal Components Analysis.
+
+As matrizes são estruturas tabelares cujos valores são **somente numéricos**. Ou seja, não podemos ter uma coluna com strings, por exemplo.
+
+Para isso, é necessário converter a coluna de "nomes" (strings) em nomes de linhas (rownames) usando a função `column_to_rownames()`, e então converter a tabela em matriz, com o `as.matrix()`.
 
 A diferença aqui é a apresentação da tabela. Enquanto dataframes e tibbles são facilmente lidas, as matrizes são mais complicadas nesse sentido.
-
-**Caso você queira manipular a matriz com as funções do tidyverse**, é recomendável reconvertê-la em dataframe/tibble, manipular os dados, e depois converter novamente para matriz.
-
-É importante saber manipular matrizes para computar análises estatísticas, como o Principal Components Analysis, por exemplo.
 
 ```{r}
 #Matriz
@@ -287,6 +303,11 @@ data_matrix = column_to_rownames(data, "nome") #Converte coluna em rownames
 matrix = as.matrix(data_matrix)
 matrix #Agora, os valores são numéricos
 
+```
+
+**Caso você queira manipular a matriz com as funções do tidyverse**, é recomendável reconvertê-la em dataframe/tibble, manipular os dados, e depois converter novamente para matriz.
+
+```{r}
 # Reconverter para dataframe
 matrix_dr = as.data.frame(matrix)
 
@@ -294,7 +315,6 @@ matrix_dr # Coluna "nome" continua como rownames e dificulta a manipulação.
 
 matrix_dr = rownames_to_column(matrix_dr, "nome") #Converter rownames em nova coluna
 matrix_dr
-
 ```
 
 ## Listas
@@ -305,7 +325,7 @@ Elas são interessantes para **organizar os objetos necessários para uma análi
 
 ```{r}
 #Criando a lista
-lista = list(a, b, f, h, j, multi, t, data, matrix, tibble)
+lista = list(a, b, f, h, j, multiplicacão, t, data, matrix, tibble)
 
 View(lista) #Visualizando a lista
 
@@ -356,9 +376,9 @@ O tidyverse é um **metapacote**, um pacote com diversos pacotes dentro, que fac
 
 ## Adicionando linhas e colunas
 
-Para adicionar uma linha com valores, usamos o add_row(), e para adicionar uma coluna, o add_column. Bem intuitivo, né?
+Para adicionar uma linha com valores, usamos o `add_row()`, e para adicionar uma nova coluna com valores, usamos o `add_column`. Bem intuitivo, né?
 
-Para não alterarmos as tabelas originais, criamos uma nova variável chamada data_2 e tibble_2.
+Para não alterarmos as tabelas originais, criamos uma nova variável chamada data_2 e tibble_2. Entretanto, não é necessário sempre criar uma variável para cada operação que fizermos.
 
 ```{r}
 #Adicionar linha
@@ -367,12 +387,13 @@ data_2 = add_row(data,
                idade = 50,
                altura = 1.85)
 
+data_2
+
 tibble_2 = add_row(tibble, 
                    nome = "Rafaela", 
                    idade = 50,
                    altura = 1.85)
 
-data_2
 tibble_2
 ```
 
@@ -384,6 +405,7 @@ data_2 = add_column(data_2,
                              40,
                              100,
                              70))
+data_2
 
 tibble_2 = add_column(tibble_2,
                       peso = c(50,
@@ -391,18 +413,16 @@ tibble_2 = add_column(tibble_2,
                                40,
                                100,
                                70))
-
-data_2
 tibble_2
 ```
 
 ## filter(): Filtrando linhas e usando o pipe
 
-Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No tidyverse, mais especificamente no pacote dplyr, usamos a função filter() e estabelecemos argumentos lógicos para a filtragem.
+Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No tidyverse, mais especificamente no pacote dplyr, usamos a função `filter()` e estabelecemos argumentos lógicos para a filtragem.
 
 ```{r}
 # Filtrando linhas ----
-filter(data, idade <= 30)
+idade = filter(data, idade <= 30)
 
 idade_nome = filter(idade,
                     nome == "Júlia")
@@ -414,47 +434,39 @@ Mas, e se eu quiser filtrar usando mais operações?
 
 Temos duas formas de fazer isso.
 
-A primeira é usando "OU" e %in% c().
+A primeira é usando "OU" (`|`) e `%in% c()`. Veja que os resultados são iguais, mas a forma de escrever é diferente. No primeiro caso, temos de repetir "`nome ==`" a cada valor que quisermos incluir. No segundo caso, somente criamos um vetor com os valores separados por vírgula.
 
 ```{r}
-# Filtrando mais de um valor usando | (OU) e "%in% c()"
+#Usando OU (|)
+filter(data, nome == "Júlia" | 
+           nome == "Gabriela")
 
-
-filter(data, comparacao)
-
-data %>% filter(comparacao)
-
-data %>%                   #Tenho este objeto
-  filter(nome == "Júlia" | # E então vou filtrar indivíduos que tenham o nome "Júlia" OU 
-           nome == "Gabriela") #"Gabriela"
-
-data %>%  
-  filter(nome %in% c(
-    "Júlia", 
-    "Gabriela")) 
+#Usando %in% c()
+filter(data, nome %in% c("Júlia", "Gabriela")) 
 
 ```
 
-E a segunda é usando o **pipe (%\>%),** que permite "costurar" operações e resultados. Dessa forma, não precisamos criar uma variável/objeto sempre que uma função for aplicada. Usaremos muito o pipe nos próximos códigos.
+E a segunda é usando o **pipe** (`%>%`)**,** que permite "costurar" operações e resultados. Dessa forma, não precisamos criar uma variável/objeto sempre que uma função for aplicada. Usaremos muito o pipe nos próximos códigos.
 
-Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que não contêm um valor.
+Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que contêm um valor, no caso
 
 ```{r}
+
 # Usando o pipe "%>%" (lê-se "e então")
-gabriela = data %>%                   # Tenho este objeto 
+data %>%                   # Tenho este objeto 
   filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com menos de 30 anos
-  filter(nome == "Gabriela")   # E então vou filtrar os indivíduos que não incluam a "Júlia"
+  filter(nome == "Gabriela")   # E então vou filtrar os indivíduos chamados "Gabriela"
 ```
 
 ## select(): Selecionando colunas
 
-Da mesma forma que trabalhamos com linhas usando filter(), ao trabalhar com colunas, usamos o select().
+Da mesma forma que trabalhamos com linhas usando `filter(),` ao trabalhar com colunas, usamos o `select()`.
 
-A função select é muito versátil, e **além de selecionar colunas** que você quer trabalhar, podemos **reordená-las e renomeá-las**.
+A função select é muito versátil, e **além de selecionar colunas** que você quer trabalhar, podemos **reordená-las e renomeá-las manualmente**.
 
-Mas, cuidado, pois ao renomeá-las, se esquecermos do "**everything()**", ficamos somente com a coluna renomeada.
+Mas, cuidado, pois ao renomeá-las, se esquecermos do "**`everything()`**", ficamos somente com a coluna renomeada.
 
-Por isso, temos a função **rename()**, que evita que isso aconteça.
+Por isso, temos a função **`rename()`**`,` que evita que isso aconteça.
 
 ```{r}
 # Selecionando colunas ----
@@ -489,25 +501,54 @@ data_2 %>%
 
 ## mutate(): Criando e realizando operações com novas variáveis
 
-A função mutate() permite criar ou modificar **colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna.
+A função `mutate()` permite **criar ou modificar colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna. Por exemplo, podemos criar a coluna imc com o IMC todos os indivíduos, que é calculado com a razão do peso e a altura ao quadrado.
 
 ```{r}
 # Criando novas variáveis
 data_2 = data_2 %>%
   mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
 
-data_2 %>%
-  mutate(imc = peso / (altura^2)) %>% 
-  select(!c(altura, peso))
+```
 
+Além disso, podemos criar uma coluna com o sexo daquele indivíduo. Como sabemos que todos são "feminino", podemos fazer dessa forma.
+
+```{r}
 data_2 %>% 
   mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
+```
 
+## if_else e case_when()
+
+Mas, podemos também usar um argumento lógico também. Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima ou abaixo de um IMC específico. Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um IMC acima de 25, ela será considerada com sobrepeso, e se for abaixo, será classificada como normal.
+
+```{r}
+data_2 %>% 
+  mutate(classificacao = if_else(imc > 25, "sobrepeso", "normal"))
+```
+
+Mas, sabemos que o IMC pode ser classificado com outras categorias. Para isso, temos duas formas de classificar. A primeira é usando o `if_else()` imputando os valores manualmente e deixando os valores que ainda não foram categorizados como NA, e depois, de criar a primeira categoria, criamos a segunda categoria e deixamos os que já estavam na coluna.
+
+```{r}
+data_2 %>% 
+  mutate(classificacao = if_else(imc >= 25 & imc <= 30 , "sobrepeso", NA),
+         classificacao = if_else(imc > 30, "obesidade 1", classificacao),
+         classificacao = if_else(imc >= 18.5 & imc <25, "normal",classificacao),
+         classificacao = if_else(imc < 18.5, "magreza",classificacao))
+```
+
+Veja que, depois da segunda linha de if_else, isso fica confuso de entender. Por isso, usamos o `case_when()`, que é um if_else mais versátil e deixa o código mais limpo e fácil de ler.
+
+```{r}
+data_2 = data_2 %>% 
+  mutate(classificacao = case_when(imc >= 25 & imc <= 30 ~ "sobrepeso",
+                                   imc > 30 ~ "obesidade 1",
+                                   imc >= 18.5 & imc < 25 ~ "normal",
+                                   imc < 18.5 ~ "magreza"))
 ```
 
 ## summarize(): resumindo estatísticas
 
-A função summarize (ou summarise) aplica a mesma lógica, mas a tabela gerada é muito menor, e se aplica à variável de interesse na tabela. Por exemplo, se quisermos obter a média (mean()), e a soma (sum()) das linhas de uma coluna, a summarize é capaz de fazer isso.
+A função `summarize()` (ou `summarise()`) aplica a mesma lógica, mas a tabela gerada é muito menor, e se aplica à variável de interesse na tabela. Por exemplo, se quisermos obter a média (`mean()`), e a soma (`sum()`) das linhas de uma coluna, a summarize é capaz de fazer isso.
 
 ```{r}
 # Resumindo dados
@@ -518,7 +559,25 @@ data_2 %>%
   summarize(Soma_idade = sum(idade))
 ```
 
+## `group_by`: Agrupando dados
+
+Em muitos casos, nós queremos realizar cálculos com categorias ou grupos diferentes. Por exemplo, considere que queremos saber a média (`mean()`) das idades por categoria da classificação pelo IMC, e além disso, queremos contar os indíviduos em cada categoria (`n()`). Para isso, temos de agrupar os dados por categorias (`sobrepeso, normal`, etc.) de uma variável (`classificacao`). Isso é feito com o `group_by()` seguido pelo `summarize()`.
+
+```{r}
+#Média dos grupos
+data_2 %>% 
+  group_by(classificacao) %>% 
+  summarize(Media_idade = mean(idade))
+
+#Contagem
+data_2 %>% 
+  group_by(classificacao) %>% 
+  summarize(individuos = n())
+```
+
 ## arrange(): Ordenando dados
+
+Podemos ordenar os dados de forma crescente e decrescente usando o `arrange().`
 
 ```{r}
 # Ordenando dados de forma crescente
@@ -541,13 +600,10 @@ Usando o pipe, podemos escrever e ler códigos em uma sequência lógica fácil.
 
 Por exemplo, abaixo:
 
-*pegamos a tabela **data_2**, **ordenamos** a altura na ordem crescente,*
-
-***filtramos** somente as pessoas com idade acima de 30 e peso acima de 50 e **retiramos** os nomes.*
-
-*Depois, **arredondamos** os valores do IMC para uma casa decimal (usando round()) e **criamos uma nova variável** chamada peso versus idade.*
-
-*Por fim, **resumimos** os dados usando a média do peso e a média do imc.*
+> 1.  *pegamos a tabela `data_2`, **ordenamos** a altura na ordem crescente,*
+> 2.  ***filtramos** somente as pessoas com idade acima de 30 e peso acima de 50 e **retiramos** os nomes.*
+> 3.  *Depois, **arredondamos** os valores do IMC para uma casa decimal (usando `round())` e **criamos uma nova variável** chamada `peso_x_idade`.*
+> 4.  *Por fim, **resumimos** os dados usando a média do peso e a média do imc, e criamos uma variável chamada `mega_pipe`*
 
 ```{r}
 # Múltiplas operações em uma caixa
@@ -566,15 +622,58 @@ mega_pipe
 
 # 4. Trabalhando com dados reais
 
-## Importando e padronizando tabela
+## Importando tabelas
+
+Podemos importar tabelas de forma manual, clicando no nome do arquivo no quadrante onde encontramos a aba "Files" e selecionando "Import dataset", que é realizado pelo pacote `readr`.
+
+Caso queira deixar automatizado, você pode copiar o código que é gerado e colar no seu bloco de código aqui.
+
+A função `read_csv()` acessa o local do seu arquivo (no caso, do tipo .csv) e o importa para o ambiente do R. Existem funções para importar cada tipo de arquivo, como excel, tsv, etc.
 
 ```{r}
 #Pelo readr
-cobertura_vacinal_unicef <- read_csv("cobertura_vacinal_unicef.csv") 
-#Manual: File > Import Dataset > From text (readr)
-cobertura_vacinal_unicef
+cobertura_vacinal <- read_csv("cobertura_vacinal_anotada.csv")  
 
-data_long = cobertura_vacinal_unicef 
+cobertura_vacinal
+```
+
+```{r}
+#Tabela de mortes por doença
+mortes_doencas <- read_rds("Deaths_infectious_diseases_filtered.rds") 
+
+mortes_doencas
+```
+
+### Padronizando tabelas
+
+Para trabalharmos de forma fácil com uma tabela, precisamos padronizá-la.
+
+Isso significa que **trocaremos e reordenaremos os nomes das colunas** para fazerem mais sentido, completaremos os valores NA quando for possível (e fizer sentido), e explicitaremos algumas coisas, como o nome das doenças contra as quais as vacinas protegem, e daremos o nome completo de cada região, pois somente temos os códigos delas.
+
+**No caso dos valores NA**, sabemos que certas vacinas não estavam disponíveis para todos os países ao mesmo tempo. Por isso, deixaremos como NA e não trocaremos por 0. Valores faltantes são diferentes de 0, por mais que em muitos casos possam ser trocados.
+
+```{r}
+
+#Organizar colunas
+cobertura_vacinal = cobertura_vacinal %>% 
+  select(-"...1", type, name, country_abrev, continent, region, region_complete, year, everything())
+
+#Salvar
+cobertura_vacinal %>% 
+  saveRDS(file = "cobertura_vacinal_anotada_2.rds")
+```
+
+```{r}
+#Organizar colunas
+mortes_doencas = mortes_doencas %>% 
+  select(name, continent,region_complete, everything())
+
+#Salvar
+mortes_doencas %>% 
+  saveRDS(file = "mortes_doencas.rds")
+
+mortes_doencas
+
 ```
 
 ## Explorando dados
@@ -585,48 +684,51 @@ data_long = cobertura_vacinal_unicef
 # Explorando dados -----
 
 # Tabela completa
-view(data_long) 
+view(cobertura_vacinal) 
 
 # Descrição geral
-glimpse(data_long)
+glimpse(cobertura_vacinal)
 
 # Primeiras 10 linhas
-head(data_long, 10)
+head(cobertura_vacinal, 10)
 
 # Últimas 10 linhas
-tail(data_long, 10)
+tail(cobertura_vacinal, 10)
 
 #Summary statistics
-summary(data_long)
+summary(cobertura_vacinal)
 ```
 
 ```{r}
 #Níveis de colunas
-unique(data_long$unicef_region)
+unique(cobertura_vacinal$region_complete)
 
-unique(data_long$country) %>% 
+unique(cobertura_vacinal$name) %>% 
   head(10)
 
-unique(data_long$vaccine) %>% 
+unique(cobertura_vacinal$vaccine) %>% 
   head(10)
 
 #Contar linhas por coluna
-data_long %>% 
-  count(country) %>% 
+cobertura_vacinal %>% 
+  count(name) %>% 
   head(10)
 
-data_long %>% 
+cobertura_vacinal %>% 
   count(vaccine) %>% 
   head(10)
 
-data_long %>% count(unicef_region) %>% 
+cobertura_vacinal %>% 
+  count(region_complete) %>% 
   head(10)
+```
 
+```{r}
 #Tabela de frequências
-table(data_long$country)  %>% 
+table(cobertura_vacinal$name)  %>% 
   head(10)
 
-tabyl(data_long, country) %>% 
+tabyl(cobertura_vacinal, name) %>% 
   head(10)
 ```
 
@@ -634,209 +736,39 @@ tabyl(data_long, country) %>%
 
 ```{r}
 # Dados faltantes ----
-skim(data_long) # Por que são faltantes? Precisamos deles?
+skim(cobertura_vacinal) # Por que são faltantes? Precisamos deles?
 
 # Como são essas linhas?
-data_long %>% 
+cobertura_vacinal %>% 
   filter(!complete.cases(.)) %>% 
   head(10)
-
-
-
-data_long %>% 
-  mutate(regiao_completa = if_else(unicef_region == "ROSA",
-                                   "South Asia",
-                                   NA),
-         regiao_completa = case_when(unicef_region == "EAPR" ~ "East Asia and Pacific", 
-                              unicef_region == "ECAR" ~ "Europe and Central Asia",
-                              unicef_region == "MENA" ~ "Middle East and North Africa",
-                              unicef_region == "ESAR" ~ "Eastern and Southern Africa",
-                              unicef_region == "LACR" ~ "Latin America and Caribbean",
-                              unicef_region == "Non-programme" ~ "Non-programme",
-                              unicef_region == "ROSA" ~ "South Asia",
-                              unicef_region == "WCAR" ~ "West and Central Africa",
-                              TRUE ~ unicef_region))
-
-```
-
-### Padronizando tabela
-
-Para trabalharmos de forma fácil com uma tabela, precisamos padronizá-la.
-
-Isso significa que **trocaremos e reordenaremos os nomes das colunas** para fazerem mais sentido, completaremos os valores NA quando for possível (e fizer sentido), e explicitaremos algumas coisas, como o nome das doenças contra as quais as vacinas protegem, e daremos o nome completo de cada região, pois somente temos os códigos delas.
-
-**No caso dos valores NA**, sabemos que certas vacinas não estavam disponíveis para todos os países ao mesmo tempo. Por isso, deixaremos como NA e não trocaremos por 0. Valores faltantes são diferentes de 0, por mais que em muitos casos possam ser trocados.
-
-Dessa forma, utilizaremos o **if_else().** Nele, estabelecemos que, se a coluna name for igual à region, então o type será "region", caso contrário, será "country". Completaremos o mesmo com a coluna de abreviação
-
-Além disso, na tabela original, temos dados para todos os países e continentes. Ou seja, temos uma linha chamada "Brasil" e outra chamada "Latin America", por exemplo. Sabemos que o último não é um país, então **criaremos uma coluna chamada type** usando o **if_else()** para diferenciar quando quisermos trabalhar com cada tipo.
-
-Para dar os nomes completos das regiões e criar uma coluna das doenças relacionadas às vacinas, usamos o **case_when()**, que é um if_else() que aceita mais relações.
-
-Assim, *quando algo for igual a algo, chame ele de algo, se algo 2 for igual a algo 2, chame ele de algo 2, ... e se isso tudo for mentira, então deixe como está.*
-
-```{r}
-# Padronizando a tabela ----
-
-data_long_standardized = data_long %>% 
-  
-  select(name = country, 
-         country_abrev = iso3, 
-         year, 
-         vaccine, 
-         coverage = cov, 
-         region = unicef_region) %>% 
-  
-  
-  
-  mutate(
-         # Anotando dados
-         year = as.integer(year), #Aqui, converteremos year em número inteiro, para evitar que seja lido com decimais.
-         type = if_else(name == region, # Se o nome for igual à região,
-                        "region",       # então ele é uma região,
-                        "country"),     # caso contrário, é um país.
-         
-         country_abrev = if_else(name == region, # Se o nome for igual à região,
-                        name,       # então ele é uma região,
-                        country_abrev),     # caso contrário, é um país.
-         
-         region = if_else(is.na(region), 
-                          name, 
-                          region),
-         
-         # Vacinas por doenças
-         diseases = case_when(vaccine == "BCG" ~ "Tuberculosis",
-                              vaccine == "DTP1" ~ "Difteria, Tetanus, Pertussis",
-                              vaccine == "DT3" ~ "Difteria, Tetanus, Pertussis",
-                              vaccine == "HEPB3" ~ "Hepatitis B",
-                              vaccine == "HEPBB" ~ "Hepatitis B",
-                              vaccine == "HIB3" ~ "Haemophilus influenzae B",
-                              vaccine == "IPV1" ~ "Poliomielitis",
-                              vaccine == "MCV1" ~ "Measles",
-                              vaccine == "MCV2" ~ "Measles",
-                              vaccine == "PCV3" ~ "Pneumococcus",
-                              vaccine == "POL3" ~ "Poliomielitis",
-                              vaccine == "RCV1" ~ "Rotavirus",
-                              vaccine == "ROTAC" ~ "Rotavirus",
-                              vaccine == "YFV" ~ "Yellow fever",
-                              TRUE ~ vaccine
-                              ),
-         
-         
-         # Abreviação para nome completo
-         region_complete = case_when(region == "EAPR" ~ "East Asia and Pacific", 
-                              region == "ECAR" ~ "Europe and Central Asia",
-                              region == "MENA" ~ "Middle East and North Africa",
-                              region == "ESAR" ~ "Eastern and Southern Africa",
-                              region == "LACR" ~ "Latin America and Caribbean",
-                              region == "Non-programme" ~ "Non-programme",
-                              region == "ROSA" ~ "South Asia",
-                              region == "WCAR" ~ "West and Central Africa",
-                              TRUE ~ region
-  ))
-
-#Salvar tabela
-data_long_standardized %>% 
-  saveRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
-
-data_long_standardized %>% 
-  write_csv(file = "cobertura_vacinal_unicef_padronizada.csv", row.names = F)
-
-#Tabela larga
-data_wide = data_long_standardized %>% 
-   pivot_wider(names_from = year, 
-               values_from = coverage)
-```
-
-### Unindo tabelas
-
-```{r}
-#Tabela com vacinação
-data_long_standardized = readRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
-data_long_standardized
-
-#Tabela com dados gerais de paises
-paises_anotados = readRDS(file = "paises_anotados.rds")
-paises_anotados
-
-#Unindo tabelas
-data_long_annotated = data_long_standardized %>% 
-  inner_join(paises_anotados, by = "name")
-
-glimpse(data_long_annotated) #Colunas duplicadas
-
-data_long_annotated = data_long_standardized %>% 
-  inner_join(paises_anotados %>% 
-               select(-region_complete), by = "name")
-
-glimpse(data_long_annotated)
-
-```
-
-```{r}
-#Tabela com mortes por doenças imunopreníveis, por país, ano, sexo e idade
-Deaths_infectious_diseases = readRDS(file = "Deaths_infectious_diseases.rds")
-glimpse(Deaths_infectious_diseases) # mais de 2 milhões de linhas
-
-#Reduzir tabela
-Deaths_infectious_diseases_filtered = Deaths_infectious_diseases %>% 
-  filter(age == "[All]",
-         sex == "All") %>%  # 904 mil linhas
-  select(name, year, total_deaths:death_disease) 
-
-#Quais colunas são iguais e têm nomes diferentes?
-glimpse(data_long_standardized)
-glimpse(Deaths_infectious_diseases_filtered)
-
-#Unir tabelas
-data_long_annotated = data_long_annotated %>% 
-    rename(disease_vac = diseases) %>% 
-  left_join(Deaths_infectious_diseases_filtered,
-             #by = "name") #Unir por uma coluna
-             
-             by = join_by(name, #Unir por mais colunas
-                          year,
-                          disease_vac == death_disease
-                          ))
-
-glimpse(data_long_annotated)
-```
-
-**Organizar colunas**
-
-```{r}
-#Organizar colunas
-data_long_annotated = data_long_annotated %>% 
-  select(type, name, country_abrev, continent, region, region_complete, year, everything())
-
-#Salvar
-data_long_annotated %>% 
-  saveRDS(file = "cobertura_vacinal_anotada.rds")
 
 ```
 
 ### Estatísticas descritivas
 
-Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função drop_na().
+Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função `drop_na()`.
 
-Além disso, queremos filtrar somente os dados dos países latinoamericanos entre os anos 2000 e 2023. Para isso, usamos o between() dentro da função filter(), e especificamos que queremos o type == "country", pois também temos dados da região como um todo.
+Além disso, queremos filtrar somente os dados dos países latinoamericanos entre os anos 2000 e 2023. Para isso, usamos o between() dentro da função `filter()`, e especificamos que queremos o `type == "country"`, pois também temos dados da região como um todo.
 
-Como não queremos trabalhar com os nomes completos das regiões, podemos ser menos específicos. Por exemplo, se sabemos que existe a região "Latin America and Caribbean Region (LACR)", podemos somente usar uma função que pega um pedaço do nome completo e nos retorna aquela linha. Isso é feito com o str_detect().
+Como não queremos trabalhar com os nomes completos das regiões, podemos ser menos específicos. Por exemplo, se sabemos que existe a região "Latin America and Caribbean Region (LACR)", podemos somente usar uma função que pega um pedaço do nome completo e nos retorna aquela linha. Isso é feito com o `str_detect().`
 
-Para calcularmos as estatísticas gerais com summarize, precisamos agrupar os dados com group_by. Isso porque temos dados da cobertura vacinal por país em 23 anos e para mais de uma vacina. Dessa forma, agruparemos por país (name) e vacina (vaccine). Ao final, vamos desagrupar esses dados.
+Para calcularmos as estatísticas gerais com summarize, precisamos agrupar os dados com `group_by()`. Isso porque temos dados da cobertura vacinal por país em 23 anos e para mais de uma vacina. Dessa forma, agruparemos por país (`name`) e vacina (`vaccine`). Ao final, vamos desagrupar esses dados.
+
+As tabelas produzidas a seguir serão utilizadas para trabalharmos a visualização dos dados!
 
 **Por país**
 
-```{r}
-# Estatísticas de cada país em um continente
-# Média, mediana, mínimo e máximo de uma variável numérica
+Veja quais são os países da américa latina que mais vacinaram ao longo de 2000 a 2023, por vacina.
 
-latin_2000_2023 = data_long_annotated %>% 
+```{r}
+latin_2000_2023 = cobertura_vacinal %>% 
   
   #Missing values: Aqui, é importante retirá-los para não repetir linhas
   
   drop_na(coverage) %>% 
    
+  #Filtrando os dados no intervalo e
   filter(between(year, 2000, 2022),
          str_detect(region_complete, "Latin"),
          type == "country") %>% 
@@ -845,6 +777,8 @@ latin_2000_2023 = data_long_annotated %>%
   group_by(vaccine, name) %>% 
   
   #Resumir estatísticas
+  # Estatísticas da cobertura vacinal para cada país em um continente
+  # Média, mediana, mínimo e máximo de uma variável numérica
   summarise(
     mean = mean(coverage),
     median = median(coverage),
@@ -854,17 +788,22 @@ latin_2000_2023 = data_long_annotated %>%
     var = var(coverage)
   ) %>% 
   
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
   #Desagrupar
   ungroup()
 
 latin_2000_2023
 ```
 
-**Por continente** Aqui, faremos o mesmo, mas para cada continente.
+**Por continente**
+
+Veja quais são os continentes que mais vacinaram ao longo de 2000 a 2023, por vacina.
 
 ```{r}
 # Cobertura vacinal: Estatísticas de cada continente
-continentes_vac = data_long_annotated %>% 
+continentes_vac = cobertura_vacinal %>% 
   
   drop_na(coverage,
           continent) %>% 
@@ -882,6 +821,10 @@ continentes_vac = data_long_annotated %>%
     sd = sd(coverage),
     var = var(coverage)
   ) %>% 
+  
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
   ungroup()
 
 #Visualizar
@@ -895,15 +838,14 @@ continentes_vac
 ```{r}
 # Mortes cumulativas
 # Estatísticas de cada continente
-continentes_mortes = data_long_annotated %>% 
+continentes_mortes = mortes_doencas %>% 
   
   drop_na(total_deaths,
           continent) %>%
   
-  filter(between(year, 2000, 2023),
-         type == "country") %>% 
+  filter(between(year, 2000, 2023)) %>% 
   
-  group_by(disease_vac, continent) %>%
+  group_by(death_disease, continent) %>%
   
   summarise(
     cumulativo = sum(total_deaths),
@@ -916,7 +858,9 @@ continentes_mortes = data_long_annotated %>%
   ) %>% 
   
   #Aqui, queremos os países com maior número de mortes
-  arrange(disease_vac, - cumulativo) %>% 
+  arrange(death_disease, - cumulativo) %>% 
+  
+  
   ungroup()
 
 continentes_mortes
@@ -927,12 +871,11 @@ continentes_mortes
 ```{r}
 # Mortes cumulativas
 # Estatísticas de cada continente
-paises_mortes = data_long_annotated %>% 
+paises_mortes = mortes_doencas %>% 
   drop_na(total_deaths,
           name) %>% 
-  filter(between(year, 2000, 2023),
-         type == "country") %>% 
-  group_by(disease_vac, name) %>% 
+  filter(between(year, 2000, 2023)) %>% 
+  group_by(death_disease, name) %>% 
   summarise(
     cumulativo = sum(total_deaths),
     mean = mean(total_deaths),
@@ -942,13 +885,15 @@ paises_mortes = data_long_annotated %>%
     sd = sd(total_deaths),
     var = var(total_deaths)
   ) %>% 
-  arrange(disease_vac, desc(cumulativo)) %>% 
+  arrange(death_disease, desc(cumulativo)) %>% 
   ungroup()
 
 paises_mortes
 ```
 
 # 5. Visualização
+
+A visualização com o ggplot2 é feito em camadas. Primeiro, temos um dataframe com os dados de interesse, depois chamamos a função ggplot() e adicionamos um +, que funciona aqui como um pipe, mas somente para gráficos. A partir disso, temos de mapear os eixos, cores, tamanho, etc. com as variáveis de interesse, usando o aes(). Para definir qual tipo de gráfico iremos criar, temos de definir a geometria (geom\_), que no caso é de pontos (geom_point()). Isso já produz um gráfico, mas não é um dos melhores. Para melhorar, podemos adicionar mais funções, como labels para os pontos do gráfico, um tema pré-definido, e título para o gráfico, eixos, e legendas.
 
 ## Vacinação
 
@@ -962,8 +907,8 @@ continentes_pontos_vac = continentes_vac %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
   mutate(continent = fct_reorder(continent, median)) %>% 
   
-  
-  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  #Chamando a função. Aqui se usa "+" em vez de "%>%"
+  ggplot() +  
   
   #Mapeando os eixos
   aes(x = median,
@@ -973,6 +918,7 @@ continentes_pontos_vac = continentes_vac %>% #Dataframe
   #Geometrias
   geom_point() +
   
+  #Labels nos pontos
   geom_label(aes(x = median, 
                 y = continent, 
                 label = median)) +
@@ -980,7 +926,7 @@ continentes_pontos_vac = continentes_vac %>% #Dataframe
   #Tema
   theme_light() +
   
-  #Labels
+  #Títulos
   labs(title = "Cobertura vacinal",
        x = "Mediana (Cobertura vacinal %)",
        y = "Continentes") 
@@ -1103,7 +1049,7 @@ pais_barras_vac
 ```{r}
 #Gráfico de pontos simples
 barras_mortes = continentes_mortes %>% #Dataframe
-  filter(disease_vac == "Measles") %>% 
+  filter(death_disease == "Measles") %>% 
   mutate(continent = fct_reorder(continent, cumulativo)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
@@ -1129,7 +1075,7 @@ barras_mortes = continentes_mortes %>% #Dataframe
        y = "Continentes") +
   
   #Eixo x
-  xlim(0, 21000) #Aumentar limites 
+  xlim(0, 10000) #Aumentar limites 
   
 barras_mortes 
 
@@ -1138,7 +1084,7 @@ barras_mortes
 ```{r}
 #Gráfico de barras simples
 paises_barras_mortes = paises_mortes %>% #Dataframe
-  filter(disease_vac == "Measles") %>% 
+  filter(death_disease == "Measles") %>% 
   mutate(name = fct_reorder(name, cumulativo)) %>% 
   slice_max(order_by = cumulativo, n = 10) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
@@ -1165,7 +1111,7 @@ paises_barras_mortes = paises_mortes %>% #Dataframe
        y = "Continentes") +
   
   #Eixo x
-  xlim(0, 21000) #Aumentar limites 
+  xlim(0, 10000) #Aumentar limites 
   
 paises_barras_mortes
 ```
@@ -1174,8 +1120,8 @@ paises_barras_mortes
 
 ```{r}
 #Visualização rápida
-# latin_2000_2023 %>% 
-#    esquisser() 
+# latin_2000_2023 %>%
+#    esquisser()
 ```
 
 ## Melhorando o gráfico
@@ -1262,14 +1208,6 @@ plot =
                          0), #Left 
                        "cm") #Unidade) 
   ) 
-  
-  #Escala de cores
-  # scale_colour_manual(low = "#DC0000B2", 
-  #                       high = "#4DBBD5B2",
-  #                       breaks = c(90, 100)) +
-  # scale_colour_steps(low = "#DC0000B2", 
-  #                       high = "#4DBBD5B2")
-
 
 #Visualizar
 plot
@@ -1289,7 +1227,7 @@ plot %>%
 
 ```{r}
 #Unindo gráficos -----
-vaccination = data_long_annotated %>% 
+vaccination = cobertura_vacinal %>% 
   filter(name == "Brazil",
          vaccine == "MCV1") %>% 
     ggplot() +
@@ -1315,9 +1253,9 @@ vaccination
 ```{r}
 
 #Mortes
-deaths = data_long_annotated %>% 
+deaths = mortes_doencas %>% 
   filter(name == "Brazil",
-         vaccine == "MCV1") %>% 
+         death_disease == "Measles") %>% 
     ggplot() +
   aes(x = year, y = total_deaths) +
   geom_col(fill = "#DC0000B2") +
@@ -1351,7 +1289,7 @@ deaths
 
 ```{r}
 #Boxplot simples por ano
-boxplot_years = data_long_annotated %>% 
+boxplot_years = cobertura_vacinal %>% 
   filter(type == "country",
          vaccine == "MCV1",
          year %in% c(1990, 2000, 2010, 2019)) %>% 
@@ -1403,7 +1341,7 @@ boxplot_years +
 
 ```{r}
 #Boxplot simples de ano
-boxplot_regions = data_long_annotated %>% 
+boxplot_regions = cobertura_vacinal %>% 
   filter(type == "country",
          vaccine == "MCV1",
          year %in% c(1990, 2000, 2010, 2020)) %>% 
@@ -1440,8 +1378,7 @@ data_long_annotated %>%
   geom_boxplot() +
   scale_fill_viridis_d(option = "plasma", direction = 1) +
   theme_minimal() +
-  facet_wrap(vars(vaccine), 
-             nrow = 1) +
+  facet_wrap(vars(vaccine)) +
   labs(x = "Regiões",
        y = "Cobertura",
        titulo = "Cobertura vacinal por região, em 2000") +
@@ -1454,8 +1391,8 @@ data_long_annotated %>%
 ```{r}
 # Múltiplos gráficos ----
 #Todas as linhas
-data_long_standardized %>%
- filter(year >= 2012& year <= 2022) %>%
+cobertura_vacinal %>%
+ filter(year >= 2012 & year <= 2022) %>%
  filter(region %in% "LACR") %>%
  ggplot() +
   aes(x = year, y = coverage, color = name) +
@@ -1472,7 +1409,7 @@ data_long_standardized %>%
 #Highlight linhas específicas
 
 #Método 1
-br_cov = data_long_standardized %>%
+br_cov = cobertura_vacinal %>%
  filter(year >= 2012 & year <= 2022,
         name %in% c("Brazil", "Colombia")) %>%
  ggplot() +
@@ -1499,7 +1436,7 @@ br_cov
 
 ```{r}
 #Método 2
-br_cov = data_long_standardized %>%
+br_cov = cobertura_vacinal %>%
  filter(year >= 2012 & year <= 2022,
         region %in% c("LACR")) %>%
  ggplot() +
@@ -1531,10 +1468,10 @@ br_cov
 
 ```{r}
 #Mortes
-br_mortes = data_long_annotated %>%
+br_mortes = mortes_doencas %>%
  filter(year >= 2012 & year <= 2022,
-        region %in% c("LACR")) %>% 
-  select(name, year, total_deaths, death_rate_100thousand, disease_vac) %>% 
+        region_complete == "Latin America and Caribbean") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
   distinct() %>%
   drop_na(total_deaths) %>% 
  ggplot() +
@@ -1545,7 +1482,9 @@ br_mortes = data_long_annotated %>%
 
   theme_minimal() +
   
-  facet_wrap(vars(disease_vac), 
+  theme(axis.text.x = element_text(angle = 90))+
+  
+  facet_wrap(vars(death_disease), 
              scales = "free", 
              nrow = 3) + 
   
@@ -1561,7 +1500,7 @@ br_mortes = data_long_annotated %>%
               unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
                                           colour = "gray90", 
                                           alpha = 0.5)) + 
-  scale_color_npg() 
+  scale_color_npg()
 
 br_mortes 
 
@@ -1570,7 +1509,10 @@ br_mortes
 
 ```{r}
 # Unir gráficos
-ggsave(br_cov + br_mortes, file = "br_cov_mortes.png") 
+ggsave(br_cov + br_mortes, 
+       file = "br_cov_mortes.png",
+       width = 15, #Largura
+       height = 10) #Altura
 ```
 
 # 6. Modelo
@@ -1671,7 +1613,7 @@ latin_2000_2023 %>%
 #Quantos países por continente registraram os dados na UNICEF?
 
 #Todos os continentes juntos
-data_long_annotated %>%
+cobertura_vacinal %>%
  filter(type == "country",
         continent != "Other") %>% 
  select(coverage, year, continent, vaccine) %>% 
@@ -1688,7 +1630,7 @@ data_long_annotated %>%
 
 ```{r}
 # Continentes separados
-data_long_annotated %>%
+cobertura_vacinal %>%
  filter(type == "country",
         continent != "Other") %>% 
  select(coverage, year, continent, vaccine) %>% 
@@ -1698,7 +1640,9 @@ data_long_annotated %>%
   geom_histogram(bins = 43L) +
   scale_fill_hue(direction = 1) +
   theme_minimal() +
-  facet_grid(continent ~ vaccine, scales = "free")
+  facet_grid(continent ~ vaccine, 
+             scales = "free") +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 **Quantos países aumentaram sua cobertura vacinal em cada decada?**
@@ -1706,7 +1650,7 @@ data_long_annotated %>%
 ```{r}
 #Quantos países aumentaram sua cobertura vacinal em cada decada?
 
-data_long_annotated %>%
+cobertura_vacinal %>%
  filter(type == "country",
         continent != "Other",
         year %in% c(1990, 2000, 2010, 2019)) %>%
@@ -1716,10 +1660,10 @@ data_long_annotated %>%
   theme_minimal() +
   theme(plot.caption = element_text(size = 13L),
         legend.position = "top",
+        axis.text.x = element_text(angle = 90),
         strip.text.y = element_text(angle = 0, 
                                     hjust = 0)) +
-  facet_grid(~disease_vac~year, scales = "free") +
-  facet_grid(continent ~ vaccine, scales = "free")
+  facet_grid(~vaccine~year, scales = "free") 
 
 ```
 

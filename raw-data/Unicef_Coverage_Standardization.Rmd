@@ -298,19 +298,96 @@ plotdtp1<-brazil %>%
 ggsave(plotdtp1,file="PlotDTP1.png",width = 25,height = 10)
 ```
 
-
-Para salvar
 ```{r}
-#Como rodar o código do esquisser e rodar
-plot<- #Colocar código do ggplot aqui
+#Padronizando
+data_long_standardized = data_long %>% 
   
-#Como salvar
-ggsave(plot,file="Plot.png",width=10,height=10)
+  select(name = country, 
+         country_abrev = iso3, 
+         year, 
+         vaccine, 
+         coverage = cov, 
+         region = unicef_region) %>% 
+  
+  
+  
+  mutate(
+         # Anotando dados
+         year = as.integer(year), #Aqui, converteremos year em número inteiro, para evitar que seja lido com decimais.
+         type = if_else(name == region, # Se o nome for igual à região,
+                        "region",       # então ele é uma região,
+                        "country"),     # caso contrário, é um país.
+         
+         country_abrev = if_else(name == region, # Se o nome for igual à região,
+                        name,       # então ele é uma região,
+                        country_abrev),     # caso contrário, é um país.
+         
+         region = if_else(is.na(region), 
+                          name, 
+                          region),
+         
+         # Vacinas por doenças
+         diseases = case_when(vaccine == "BCG" ~ "Tuberculosis",
+                              vaccine == "DTP1" ~ "Difteria, Tetanus, Pertussis",
+                              vaccine == "DT3" ~ "Difteria, Tetanus, Pertussis",
+                              vaccine == "HEPB3" ~ "Hepatitis B",
+                              vaccine == "HEPBB" ~ "Hepatitis B",
+                              vaccine == "HIB3" ~ "Haemophilus influenzae B",
+                              vaccine == "IPV1" ~ "Poliomielitis",
+                              vaccine == "MCV1" ~ "Measles",
+                              vaccine == "MCV2" ~ "Measles",
+                              vaccine == "PCV3" ~ "Pneumococcus",
+                              vaccine == "POL3" ~ "Poliomielitis",
+                              vaccine == "RCV1" ~ "Rotavirus",
+                              vaccine == "ROTAC" ~ "Rotavirus",
+                              vaccine == "YFV" ~ "Yellow fever",
+                              TRUE ~ vaccine
+                              ),
+         
+         
+         # Abreviação para nome completo
+         region_complete = case_when(region == "EAPR" ~ "East Asia and Pacific", 
+                              region == "ECAR" ~ "Europe and Central Asia",
+                              region == "MENA" ~ "Middle East and North Africa",
+                              region == "ESAR" ~ "Eastern and Southern Africa",
+                              region == "LACR" ~ "Latin America and Caribbean",
+                              region == "Non-programme" ~ "Non-programme",
+                              region == "ROSA" ~ "South Asia",
+                              region == "WCAR" ~ "West and Central Africa",
+                              TRUE ~ region
+  ))
 
+#Salvar tabela
 
+data_long_standardized %>% 
+  write_csv(file = "cobertura_vacinal_unicef_padronizada.csv", row.names = F)
 ```
 
 
+```{r}
+#Tabela com vacinação
+data_long_standardized = readRDS(file = "cobertura_vacinal_unicef_padronizada.rds")
+data_long_standardized
+
+#Tabela com dados gerais de paises
+paises_anotados = readRDS(file = "paises_anotados.rds")
+paises_anotados
+
+#Unindo tabelas
+data_long_annotated = data_long_standardized %>% 
+  inner_join(paises_anotados, by = "name")
+
+glimpse(data_long_annotated) #Colunas duplicadas
+
+data_long_annotated = data_long_standardized %>% 
+  inner_join(paises_anotados %>% 
+               select(-region_complete), by = "name") %>% 
+  mutate(name = if_else(name == continent, region_complete, name))
+  
+data_long_annotated %>% 
+  saveRDS(file = "cobertura_vacinal_anotada.rds")
+
+```
 
 
 

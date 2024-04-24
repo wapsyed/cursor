@@ -3,10 +3,11 @@ title: "CursoR - Introdução à análise de dados no R"
 author: 'Autor: Wasim Aluísio Prates Syed'
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    toc: true
+  html_document: 
+    toc: yes
     toc_float:
-      collapsed: true
+      collapsed: yes
+    df_print: default
 ---
 
 **Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
@@ -95,6 +96,8 @@ options(repos = c(CRAN = "https://cran.r-project.org"))
 Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.
 
 **Lembre-se sempre de chamar os pacotes quando você iniciar uma nova sessão!**
+
+Não se preocupe com os "erros" dos outputs ao chamar as libraries, especialmente as do tidyverse.
 
 ```{r message=FALSE, warning=FALSE}
 # Chamando os pacotes da biblioteca
@@ -696,7 +699,7 @@ mortes_doencas <- read_rds("Deaths_infectious_diseases_filtered.rds")
 mortes_doencas
 ```
 
-### Padronizando tabelas
+## Padronizando tabelas
 
 Para trabalharmos de forma fácil com uma tabela, precisamos padronizá-la.
 
@@ -751,18 +754,22 @@ summary(cobertura_vacinal)
 
 Cada coluna contendo strings repetidas nas linhas podem ser reduzidas aos valores únicos.
 
-Por exemplo, veja que as regiões, por estarem na tabela longa, são repetidas para cada país. Se quisermos saber todas as regiões incluídas no dataset de forma mais fácil, sem ficar procurando uma por uma, usamos o `unique()`.
+Por exemplo, veja que as regiões, por estarem na tabela longa, são repetidas para cada país. Se quisermos saber todas as regiões incluídas no dataset de forma mais fácil, sem ficar procurando uma por uma, usamos o `distinct()`.
 
 ```{r}
 #Níveis de colunas
-unique(cobertura_vacinal$region_complete)
+cobertura_vacinal %>% 
+  distinct(region_complete)
 
-unique(cobertura_vacinal$continent)
+cobertura_vacinal %>% 
+  distinct(continent)
 
-unique(cobertura_vacinal$name) %>% 
+cobertura_vacinal %>% 
+  distinct(name) %>% 
   head(10)
 
-unique(cobertura_vacinal$vaccine) %>% 
+cobertura_vacinal %>% 
+  distinct(vaccine) %>% 
   head(10)
 
 ```
@@ -782,6 +789,29 @@ cobertura_vacinal %>%
 cobertura_vacinal %>% 
   count(region_complete) %>% 
   head(10)
+
+cobertura_vacinal %>% 
+  count(diseases) %>% 
+  head(10)
+
+```
+
+**Quais são as vacinas que protegem contra cada doença? Podemos descobrir isso de duas formas.**
+
+1.  Usando o `filter()` e especificando a doença.
+
+```{r}
+cobertura_vacinal %>% 
+  filter(diseases == "Poliomielitis") %>% 
+  distinct(vaccine) 
+```
+
+2.  Agrupando os dados com `group_by()`.
+
+```{r}
+cobertura_vacinal %>% 
+  group_by(diseases) %>% 
+    distinct(vaccine) 
 ```
 
 Temos também uma forma de contar a frequência dessas linhas. Veja que há uma diferença nas observações/linhas por região, sendo a região da américa latina a que mais contém observações, e a região do sul-asiático a que tem menos. No caso de "`Global`", esses dados se referem à cobertura vacinal do conjunto de todos os países para cada vacina, e por isso tem `n = 441`.
@@ -789,8 +819,7 @@ Temos também uma forma de contar a frequência dessas linhas. Veja que há uma 
 ```{r}
 #Tabela de frequências
 cobertura_vacinal %>% 
-  tabyl(region_complete) %>% 
-  head(10)
+  tabyl(region_complete)
 ```
 
 ### Dados faltantes
@@ -805,8 +834,7 @@ skim(cobertura_vacinal)
 
 # Como são essas linhas?
 cobertura_vacinal %>% 
-  filter(!complete.cases(.)) %>% 
-  head(10)
+  filter(!complete.cases(.)) 
 
 ```
 
@@ -814,15 +842,27 @@ Observe que somente há dados faltantes na coluna coverage. Isso acontece porque
 
 ### Estatísticas descritivas
 
-Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função `drop_na()`.
+Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função `drop_na()` na coluna onde temos mais `NA`s.
+
+```{r}
+#Retirando os NAs
+cobertura_vacinal = cobertura_vacinal %>% 
+  drop_na(coverage)
+
+#Sobraram linhas com NAs?
+cobertura_vacinal %>% 
+  filter(!complete.cases(.))
+```
 
 Além disso, queremos filtrar somente os dados dos países latinoamericanos entre os anos 2000 e 2023. Para isso, usamos o between() dentro da função `filter()`, e especificamos que queremos o `type == "country"`, pois também temos dados da região como um todo.
 
-Como não queremos trabalhar com os nomes completos das regiões, podemos ser menos específicos. Por exemplo, se sabemos que existe a região "Latin America and Caribbean Region (LACR)", podemos somente usar uma função que pega um pedaço do nome completo e nos retorna aquela linha. Isso é feito com o `str_detect().`
+Como não queremos trabalhar com os nomes completos das regiões, podemos ser menos específicos. Por exemplo, se sabemos que existe a região "`Latin America and Caribbean Region (LACR)`", podemos somente usar uma função que pega um pedaço do nome completo e nos retorna aquela linha. Isso é feito com o `str_detect().`
 
 Para calcularmos as estatísticas gerais com summarize, precisamos agrupar os dados com `group_by()`. Isso porque temos dados da cobertura vacinal por país em 23 anos e para mais de uma vacina. Dessa forma, agruparemos por país (`name`) e vacina (`vaccine`). Ao final, vamos desagrupar esses dados.
 
 As tabelas produzidas a seguir serão utilizadas para trabalharmos a visualização dos dados!
+
+**Siga o tutorial, mas já comece a testar com outros países, regiões, vacinas, doenças e anos!**
 
 **Por país**
 
@@ -1102,13 +1142,15 @@ pais_barras_vac = latin_2000_2023 %>% #Dataframe
   geom_text(aes(x = median, 
                 y = name, 
                 label = median),
-            hjust = -0.5) +
+            hjust = -0.5,
+            size = 2.5) +
   
   #Tema
   theme_light() +
   
   #Labels
-  labs(title = "Países com cobertura vacinal para sarampo, entre 2000 e 2023",
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Países, entre 2000 e 2023",
        x = "Mediana (Cobertura vacinal%)",
        y = "Países") +
   
@@ -1760,9 +1802,9 @@ cobertura_vacinal %>%
 
 ```
 
-#8. Avançado: Dados demográficos e economicos com o Gapminder
+# 8. Avançado: Dados demográficos e economicos com o Gapminder
 
-O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população.
+O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população. Será
 
 ```{r message=FALSE, warning=FALSE}
 

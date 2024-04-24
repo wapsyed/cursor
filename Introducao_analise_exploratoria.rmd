@@ -110,36 +110,21 @@ b
 
 **Operações lógicas**
 
-Podemos também criar variáveis com valores lógicos, verdadeiro (`TRUE`) ou falso (`FALSE`).
-
-```{r}
-# Variáveis Lógicas
-t = TRUE
-t
-f = FALSE
-f
-```
-
 Se usarmos operadores lógicos para determinar se o conteúdo de uma variável é igual (`==`), diferente (`!=`), maior (`>`) ou menor (`<`), os resultados retornarão `TRUE` ou `FALSE`.
 
 ```{r}
 # Comparações lógicas (booleanas)
-a == b #Diferente
-x < y # Menor
-x > y # Maior
-x <= 5 # menor ou igual
-t == f #Igual
-t != f #Diferente
+a == b #Igual?
+a != b #Diferente?
+x < y # Menor?
+x > y # Maior?
+x <= 5 # Menor ou igual?
 ```
 
 E, se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores, elas ainda continuarão dando o mesmo resultado.
 
 ```{r}
-tt = TRUE
-ff = FALSE
 aa = "Olá"
-t == tt 
-f == ff 
 aa == a 
 ```
 
@@ -149,15 +134,29 @@ Os vetores são uma **sequência unidimensional** que podem ser números, string
 
 ```{r}
 # Vetores
-i = c(7, 5, 9, 10) #Numérico
+i = c(7, 5, 9, 10)
 i
 
-j = c("Olá", "Caneta", "Qualificacao") #String
+j = c("Olá", "Caneta", "Qualificacao")
 j
 
-h = c(7, "olá", 78) #String
+```
+
+Perceba que, para um vetor ser classificado como numérico, todos os elementos têm de ser números, isto é, não estar dentro de aspas. Do contrário, se um elemento for uma string (contiver aspas), mesmo com um número dentro, do vetor inteiro será convertido em strings.
+
+```{r}
+h = c(7, "10", 78)
 h
 
+```
+
+## Obtendo ajuda com funções
+
+O `c()` é um exemplo de função. Toda função contem um nome seguido por parenteses. No caso da função `c()`, inserimos os elementos que temos interesse.
+
+No entanto, outras funções que iremos aprender a seguir funcionam de forma diferente, muitas vezes intuitiva. Para acessar a documentação da função, use um `?` antes da função e aguarde a aba de ajuda abrir.
+
+```{r}
 # O que esta função faz? Use o "?" antes da função e rode.
 ?c()
 ```
@@ -210,7 +209,7 @@ as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
 
 **Há diferentes formas de se visualizar uma tabela.**
 
-A diferença de cada objeto está na visualização no console e no documento. **Teste estas linhas de código no documento e no console.**
+A diferença de cada objeto está na visualização no console e no documento. **Teste estas linhas de código no documento Markdown e no console.**
 
 ```{r}
 #Visualizando o dataframe -----
@@ -226,11 +225,11 @@ tibble
 glimpse(data) 
 glimpse(tibble)
 
-# Com view(). A tabela completa com mais funcionalidades (filtragem manual, pesquisa e ordenamento) abrirá em uma nova janela
+# Com view() ou View(). A tabela completa com mais funcionalidades (filtragem manual, pesquisa e ordenamento) abrirá em uma nova janela
 view(data) 
 view(tibble)
 
-# Selecionando o nome do objeto e segurando Ctrl + Click.
+# Selecione o nome do objeto, segure Ctrl e clique com o botão direito do mouse.
 data
 tibble 
 ```
@@ -327,7 +326,7 @@ Elas são interessantes para **organizar os objetos necessários para uma análi
 
 ```{r}
 #Criando a lista
-lista = list(a, b, f, h, j, multiplicacão, t, data, matrix, tibble)
+lista = list(a, b, h, j, multiplicacão, data, matrix, tibble)
 
 #View(lista) #Visualizando a lista
 
@@ -336,7 +335,7 @@ lista[[1]] #Primeiro objeto
 lista[[8]] #Oitavo objeto
 
 #Isolando o objeto
-df_list = lista[[10]]
+df_list = lista[[8]]
 df_list
 
 ```
@@ -450,13 +449,13 @@ filter(data, nome %in% c("Júlia", "Gabriela"))
 
 E a segunda é usando o **pipe** (`%>%`)**,** que permite "costurar" operações e resultados. Dessa forma, não precisamos criar uma variável/objeto sempre que uma função for aplicada. Usaremos muito o pipe nos próximos códigos.
 
-Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que contêm um valor, no caso
+Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que contêm um valor. No caso, pegamos as linhas com idade maior ou igual a 30 e, depois, aquelas que contêm o nome "Gabriela".
 
 ```{r}
 
 # Usando o pipe "%>%" (lê-se "e então")
 data %>%                   # Tenho este objeto 
-  filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com menos de 30 anos
+  filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
   filter(nome == "Gabriela")   # E então vou filtrar os indivíduos chamados "Gabriela"
 ```
 
@@ -466,9 +465,11 @@ Da mesma forma que trabalhamos com linhas usando `filter(),` ao trabalhar com co
 
 A função select é muito versátil, e **além de selecionar colunas** que você quer trabalhar, podemos **reordená-las e renomeá-las manualmente**.
 
-Mas, cuidado, pois ao renomeá-las, se esquecermos do "**`everything()`**", ficamos somente com a coluna renomeada.
+Para **isolar a(s) coluna(s)**, use `select(coluna)`, que você produzirá uma tabela com somente aquela coluna.
 
-Por isso, temos a função **`rename()`**`,` que evita que isso aconteça.
+Para **retirar** uma coluna, use o `-` ou o `!`.
+
+Para **reordenar**, use `select(coluna, everything())`. Aqui, você coloca a coluna de interesse em primeiro lugar e todas as outras restantes em sequência.
 
 ```{r}
 # Selecionando colunas ----
@@ -476,7 +477,7 @@ Por isso, temos a função **`rename()`**`,` que evita que isso aconteça.
 data_2 %>%
   select(nome, altura) 
 
-# Selecionar da coluna nome (1) à coluna peso (3)
+# Selecionar da coluna nome (1) à coluna peso (4)
 data_2 %>% 
   select(nome:idade) 
 
@@ -491,6 +492,13 @@ data_2 %>%
 data_2 %>%   
   select(idade, everything())
 
+```
+
+Para **renomear** uma coluna, é possível também usar o `select().`Mas, **cuidado**, pois ao renomeá-las, se esquecermos do "**`everything()`**", ficamos somente com a coluna renomeada.
+
+Por isso, temos a função **`rename()`**`,` que evita que isso aconteça.
+
+```{r}
 #Renomeando coluna
 data_2 %>%   
   select(age = idade, everything())
@@ -521,7 +529,11 @@ data_2 %>%
 
 ## `if_else` e `case_when()`: Condições
 
-Mas, podemos também usar um argumento lógico também. Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima ou abaixo de um IMC específico. Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um IMC acima de 25, ela será considerada com sobrepeso, e se for abaixo, será classificada como normal.
+Mas, podemos também usar um argumento lógico também.
+
+Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima ou abaixo de um IMC específico, a partir dos valores da coluna `imc`.
+
+Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um IMC acima de 25, ela será considerada com sobrepeso, e se for abaixo, será classificada como normal.
 
 ```{r}
 data_2 %>% 
@@ -701,6 +713,10 @@ tail(cobertura_vacinal, 10)
 summary(cobertura_vacinal)
 ```
 
+Cada coluna contendo strings repetidas nas linhas podem ser reduzidas aos valores únicos.
+
+Por exemplo, veja que as regiões, por estarem na tabela longa, são repetidas para cada país. Se quisermos saber todas as regiões incluídas no dataset de forma mais fácil, sem ficar procurando uma por uma, usamos o `unique()`.
+
 ```{r}
 #Níveis de colunas
 unique(cobertura_vacinal$region_complete)
@@ -711,6 +727,11 @@ unique(cobertura_vacinal$name) %>%
 unique(cobertura_vacinal$vaccine) %>% 
   head(10)
 
+```
+
+E se quisermos contar quantas vezes esses valores são repetidos no dataset? Podemos usar o `count()` seguido por `head()`, para visualizar os 10 primeiros valores. O `head()` é importante quando temos uma tabela muito grande e não queremos ver todos os valores.
+
+```{r}
 #Contar linhas por coluna
 cobertura_vacinal %>% 
   count(name) %>% 
@@ -725,12 +746,12 @@ cobertura_vacinal %>%
   head(10)
 ```
 
+Temos também uma forma de contar a frequência dessas linhas. Veja que há uma diferença nas observações/linhas por região, sendo a região da américa latina a que mais contém observações, e a região do sul-asiático a que tem menos. No caso de "Global", esses dados se referem à cobertura vacinal do conjunto de todos os países para cada vacina, e por isso tem `n = 441`.
+
 ```{r}
 #Tabela de frequências
-table(cobertura_vacinal$name)  %>% 
-  head(10)
-
-tabyl(cobertura_vacinal, name) %>% 
+cobertura_vacinal %>% 
+  tabyl(region_complete) %>% 
   head(10)
 ```
 
@@ -872,7 +893,7 @@ continentes_mortes
 
 ```{r}
 # Mortes cumulativas
-# Estatísticas de cada continente
+# Estatísticas de cada país
 paises_mortes = mortes_doencas %>% 
   drop_na(total_deaths,
           name) %>% 
@@ -895,7 +916,9 @@ paises_mortes
 
 # 5. Visualização
 
-A visualização com o ggplot2 é feito em camadas. Primeiro, temos um dataframe com os dados de interesse, depois chamamos a função ggplot() e adicionamos um +, que funciona aqui como um pipe, mas somente para gráficos. A partir disso, temos de mapear os eixos, cores, tamanho, etc. com as variáveis de interesse, usando o aes(). Para definir qual tipo de gráfico iremos criar, temos de definir a geometria (geom\_), que no caso é de pontos (geom_point()). Isso já produz um gráfico, mas não é um dos melhores. Para melhorar, podemos adicionar mais funções, como labels para os pontos do gráfico, um tema pré-definido, e título para o gráfico, eixos, e legendas.
+A visualização com o `ggplot2` é feito em **camadas**. Primeiro, temos um dataframe com os dados de interesse, depois chamamos a função `ggplot()` e adicionamos um `+`, que funciona aqui como um pipe, mas somente para gráficos. A partir disso, temos de mapear os eixos, cores, tamanho, etc. com as variáveis de interesse, usando o `aes()`. Para definir qual tipo de gráfico iremos criar, temos de definir a geometria (`geom_`), que no caso é de pontos (`geom_point()`). Isso já produz um gráfico, mas não é um dos melhores.
+
+Para melhorar, podemos adicionar mais funções, como labels para os pontos do gráfico (geom_label()), um tema pré-definido (`theme_light()`) ou customizável (`theme()`), e título para o gráfico, eixos, e legendas (`labs())`. Além disso, para reordenar os valores de uma variável categórica, como os países, por uma variável numérica, usamos o `fct_reorder()` dentro do `mutate()`.
 
 ## Vacinação
 
@@ -995,7 +1018,8 @@ continente_barras_vac = continentes_vac %>% #Dataframe
   
   geom_text(aes(x = median, 
                 y = continent, 
-                label = median)) +
+                label = median),
+            hjust = -0.5) +
   
   #Tema
   theme_light() +
@@ -1003,7 +1027,10 @@ continente_barras_vac = continentes_vac %>% #Dataframe
   #Labels
   labs(title = "Cobertura vacinal",
        x = "Mediana (Cobertura vacinal %)",
-       y = "Continentes") 
+       y = "Continentes")  +
+  
+  #Limites
+  xlim(0, 105)
 
 continente_barras_vac
 
@@ -1119,6 +1146,8 @@ paises_barras_mortes
 ```
 
 ## Visualização rápida com o Esquisse
+
+Lembre-se de retirar os `#` antes de rodar.
 
 ```{r}
 #Visualização rápida
@@ -1511,6 +1540,11 @@ br_mortes
 
 ```{r}
 # Unir gráficos
+br_cov + br_mortes
+```
+
+```{r}
+#Salvar
 ggsave(br_cov + br_mortes, 
        file = "br_cov_mortes.png",
        width = 15, #Largura

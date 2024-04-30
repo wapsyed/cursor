@@ -66,7 +66,7 @@ Para rodar este tutorial, siga os seguintes passos:
 
 Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto para começar a trabalhar.
 
-**Para encontrar este documento com as linhas de códigos**, clique no arquivo "**`Introducao_analise_exploratoria.rmd`**".
+**Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_analise_exploratoria.rmd`**". Se clicar no `.md`, não funcionará.
 
 # 1. Biblioteca e pacotes
 
@@ -74,7 +74,7 @@ Antes de rodarmos os códigos para as análises, é necessário instalar os paco
 
 Nem sempre é necessário reinstalar os pacotes, pois isso toma tempo. Entretanto, é recomendável reinstalar os pacotes de vez em quando, para atualizar o pacote.
 
-Observe que o código abaixo está com \# antes da função. Ao rodar pela primeira vez, retire estes \# e execute.
+Observe que o código abaixo está com `#` antes da função. Ao rodar pela primeira vez, retire estes `#` e execute clicando na linha do código e apertando `Ctrl + Enter`. Isso executará linha por linha. Caso queira rodar todas as linhas de uma vez, use `Ctrl + Shift + Enter`.
 
 ```{r message=FALSE, warning=FALSE}
 options(repos = c(CRAN = "https://cran.r-project.org"))
@@ -95,7 +95,7 @@ options(repos = c(CRAN = "https://cran.r-project.org"))
 
 Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.
 
-**Lembre-se sempre de chamar os pacotes quando você iniciar uma nova sessão!**
+> **Lembre-se sempre de chamar os pacotes quando você iniciar uma nova sessão!**
 
 Não se preocupe com os "erros" dos outputs ao chamar as libraries, especialmente as do tidyverse.
 
@@ -110,14 +110,14 @@ library(plotly) #Gráficos interativos
 library(patchwork) #Unir gráficos
 library(gghighlight) #Marcar pontos e linhas 
 library(ggsci) #Paleta de cores 
-library(gapminder)
+library(gapminder) #Dataset sobre população, PIB e expectativa de vida dos países
 ```
 
 # 2. Operações básicas
 
 Podemos criar variáveis de diferentes classes, como numéricas (integer, double), textuais (string/character), e muitas outras. Além disso, essas variáveis podem ser nomeadas com o nome que você quiser, como letras e palavras.
 
-Entretanto, não podem ter espaço entre si (variavel_a != variavel a) e, por mais que funcionem com palavras em portugues acentuadas ("multiplicacão"), é uma boa prática nomeá-las da forma mais simples possível.
+Entretanto, não podem ter espaço entre si `(variavel_a não é variavel a`) e, por mais que funcionem com palavras em portugues acentuadas ("`multiplicacão`"), é uma boa prática nomeá-las da forma mais simples possível, como `multiplicacao` ou `multi`.
 
 ```{r}
 #Operações básicas -----
@@ -137,6 +137,8 @@ multiplicacão
 ```
 
 As variáveis textuais são sempre definidas com aspas, mesmo sendo um número, como `string = "5"`.
+
+> **Dica de ouro:** Nunca esqueça de fechar as aspas.
 
 ```{r}
 # Variáveis textuais (characters, string)
@@ -169,7 +171,9 @@ aa == a
 
 ## Vetores
 
-Os vetores são uma **sequência unidimensional** que podem ser números, strings, valores lógicos, entre outros. Podemos criar vetores com a função c(), de "concatenar".
+Os vetores são uma **sequência unidimensional** que podem ser números, strings, valores lógicos, entre outros. Podemos criar vetores com a função `c()`, de "concatenar".
+
+> **Dica de ouro**: Nunca deixe de fechar os parênteses em uma função, pois isso dará erro.
 
 ```{r}
 # Vetores
@@ -220,7 +224,7 @@ data = data.frame(
 data
 ```
 
-E para criar uma tibble, usamos a função **tribble().**
+E para criar uma tibble, usamos a função `tribble()`**.**
 
 ```{r}
 #Tibble
@@ -237,7 +241,7 @@ tibble
 
 **É possível transformar quase todo objeto em uma tabela.**
 
-Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função `as.data.frame()`, será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor.
+Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função `as.data.frame()`, será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor. É padrão no tidyverse e no R de, ao converter uma estrutura de dados em outra, usar o "`as`", como `as.data.frame()`, `as.matrix()`, `as.vector()`, etc.
 
 ```{r}
 # Vetores em dataframe
@@ -383,12 +387,20 @@ df_list
 
 ## Manipulação de tabelas com o R base
 
-O R possui funções e formas nativas de acessar e manipular tabelas. Essas operações, como as descritas abaixo, não são mais a melhor forma de trabalhar, pois são pouco intuitivas. Mas, **é importante conhecê-las**, pois, são utilizadas em alguns casos.
+O R possui funções e formas nativas de acessar e manipular tabelas. Essas operações, como as descritas abaixo, não são mais a melhor forma de trabalhar, pois são pouco intuitivas, e vamos usar outras muito melhores a seguir. Mas, **é importante conhecê-las**, pois, são utilizadas em alguns casos.
+
+Para acessar uma coluna no dataframe, digite o nome do dataframe seguido por `$` e o nome da coluna (`data$coluna`). Se você não lembra o nome da coluna, você pode digitar `data$` e apertar Tab.
 
 ```{r}
 # Acessando colunas do data frame
 data$nome
 data$idade
+
+```
+
+Para adicionar uma nova coluna e preencher seus valores, crie um vetor com os valores e insira nessa coluna.
+
+```{r}
 
 # Criando nova variável para não sobrescrever a tabela original para os próximos exemplos
 data_2 = data
@@ -400,9 +412,18 @@ data_2$peso = c(70,
                 20)
 data_2
 
+```
+
+**Para remover uma coluna**, abra os colchetes `[linha, coluna]` após o nome do dataframe, selecione o índice da coluna e adicione um `-`. Os colchetes definem as linhas (antes da vírgula) e as colunas (depois da vírgula). Um pouco ~~muito~~ confuso, né?
+
+```{r}
 # Removendo uma coluna do data frame
 data_2 = data_2[ , -4]
+```
 
+Para filtrar e reordenar os dados, é ainda pior.
+
+```{r}
 # Filtrando linhas do data frame. df[linha, coluna]
 data_jovens = data_2[data_2$idade < 30, ]
 data_jovens
@@ -493,7 +514,6 @@ E a segunda é usando o **pipe** (`%>%`)**,** que permite "costurar" operações
 Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que contêm um valor. No caso, pegamos as linhas com idade maior ou igual a 30 e, depois, aquelas que contêm o nome "Gabriela".
 
 ```{r}
-
 # Usando o pipe "%>%" (lê-se "e então")
 data %>%                   # Tenho este objeto 
   filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
@@ -1650,7 +1670,37 @@ ggsave(br_cov + br_mortes,
        height = 10) #Altura
 ```
 
-# 6. Modelo
+# 6. Agora é a sua vez!
+
+Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados, como o boxplot interativo.
+
+**Alguns exemplos de perguntas que você pode se fazer:**
+
+-   **Quem**: Quais são os **países** que menos vacinaram em cada **continente**?
+
+-   **Quando**: Será que **sempre** foi assim ou é algo **recente** dos últimos 5 anos?
+
+-   **Pandemia**: Será que a pandemia afetou a vacinação contra outras doenças?
+
+-   **Comparações**:Qual seria a média de vacinação contra uma doença x para o continente y e onde esses países estão? (Dica: use `group_by()` e `summarize()`)
+
+**Alguns conselhos:**
+
+-   **Explore e leia os códigos atentamente**. Tente entender o que cada linha de código faz e assim você vai pegar o jeito!
+
+-   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
+
+-   **Use o ChatGPT.** O ChatGPT é uma ferramenta extremamente útil para a sua evolução na programação e você precisa aprender a usá-lo e a fazer perguntas corretas. 80% das vezes ele dá respostas perfeitas. Você pode usá-lo para explicar, consertar e criar códigos!
+
+    -   Copie e cole um bloco de código e peça para ele **explicar** cada linha e função.
+
+    -   Deu algum **erro** no código? Manda pra ele também o código e o erro que aparece no console.
+
+    -   Quer fazer algo **específico** e pontual no código? Manda pro ChatGPT!
+
+-   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
+
+# 7. Modelo
 
 Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
 
@@ -1740,7 +1790,7 @@ Este modelo é útil para você criar gráficos de forma mais fácil, consideran
 
 ```
 
-# 7. Analisando a distribuição
+# 8. Extra: Analisando a distribuição
 
 **Quantos países por continente registraram os dados na UNICEF?**
 
@@ -1802,7 +1852,7 @@ cobertura_vacinal %>%
 
 ```
 
-# 8. Avançado: Dados demográficos e economicos com o Gapminder
+# 9. Extra: Dados demográficos e economicos com o Gapminder
 
 O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população. Será
 

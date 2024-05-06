@@ -1574,7 +1574,7 @@ boxplot_regions = cobertura_vacinal %>%
   mutate(year = as.factor(year)) %>% 
  ggplot() +
   aes(x = year, y = coverage, fill = year) +
-  geom_boxplot() +
+  geom_boxplot(outlier.shape = NA) +
   geom_jitter(aes(label = name),
               alpha = 0.2,
               na.rm = T) +

@@ -10,6 +10,8 @@ output:
     df_print: default
 ---
 
+# Sobre o curso
+
 **Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
 
 **Descrição do curso:**
@@ -28,7 +30,7 @@ Os participantes terão uma aula introdutória à ciência de dados e fundamento
 
 -   **Análise Exploratória de Dados:** Realizaremos análises exploratórias de dados, incluindo estatísticas descritivas, gráficos e interpretação de resultados. Aplicaremos os conhecimentos adquiridos em um projeto prático com dados reais de saúde, incluindo análise de vacinação e indicadores de saúde pública.
 
-# Prática
+# Como usar este tutorial?
 
 Para rodar este tutorial, siga os seguintes passos:
 
@@ -1377,7 +1379,7 @@ plot =
   #Add Linha vertical
   geom_vline(xintercept = 95,
              colour = "black",
-             size =0.2,
+             linewidth =0.2,
              linetype = 2) +
   
   #Tema, aparência
@@ -1442,7 +1444,7 @@ ggsave(plot, file = "Sarampo_LatinAmerica_2000_2023.png", width = 10, height = 5
 
 ## Gráfico interativo
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 plot %>% 
   ggplotly() 
 ```
@@ -1546,7 +1548,7 @@ boxplot_years
 
 ## Paleta de cores científica
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Cores
 #Mudando a paleta
 library(ggsci)
@@ -1563,7 +1565,7 @@ boxplot_years +
 
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 #Boxplot simples de ano
 boxplot_regions = cobertura_vacinal %>% 
   filter(type == "country",
@@ -1592,7 +1594,7 @@ boxplot_regions %>%
   ggplotly()
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 #Boxplot por vacina
 cobertura_vacinal %>% 
   filter(type == "country",
@@ -1658,7 +1660,9 @@ br_cov
 
 ### Isolando linhas com gghighlight()
 
-```{r}
+A `gghighlight()` é uma função do pacote com o mesmo nome que permite destacar linhas, pontos e colunas de interesse, **sem precisar filtrar antes**, como fizemos acima. O interessante é que, ao chamarmos a função aqui, podemos ainda ver as linhas dos outros países, embora transparentes, para comparação.
+
+```{r message=FALSE, warning=FALSE}
 #Método 2
 br_cov = cobertura_vacinal %>%
  filter(year >= 2012 & year <= 2022,
@@ -1681,10 +1685,10 @@ br_cov = cobertura_vacinal %>%
        y = "Cobertura (%)") +
   
   gghighlight(name %in% c("Brazil", "Colombia"), 
-              calculate_per_facet = T, #Add quando tiver facets
-              unhighlighted_params = list(linewidth = 1, 
-                                          colour = "gray90", 
-                                          alpha = 0.3)) +
+              calculate_per_facet = T, #Add quando tiver facets. Caso seja um gráfico somente, use calculate_per_facet = F
+              unhighlighted_params = list(linewidth = 1, #Parametros para as outras linhas
+                                          colour = "gray90", #Cor cinza
+                                          alpha = 0.3)) + #Transparencia de 30%
   scale_color_npg() 
 
 br_cov
@@ -1728,17 +1732,61 @@ br_mortes = mortes_doencas %>%
 
 br_mortes 
 
-  
 ```
+
+Estes dados são interessantes, porque n**ão há casos e mortes registradas por polio no Brasil e nas Américas desde 1989**, quando a doença foi eliminada no continente. Além disso, não há registro algum nos sites da OMS e da UNICEF que citem esses números, além da base de dados original ([WHO Mortality database](https://platform.who.int/mortality/themes/theme-details/mdb/communicable-maternal-perinatal-and-nutritional-conditions)). Provavelmente, é um erro de registro. Essa observação é interessante para ficarmos **atentos** à **qualidade** e **coerência** dos dados. Por isso, vamos retirar os dados de mortes por polio.
+
+```{r}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2022,
+        region_complete == "Latin America and Caribbean",
+        death_disease != "Poliomyelitis") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_minimal() +
+  
+  theme(axis.text.x = element_text(angle = 90))+
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_npg()
+
+br_mortes 
+```
+
+E vamos unir esses gráficos
 
 ```{r}
 # Unir gráficos
-br_cov + br_mortes
+patch = br_cov + br_mortes
+patch
 ```
 
 ```{r}
 #Salvar
-ggsave(br_cov + br_mortes, 
+ggsave(patch, 
        file = "br_cov_mortes.png",
        width = 15, #Largura
        height = 10) #Altura
@@ -1750,17 +1798,43 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
 **Alguns exemplos de perguntas que você pode se fazer:**
 
--   **Quem**: Quais são os **países** que menos vacinaram em cada **continente**?
+-   **Quem**:
 
--   **Quando**: Será que **sempre** foi assim ou é algo **recente** dos últimos 5 anos?
+    -   Quais são os **países** que **menos** vacinaram em cada **continente**?
 
--   **Pandemia**: Será que a pandemia afetou a vacinação contra outras doenças?
+    -   Quais são os **países** que **mais** vacinaram em cada **continente**?
 
--   **Comparações**:Qual seria a média de vacinação contra uma doença x para o continente y e onde esses países estão? (Dica: use `group_by()` e `summarize()`)
+    -   Quais são os **países** que **mais** tiveram **mortes** por uma **doença X**? A **difteria** aparentemente teve um surto em algum país **latinoamericano** a partir de **2016**. Qual é este país e por que isso ocorreu? Será que é a baixa **cobertura vacinal**?
+
+-   **Quando**:
+
+    -   Será que a cobertura vacinal ou o número de mortes **sempre** foi assim (alto ou baixo) ou é algo **recente** dos últimos 5 a 10 anos?
+
+    -   Será que a **pandemia** afetou a vacinação contra outras doenças?
+
+    -   Ou a cobertura vacinal já estava caindo **antes mesmo da pandemia**?
+
+-   **Comparações**:
+
+    -   Qual seria a média de vacinação contra uma doença x para o continente y e onde seus países de escolha estão? (Dica: use `group_by()` e `summarize()`).
 
 **Alguns conselhos:**
 
 -   **Explore e leia os códigos atentamente**. Tente entender o que cada linha de código faz e assim você vai pegar o jeito!
+
+-   Pense **quais variáveis** você quer analisar.:
+
+    -   É uma variável **numérica** ou **categórica**?
+
+    -   O gráfico que você quer analisar combina **duas variáveis numéricas** (anos e cobertura vacinal) ou **uma variável categórica** (países) e outra **numérica** (cobertura vacinal)?
+
+    -   A variável numérica é **temporal**? Por exemplo, você vai usar uma **série temporal** (2010, 2011, 2012...) ou somente a **média** de um período (2010 a 2020)?
+
+        -   Caso use todos os anos em uma **série temporal**, recomendo usar um gráfico de **linhas**, onde o eixo x representa os anos e o eixo y, a cobertura vacinal ou numero de mortes.
+
+        -   Agora, caso analise as **médias ou medianas de um período**, um gráfico de **colunas** é recomendado, onde o **eixo x é um ano e o y, o número de mortes ou cobertura vacinal.**
+
+    -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
 
 -   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
 

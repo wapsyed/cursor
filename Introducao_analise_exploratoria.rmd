@@ -669,6 +669,80 @@ data_2 %>%
   arrange(-idade)
 ```
 
+## Joins: merging/unindo tabelas
+
+Na rotina de análise dados, temos de lidar com diferentes tabelas que, muitas vezes, estão associadas entre si por algum elemento. Por exemplo, podemos ter uma tabela com os dados antropométricos (altura, idade e peso) para cada indivíduo e outra com informações pessoais, como endereço, telefone, etc.
+
+**"Uai, mas não posso ter tudo em uma tabela só?"**. Pode, mas precisamos considerar que uma tabela com todos esses dados não são necessariamente úteis em todo o processo. Acima, avaliamos o IMC de cada indivíduo e não seria interessante saber o endereço de cada um. Mas, se tivermos uma tabela enorme, com milhões de pessoas, podemos procurar estabelecer uma associação entre peso e endereço, por exemplo. Ou mesmo encontrar relações entre essas variáveis e a incidência de alguma doença infecciosa.
+
+Dessa forma, é importante construir e dividir tabelas para facilitar nossa manipulação de dados e, não menos importante, reduzir o **tamanho dos arquivos individuais**.
+
+Para ilustrar isso, vamos criar uma tabela chamada `endereco`, que contem o nome, cidade e bairro de cada indivíduo.
+
+```{r}
+endereco = tribble(~nome, ~cidade, ~bairro,
+          "Gabriela", "São Paulo", "Consolação",
+          "Júlia", "Ribeirão Preto", "Cidade Universitária",
+          "Beatriz", "Cuiabá", "Centro",
+          "Luiza", "São Paulo", "Centro",
+          "Thaís", "São Paulo", "Butantã")
+endereco
+```
+
+Uma forma de unir a tabela `data_2` com a tabela `endereco` é pelas linhas de uma coluna em comum, no caso a coluna `nome`. Essa operação é chamada de **merging**. Para isso, temos as funções `*_join()`. O `*_` seguido por `join()` significa que existem nomes diferentes de funções que terminam com "join" e fazem algo parecido.
+
+### inner_join()
+
+Uma dessas funções é a `inner_join()`, que somente une as linhas correspondentes de duas tabelas. Ou seja, se tem uma linha com o nome X nas tabelas 1 e 2, as colunas das tabelas 1 e 2 serão unidas. Se existir uma linha com o nome X na tabela 1, mas não na tabela 2, então as colunas não serão unidas para aquela linha. Confuso, mas você vai entender visualizando aqui.
+
+```{r}
+data_2 %>% #Tabela original (tabela 1)
+  inner_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+Veja que a "Rafaela" não foi incluída, porque não havia dados sobre ela na tabela de endereços.
+
+### left_join()
+
+Mas, suponhamos que seria interessante saber quem da tabela 1 **não** tem endereço cadastrado e, dessa forma, podemos procurar registrar em outra ocasião. Para isso, temos o `left_join()`. Nele, em vez de não mostrar a linha da Rafaela na nova tabela, a função inclui valores `NA` nessa linha. A função tem o nome de "**left**" porque considera a tabela 1 como a tabela da esquerda. **Em outras palavras**, queremos anotar todas as linhas da tabela da esquerda (tabela 1) com os dados da tabela da direita (tabela 2) a partir dos elementos da coluna em comum chamada "`nome`".
+
+```{r}
+data_2 %>% #Tabela original (tabela 1)
+  left_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+### anti_join()
+
+Da mesma forma, podemos obter somente as linhas que estão na tabela 1, mas não na tabela 2. Isso é feito com a função `anti_join()`. O output dela é somente a linha da Rafaela com as colunas da tabela 1.
+
+```{r}
+data_2 %>% #Tabela original (tabela 1)
+  anti_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+### right_join()
+
+Observe que a tabela `endereco` também tem uma linha que não está na tabela 1, a "Thais", e que ela não foi mostrada nas funções anteriores. Para incluir, podemos usar o right_join(), que assim como o left_join(), mostra todas as linhas de uma tabela, incluindo aquelas que não estão na outra. No caso, ela mostra todas as linhas da tabela 2, mesmo aquelas que não estão anotadas com os dados da tabela 1. Além disso, ela não mostra as linhas da tabela 1 que não estão na tabela, no caso "Rafaela".
+
+```{r}
+data_2 %>% #Tabela original (tabela 1)
+  right_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+### full_join()
+
+Agora, se quisermos ter uma tabela completa, com todas as linhas das tabelas 1 e 2, mesmo aquelas que não correspondem entre si, usamos a função `full_join()`.
+
+```{r}
+data_2 %>% #Tabela original (tabela 1)
+  full_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
 ## Usando o `pipe` para fazer múltiplas operações de uma vez
 
 Usando o pipe, podemos escrever e ler códigos em uma sequência lógica fácil.

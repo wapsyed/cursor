@@ -68,7 +68,12 @@ Para rodar este tutorial, siga os seguintes passos:
 
 Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto para começar a trabalhar.
 
-**Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_analise_exploratoria.rmd`**". Se clicar no `.md`, não funcionará.
+## Recomendações para evitar erros comuns
+
+> 1.  **Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_analise_exploratoria.rmd`**". Se clicar no `.md`, não funcionará.
+> 2.  **Siga o tutorial todo neste documento ou crie uma copia para fazer as anotações**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site.
+> 3.  **Ao fazer a parte prática** com suas análises, faça no mesmo documento. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+> 4.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
 
 # 1. Biblioteca e pacotes
 
@@ -889,7 +894,14 @@ cobertura_vacinal %>%
 cobertura_vacinal %>% 
   count(diseases) %>% 
   head(10)
+```
 
+**Os dados foram registrados de que ano a que ano?**
+
+```{r}
+cobertura_vacinal %>% 
+  summarize(min_valor = min(year),
+            max_valor = max(year))
 ```
 
 **Quais são as vacinas que protegem contra cada doença? Podemos descobrir isso de duas formas.**
@@ -910,7 +922,11 @@ cobertura_vacinal %>%
     distinct(vaccine) 
 ```
 
-Temos também uma forma de contar a frequência dessas linhas. Veja que há uma diferença nas observações/linhas por região, sendo a região da américa latina a que mais contém observações, e a região do sul-asiático a que tem menos. No caso de "`Global`", esses dados se referem à cobertura vacinal do conjunto de todos os países para cada vacina, e por isso tem `n = 441`.
+Temos também uma forma de contar a frequência dessas linhas. Veja que há uma diferença nas observações/linhas por região, sendo a região da américa latina a que mais contém observações, e a região do sul-asiático a que tem menos.
+
+Além disso, a região "`Non-programme`" inclui países que não estão nos programas de assistência da ONU/OMS, como a Estônia e o Qatar, entretanto não há uma explicação completa em nenhuma das fontes que consultei. É importante incluir esses dados, ainda que não contribuam muito para nossas conclusões.
+
+No caso de "`Global`", esses dados se referem à cobertura vacinal do conjunto de todos os países para cada vacina (`n = 14`), e por isso tem `n = 441`.
 
 ```{r}
 #Tabela de frequências
@@ -1011,12 +1027,12 @@ Algumas modificações foram feitas na tabela original. Observe que os valores p
 continentes_vac = cobertura_vacinal %>% 
   
   drop_na(coverage,
-          continent) %>% 
+          region_complete) %>% 
   
   filter(between(year, 2000, 2023),
          type == "country") %>% 
   
-  group_by(vaccine, continent) %>% 
+  group_by(vaccine, region_complete) %>% 
   
   summarise(
     mean = mean(coverage),
@@ -1046,11 +1062,11 @@ continentes_vac
 continentes_mortes = mortes_doencas %>% 
   
   drop_na(total_deaths,
-          continent) %>%
+          region_complete) %>%
   
   filter(between(year, 2000, 2023)) %>% 
   
-  group_by(death_disease, continent) %>%
+  group_by(death_disease, region_complete) %>%
   
   summarise(
     cumulativo = sum(total_deaths),
@@ -1112,22 +1128,22 @@ Para melhorar, podemos adicionar mais funções, como labels para os pontos do g
 #Gráfico de pontos simples
 continentes_pontos_vac = continentes_vac %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
-  mutate(continent = fct_reorder(continent, median)) %>% 
+  mutate(region_complete = fct_reorder(region_complete, median)) %>% 
   
   #Chamando a função. Aqui se usa "+" em vez de "%>%"
   ggplot() +  
   
   #Mapeando os eixos
   aes(x = median,
-      y = continent,
-      color = continent) +
+      y = region_complete,
+      color = region_complete) +
   
   #Geometrias
   geom_point() +
   
   #Labels nos pontos
   geom_label(aes(x = median, 
-                y = continent, 
+                y = region_complete, 
                 label = median)) +
   
   #Tema
@@ -1187,19 +1203,19 @@ pontos
 #Gráfico de barras simples
 continente_barras_vac = continentes_vac %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
-  mutate(continent = fct_reorder(continent, median)) %>% 
+  mutate(region_complete = fct_reorder(region_complete, median)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
   aes(x = median,
-      y = continent,
-      fill = continent) +
+      y = region_complete,
+      fill = region_complete) +
   
   #Geometrias
   geom_col() +
   
   geom_text(aes(x = median, 
-                y = continent, 
+                y = region_complete, 
                 label = median),
             hjust = -0.5) +
   
@@ -1263,19 +1279,19 @@ pais_barras_vac
 #Gráfico de pontos simples
 barras_mortes = continentes_mortes %>% #Dataframe
   filter(death_disease == "Measles") %>% 
-  mutate(continent = fct_reorder(continent, cumulativo)) %>% 
+  mutate(region_complete = fct_reorder(region_complete, cumulativo)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
   aes(x = cumulativo,
-      y = continent,
-      fill = continent) +
+      y = region_complete,
+      fill = region_complete) +
   
   #Geometrias
   geom_col() +
   
   geom_label(aes(x = cumulativo, 
-                y = continent, 
+                y = region_complete, 
                 label = cumulativo),
             hjust = -0.2) +
   
@@ -1524,7 +1540,7 @@ boxplot_years = cobertura_vacinal %>%
  ggplot() +
   aes(x = "", 
       y = coverage, 
-      fill = continent) +
+      fill = region_complete) +
   geom_boxplot() +
   scale_fill_brewer(palette = "Set2", direction = 1) +
   theme_bw() + 
@@ -1581,7 +1597,7 @@ boxplot_regions = cobertura_vacinal %>%
   scale_fill_brewer(palette = "Set2", direction = 1) +
   scale_color_distiller(palette = "Set2", direction = 1) +
   theme_minimal() +
-  facet_wrap(vars(continent)) +
+  facet_wrap(vars(region_complete)) +
   scale_fill_npg()
 
 boxplot_regions
@@ -1600,7 +1616,7 @@ cobertura_vacinal %>%
   filter(type == "country",
          year == 2015) %>% 
  ggplot() +
-  aes(x = "", y = coverage, fill = continent) +
+  aes(x = "", y = coverage, fill = region_complete) +
   geom_boxplot() +
   scale_fill_viridis_d(option = "plasma", direction = 1) +
   theme_minimal() +
@@ -1608,7 +1624,7 @@ cobertura_vacinal %>%
   labs(x = "Regiões",
        y = "Cobertura",
        titulo = "Cobertura vacinal por região, em 2000") +
-  scale_fill_lancet()  
+  scale_fill_npg()  
 
 ```
 
@@ -1796,6 +1812,26 @@ ggsave(patch,
 
 Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados, como o boxplot interativo.
 
+**Recomendações**
+
+1.  **Ao fazer a parte prática com suas análises, faça no mesmo documento**. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+
+2.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
+
+    **Por exemplo:**
+
+```{r}
+#Código exemplo
+#...
+```
+
+> "Meu código... Gráfico do tipo A dos países XYZ."
+
+```{r}
+#Seu código
+#...
+```
+
 **Alguns exemplos de perguntas que você pode se fazer:**
 
 -   **Quem**:
@@ -1820,9 +1856,9 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
 **Alguns conselhos:**
 
--   **Explore e leia os códigos atentamente**. Tente entender o que cada linha de código faz e assim você vai pegar o jeito!
+-   **Explore e leia os códigos do tutorial atentamente**. Tente entender o que cada linha de código faz.
 
--   Pense **quais variáveis** você quer analisar.:
+-   Pense **quais variáveis** você quer analisar:
 
     -   É uma variável **numérica** ou **categórica**?
 
@@ -1836,6 +1872,8 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
     -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
 
+    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
+
 -   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
 
 -   **Use o ChatGPT.** O ChatGPT é uma ferramenta extremamente útil para a sua evolução na programação e você precisa aprender a usá-lo e a fazer perguntas corretas. 80% das vezes ele dá respostas perfeitas. Você pode usá-lo para explicar, consertar e criar códigos!
@@ -1848,178 +1886,173 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
 -   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
 
-# 7. Modelo
+# 7. Extra: Analisando distribuições e uma pincelada de estatística
 
-Este modelo é útil para você criar gráficos de forma mais fácil, considerando as layers, funções e argumentos mais utilizados no ggplot. Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
+Em um conjunto de dados que registra a cobertura vacinal ao longo do tempo para diferentes países, é comum encontrar registros ausentes (e NAs) para determinados países em determinados anos. Isso pode ser devido a vários motivos, como a introdução tardia de determinadas vacinas em alguns países ou a falta de disponibilidade de dados.
 
-**Selecione todo o código e segure Ctrl + Shift + C para tornar as linhas executáveis.**
+Para investigar se há algum padrão na frequência de países que registram a cobertura vacinal ao longo dos anos, podemos criar um gráfico que represente essa frequência. Uma abordagem interessante é agrupar os países por região da OMS e observar se há um aumento na quantidade de países que começaram a registrar a cobertura vacinal ao longo do tempo.
 
-```{r}
+É importante ressaltar que estamos avaliando a frequência de países que registram a cobertura vacinal por ano e não a qualidade da cobertura vacinal em si.
 
-# # Filtrar tabela
-# latin_2000_2023 %>%
-#   filter(vaccine %in% c("MCV1")) %>%
-#   mutate(name = fct_reorder(name, median)) %>% 
-#  
-#   #Criar base do gráfico
-#   ggplot() +
-#   aes(x = x, 
-#       y = y, 
-#       colour = ) + #Aesthetics (o que cada elemento representa)
-#   
-#   #Geometria
-#   geom_point(shape = "circle", 
-#              size = 1) + 
-#   
-#   geom_text(aes(y = )) +
-#   
-#   #Tema, aparência
-#   theme_light() + 
-#   
-#   #Escala de cores
-#   scale_colour_gradient(low = "#DC0000B2", 
-#                         high = "#4DBBD5B2") + 
-#   
-#   # Labels, titulo, subtitulo, titulo dos eixos
-#   labs(
-#      title = "",
-#      subtitle = "",
-#      y = "",
-#      x = "",
-#      tag = "",
-#      caption = "Fonte:") +
-#   
-#   # Aparência especifica
-#   theme(
-#     
-#     #Texto geral
-#     text = element_text(family = "", 
-#                         color = ""), 
-#     
-#     #Título, subtítulo e tag
-#     plot.title = element_text(size = 12, 
-#                               face = "bold", 
-#                               hjust = 0,
-#                               vjust = 0.5),
-#     plot.subtitle = element_text(size = 10),
-#     plot.tag.position = "topleft",
-#     plot.tag = element_text(vjust = 5,
-#                             size = 12, 
-#                             face = "bold"),
-#     #Eixos
-#     axis.title.x = element_text(size = 10,
-#                                 angle = 0,
-#                                 color = "black"),
-#     axis.text.x = element_text(color = "black",
-#                                size = 8,
-#                                angle = 90),
-#     axis.text.y = element_text(size = 8,
-#                                color = "black"),
-#     
-#     #Margens do gráfico
-#     plot.margin = unit(c(0, #Top
-#                          0, #Right
-#                          0, #Bottom
-#                          0), #Left 
-#                        "cm") #Unidade) 
-#   ) +
-#   
-#   #Marcações
-#   #Linhas
-#   geom_hline(yintercept = "Brazil", 
-#              colour = "blue") +
-#   geom_hline(yintercept = "Haiti", 
-#               colour = "red") +
-#   geom_vline(xintercept = 95,
-#              colour = "black",
-#              size = 1,
-#              linetype = 1
-#              ) 
+**Quantos países por região da OMS registraram os dados na UNICEF?**
 
-```
+Observa-se que algumas vacinas, como BCG, DTP1, DTP3, POL3 e MCV1, já apresentam registros desde o ano de 1980, com a participação de muitos países. Isso ocorre devido ao fato de que essas vacinas já faziam parte do calendário de imunização de diversos países. No entanto, é importante ressaltar que nem todos os países podem ter reportado sua cobertura vacinal à OMS nesse período, ou até mesmo podem não ter implementado a vacinação.
 
-# 8. Extra: Analisando a distribuição
+Por outro lado, algumas vacinas, como IPV1 e MCV2, começaram a ser registradas após o ano 2000, mas já contam com a participação de muitos países nos registros. Isso se deve ao fato de que essas vacinas estavam disponíveis muito antes do início dos registros, evidenciando sua ampla adoção em diferentes países.
 
-**Quantos países por continente registraram os dados na UNICEF?**
+Além disso, é possível observar que algumas vacinas começaram a ser registradas de forma gradual ao longo do tempo, como HEPBB, HEPB3, PCV3, HIB3 e ROTAC. Esse padrão faz sentido, uma vez que essas vacinas foram desenvolvidas mais recentemente em comparação com as mencionadas anteriormente.
+
+Um caso interessante é o da vacina contra febre amarela (YFV), que existe desde a década de 1930. Surpreendentemente, sua cobertura vacinal apresenta um comportamento semelhante ao das vacinas introduzidas mais recentemente. Além disso, é importante observar que nem todas as regiões registram essa vacina, sendo mais concentrada em áreas tropicais onde a doença é endêmica.
+
+Essas observações mostram a complexidade e a heterogeneidade na implementação e registro da cobertura vacinal em diferentes regiões e ao longo do tempo. Ainda, refletem as diferentes políticas de saúde pública e condições epidemiológicas em todo o mundo.
 
 ```{r}
 #Quantos países por continente registraram os dados na UNICEF?
-
 #Todos os continentes juntos
 cobertura_vacinal %>%
- filter(type == "country",
-        continent != "Other") %>% 
- select(coverage, year, continent, vaccine) %>% 
- drop_na(coverage) %>% 
- ggplot() +
-  aes(x = year, fill = continent) +
+ filter(type == "country") %>% 
+  select(coverage, year, region_complete, vaccine) %>% 
+  mutate(region_complete = fct_reorder(region_complete, coverage)) %>% 
+  drop_na(coverage) %>% 
+  ggplot() +
+  aes(x = year, fill = region_complete) +
   geom_histogram(bins = 43L) +
   theme_minimal() +
-  facet_wrap(vars(vaccine)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))+
+  facet_wrap(~vaccine, scale= "free_y") +
+    labs(title = "Cobertura vacinal por Região da OMS",
+       subtitle = "Diferentes vacinas",
+       x = "Anos",
+       y = "",
+       fill = "Região da OMS") +
   scale_fill_npg()
 ```
 
-**Continentes separados**
+**Qualidade da cobertura vacinal: Os países aumentaram sua cobertura vacinal ao longo das décadas?**
 
-```{r}
-# Continentes separados
-cobertura_vacinal %>%
- filter(type == "country",
-        continent != "Other") %>% 
- select(coverage, year, continent, vaccine) %>% 
- drop_na(coverage) %>% 
- ggplot() +
-  aes(x = year, fill = continent) +
-  geom_histogram(bins = 43L) +
-  scale_fill_hue(direction = 1) +
-  theme_minimal() +
-  facet_grid(continent ~ vaccine, 
-             scales = "free") +
-  theme(axis.text.x = element_text(angle = 90))
-```
+Para visualizar a distribuição de dados em diferentes grupos, como regiões, podemos recorrer a um tipo de gráfico conhecido como **ridgeline**. Esses gráficos apresentam curvas de densidade sobrepostas, o que permite uma comparação direta entre as distribuições de cada grupo. Por exemplo, ao analisar a cobertura vacinal em diferentes regiões, podemos observar se os países convergem para um valor específico ou se apresentam variações significativas.
 
-**Quantos países aumentaram sua cobertura vacinal em cada decada?**
-
-```{r}
-#Quantos países aumentaram sua cobertura vacinal em cada decada?
+```{r message=FALSE, warning=FALSE}
+#Pacote para o gráfico de ridgelines
+library(ggridges) 
 
 cobertura_vacinal %>%
  filter(type == "country",
-        continent != "Other",
-        year %in% c(1990, 2000, 2010, 2019)) %>%
+        year %in% c(1990,2000, 2010, 2020),
+        diseases == "Measles") %>%
+  mutate(region_complete = fct_rev(region_complete)) %>% 
  ggplot() +
-  aes(x = coverage, fill = continent) +
-  geom_histogram(bins = 10L) +
-  theme_minimal() +
+  aes(x = coverage, y = region_complete, fill = fct_rev(region_complete)) +
+   geom_density_ridges() +
+  theme_few()+
   theme(plot.caption = element_text(size = 13L),
-        legend.position = "top",
+        legend.position = "none",
         axis.text.x = element_text(angle = 90),
         strip.text.y = element_text(angle = 0, 
                                     hjust = 0)) +
-  facet_grid(~vaccine~year, scales = "free") 
+  facet_grid(~vaccine~year, scales = "free_y") +
+  labs(title = "Cobertura vacinal por Região da OMS",
+       subtitle = "Vacinas contra sarampo",
+       x = "Cobertura (%)",
+       y = "",
+       fill = "Região da OMS") +
+  scale_fill_npg() 
 
 ```
 
-# 9. Extra: Dados demográficos e economicos com o Gapminder
+Quando todos os países de uma região têm valores semelhantes, a curva de densidade apresenta um único pico agudo. Nesse caso, esse pico representa a **moda**,a **mediana** e a **média** da distribuição, que são **medidas de centralidade**. A moda é o valor mais frequente. Além disso, também identificamos a **mediana**, que corresponde ao valor do meio quando os dados estão ordenados, e a **média**, que é calculada somando todos os valores e dividindo pelo número total de observações.
 
-O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população. Será
+No entanto, quando os países dentro de uma região apresentam coberturas vacinais diferentes, a curva de densidade tende a se achatar, indicando uma distribuição mais dispersa, e as medidas de centralidade não têm o mesmo valor.
+
+Em alguns casos, é possível observar dois ou mais picos distintos, o que caracteriza uma distribuição **bimodal** ou **multimodal**, dependendo do número de picos identificados. Isso é importante para identificar padrões em diferentes grupos ou categorias. Observe também que a cobertura vacinal para a maioria dos países aumentou ao longo das décadas, convergindo para 90 a 100%.
+
+Todavia, uma **curva** é uma suavização dessas frequências em um intervalo de valores. Usando um **histograma**, que nada mais é do que um gráfico de barras, podemos ver melhor essas nuances. Observe que o que foi modificado no código foram os argumentos usados na função `geom_density_ridges()`, com `stat = "binline"` e o número de `bins`. As bins são as discretizações de uma variável contínua, como a cobertura vacinal. Ou seja, dividimos o intervalo de 0-100% em 20. Se aumentarmos essas bins para 100, o gráfico ficará mais detalhado, mas menos informativo, mas o contrário também será verdade.
+
+Altere os valores e veja os resultados.
 
 ```{r message=FALSE, warning=FALSE}
+#Qual a cobertura vacinal nos anos 1990 e 2019 para vacinas contra o sarampo?
+cobertura_vacinal %>%
+ filter(type == "country",
+        year %in% c(2000, 2010, 2020),
+        diseases == "Measles") %>%
+  mutate(region_complete = fct_rev(region_complete)) %>% 
+ ggplot() +
+  aes(x = coverage, y = region_complete, fill = fct_rev(region_complete)) +
+   geom_density_ridges(stat = "binline", bins = 20) +
+  theme_few()+
+  theme(plot.caption = element_text(size = 13L),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 90),
+        strip.text.y = element_text(angle = 0, 
+                                    hjust = 0)) +
+  facet_grid(~vaccine~year, scales = "free") +
+  labs(title = "Cobertura vacinal por Região da OMS",
+       subtitle = "Vacinas contra sarampo",
+       x = "Cobertura (%)",
+       y = "",
+       fill = "Região da OMS") +
+  scale_fill_npg()
+```
 
+# 8. Extra: Dados demográficos e economicos com o Gapminder
+
+O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população. Vamos ver se a cobertura vacinal tem alguma relação com a expectativa de vida nos países.
+
+```{r message=FALSE, warning=FALSE}
 gapminder %>% 
-  filter(year %in% c(1952, 1982, 2002)) %>% 
+  left_join(cobertura_vacinal %>% rename(country = name),
+            by = join_by(country, year)) %>% 
+  filter(vaccine == "BCG") %>% 
 ggplot() +
   aes(
-    x = gdpPercap,
-    y = lifeExp,
-    colour = continent,
+    x = lifeExp,
+    y = coverage,
+    colour = region_complete,
     size = pop,
     group = country
   ) +
   geom_point(shape = "circle") +
-  scale_x_continuous(trans = "log10") +
+  facet_wrap(~year)+
+  #scale_x_continuous(trans = "log10") +
   theme_minimal() +
-  facet_wrap(vars(year), scales = "free_x") +
-  gghighlight(country == "China") +
+  labs(title = "Cobertura vacinal e Expectativa de vida",
+       subtitle = "Vacina BCG", 
+       x = "Expectativa de vida (anos)",
+       y = "Cobertura vacinal (%)",
+       color = "Região",
+       shape = "População") +
+  scale_color_npg()
+```
+
+Aparentemente, quando a cobertura vacinal para a BCG aumenta, a expectativa de vida também aumenta.
+
+Agora, troque a variável do eixo x por PIB.
+
+```{r message=FALSE, warning=FALSE}
+
+library(scales)
+gapminder %>% 
+  left_join(cobertura_vacinal %>% rename(country = name),
+            by = join_by(country, year)) %>% 
+  filter(vaccine == "BCG") %>% 
+ggplot() +
+  aes(
+    x = gdpPercap,
+    y = coverage,
+    colour = region_complete,
+    size = pop,
+    group = country
+  ) +
+  geom_point(shape = "circle") +
+  facet_wrap(~year)+
+  scale_x_continuous(trans = "log10", labels = unit_format(unit = "K", scale = 1e-3))+
+  theme_minimal() +
+  labs(title = "Cobertura vacinal e PIB per capita",
+       subtitle = "Vacina BCG", 
+       x = "PIB per capita",
+       y = "Cobertura vacinal (%)",
+       color = "Região",
+       shape = "População") +
   scale_color_npg()
 ```

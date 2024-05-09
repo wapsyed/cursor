@@ -221,3 +221,4 @@ Deaths_infectious_diseases_filtered %>%
 #Quais colunas são iguais e têm nomes diferentes?
 glimpse(Deaths_infectious_diseases_filtered)
 
+  

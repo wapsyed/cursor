@@ -97,6 +97,7 @@ options(repos = c(CRAN = "https://cran.r-project.org"))
 # install.packages("patchwork")
 # install.packages("ggsci")
 # install.packages("gapminder")
+# install.packages("ggpmisc")
 
 ```
 
@@ -118,6 +119,7 @@ library(patchwork) #Unir gráficos
 library(gghighlight) #Marcar pontos e linhas 
 library(ggsci) #Paleta de cores 
 library(gapminder) #Dataset sobre população, PIB e expectativa de vida dos países
+library(ggpmisc)
 ```
 
 # 2. Operações básicas
@@ -2003,16 +2005,16 @@ O gapminder é um site e um pacote que apresenta diferentes dados sobre países 
 gapminder %>% 
   left_join(cobertura_vacinal %>% rename(country = name),
             by = join_by(country, year)) %>% 
-  filter(vaccine == "BCG") %>% 
+  filter(vaccine == "BCG",
+         region_complete != "Non-programme") %>% 
 ggplot() +
   aes(
     x = lifeExp,
     y = coverage,
-    colour = region_complete,
-    size = pop,
-    group = country
   ) +
-  geom_point(shape = "circle") +
+  geom_point(aes(colour = region_complete,
+    size = pop),
+    shape = "circle") +
   facet_wrap(~year)+
   #scale_x_continuous(trans = "log10") +
   theme_minimal() +
@@ -2025,34 +2027,77 @@ ggplot() +
   scale_color_npg()
 ```
 
-Aparentemente, quando a cobertura vacinal para a BCG aumenta, a expectativa de vida também aumenta.
+Aparentemente, quando a cobertura vacinal para a **BCG** aumenta, a expectativa de vida também aumenta, e isso ocorre ao longo dos anos. Além disso, veja que, principalmente entre 1982 e 1992, os países seguem um comportamento bem parecido com o de uma reta na diagonal.
 
-Agora, troque a variável do eixo x por PIB.
+Em estatística, se duas variáveis se relacionam gerando formatos lineares (retas) ou não lineares (curvas), dizemos que elas estão **associadas**. Mas, qual a **direção** e **força** dessa associação? Bem, neste caso, se as duas aumentam juntas, dizemos que há uma **correlação positiva (\>0)**. Mas, **quão positiva** ela é?
+
+Neste caso, sabemos que elas **parecem** seguir uma **reta**, mas precisamos forçar um pouco, porque elas estão dispersas. Quanto mais os pontos se agrupam e menor é a dispersão, maior é a força dessa correlação. Além disso, por mais que os pontos pareçam se agrupar em uma reta, há diferentes formas de traçá-la, com angulos diferentes. A técnica que encontra a melhor reta em um gráfico de dispersão é chamada de **regressão**, que no caso é **linear**.
+
+No gráfico abaixo, usamos as funções `geom_smooth()` do ggplot2 e `stat_correlation()` do pacote `ggpmisc` para fazer a regressão linear e apresentar o coeficiente de correlação R (método de Pearson). Além disso, também calculamos o grau de dispersão dos pontos em relação à reta. Quando o R^2^ está mais próximo de 1, menor é a dispersão em torno da reta e melhor essa reta explica o comportamento. Por exemplo, se o R for 1, a correlação é positiva e forte, e se R^2^ for próximo de 1, podemos **predizer** que, a partir de um valor na variável do eixo X, o valor correspondente na variável do eixo Y será **predito** com alto grau de confiança.
+
+Em **estatística** e em **machine learning**, é comum atribuir nomes diferentes aos mesmos conceitos. Por exemplo, a variável no eixo X é denominada **variável independente** na estatística e **preditor** no contexto de machine learning. Já a variável no eixo Y é referida como **variável dependente** na estatística, enquanto no âmbito de machine learning, é denominada **variável resposta ou outcome**. Entender isso é importante porque, embora não exploraremos as técnicas e conceitos de machine learning, no presente curso, você pode se perder nesses diferentes contextos.
 
 ```{r message=FALSE, warning=FALSE}
 
-library(scales)
 gapminder %>% 
   left_join(cobertura_vacinal %>% rename(country = name),
             by = join_by(country, year)) %>% 
-  filter(vaccine == "BCG") %>% 
+  filter(vaccine == "BCG",
+         region_complete != "Non-programme") %>% 
 ggplot() +
-  aes(
-    x = gdpPercap,
-    y = coverage,
-    colour = region_complete,
-    size = pop,
-    group = country
-  ) +
-  geom_point(shape = "circle") +
+  aes(x = lifeExp,
+    y = coverage) +
+  geom_point(shape = "circle",
+             aes(colour = region_complete,
+                 size = pop),
+             alpha = 0.2) +
+  geom_smooth(method = "lm",
+              color = "black",
+              se = F)+
+  stat_correlation(method = "pearson",
+                   size = 3,
+                   mapping = use_label(c("R", "R2"))) +
   facet_wrap(~year)+
-  scale_x_continuous(trans = "log10", labels = unit_format(unit = "K", scale = 1e-3))+
   theme_minimal() +
-  labs(title = "Cobertura vacinal e PIB per capita",
+  labs(title = "Cobertura vacinal e Expectativa de vida",
        subtitle = "Vacina BCG", 
-       x = "PIB per capita",
+       x = "Expectativa de vida (anos)",
        y = "Cobertura vacinal (%)",
        color = "Região",
        shape = "População") +
-  scale_color_npg()
+  scale_color_npg() 
+```
+
+Ao usarmos a regressão linear com todos os países, desconsideramos os **agrupamentos** dados pelas regiões da OMS. Afinal, cada região tem variabilidade entre seus países, e na média, uma região pode ter um comportamento diferente da outra. Podemos ver isso fazendo uma regressão linear por região e por ano.
+
+```{r message=FALSE, warning=FALSE}
+gapminder %>% 
+  left_join(cobertura_vacinal %>% rename(country = name),
+            by = join_by(country, year)) %>% 
+  filter(vaccine == "BCG",
+         region_complete != "Non-programme") %>% 
+ggplot() +
+  aes(x = lifeExp,
+    y = coverage,
+    color = region_complete) +
+  geom_point(shape = "circle",
+             aes(colour = region_complete,
+                 size = pop),
+             alpha = 0.2) +
+  geom_smooth(aes(group = region_complete,
+                  color = region_complete),
+              method = "lm",
+              se = F)+
+  stat_correlation(method = "pearson",
+                   size = 3,
+                   mapping = use_label(c("R", "R2"))) +
+  facet_wrap(~year)+
+  theme_minimal() +
+  labs(title = "Cobertura vacinal e Expectativa de vida",
+       subtitle = "Vacina BCG", 
+       x = "Expectativa de vida (anos)",
+       y = "Cobertura vacinal (%)",
+       color = "Região",
+       shape = "População") +
+  scale_color_npg() 
 ```

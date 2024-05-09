@@ -2009,8 +2009,8 @@ gapminder %>%
          region_complete != "Non-programme") %>% 
 ggplot() +
   aes(
-    x = lifeExp,
-    y = coverage,
+    x = coverage,
+    y = lifeExp,
   ) +
   geom_point(aes(colour = region_complete,
     size = pop),
@@ -2020,8 +2020,8 @@ ggplot() +
   theme_minimal() +
   labs(title = "Cobertura vacinal e Expectativa de vida",
        subtitle = "Vacina BCG", 
-       x = "Expectativa de vida (anos)",
-       y = "Cobertura vacinal (%)",
+       x = "Cobertura vacinal (%)",
+       y = "Expecativa de vida (anos)",
        color = "Região",
        shape = "População") +
   scale_color_npg()
@@ -2037,6 +2037,8 @@ No gráfico abaixo, usamos as funções `geom_smooth()` do ggplot2 e `stat_corre
 
 Em **estatística** e em **machine learning**, é comum atribuir nomes diferentes aos mesmos conceitos. Por exemplo, a variável no eixo X é denominada **variável independente** na estatística e **preditor** no contexto de machine learning. Já a variável no eixo Y é referida como **variável dependente** na estatística, enquanto no âmbito de machine learning, é denominada **variável resposta ou outcome**. Entender isso é importante porque, embora não exploraremos as técnicas e conceitos de machine learning, no presente curso, você pode se perder nesses diferentes contextos.
 
+Observe que o maior valor de R foi de 0.61 e de R^2^, de 0.37. Somente de observar os gráficos, vemos que esses resultados corroboram com a dispersão dos países, com muitos nas extremidades dos gráficos. Neste caso, podemos dizer que, apesar de uma associação entre as variáveis, a correlação é positiva e intermediária. Além disso, a expectativa de vida somente explica 37% da variação da cobertura vacinal entre os países.
+
 ```{r message=FALSE, warning=FALSE}
 
 gapminder %>% 
@@ -2045,8 +2047,8 @@ gapminder %>%
   filter(vaccine == "BCG",
          region_complete != "Non-programme") %>% 
 ggplot() +
-  aes(x = lifeExp,
-    y = coverage) +
+  aes(x = coverage,
+    y = lifeExp) +
   geom_point(shape = "circle",
              aes(colour = region_complete,
                  size = pop),
@@ -2061,14 +2063,14 @@ ggplot() +
   theme_minimal() +
   labs(title = "Cobertura vacinal e Expectativa de vida",
        subtitle = "Vacina BCG", 
-       x = "Expectativa de vida (anos)",
-       y = "Cobertura vacinal (%)",
+       x = "Cobertura vacinal (%)",
+       y = "Expecativa de vida (anos)",
        color = "Região",
        shape = "População") +
   scale_color_npg() 
 ```
 
-Ao usarmos a regressão linear com todos os países, desconsideramos os **agrupamentos** dados pelas regiões da OMS. Afinal, cada região tem variabilidade entre seus países, e na média, uma região pode ter um comportamento diferente da outra. Podemos ver isso fazendo uma regressão linear por região e por ano.
+Ao usarmos a regressão linear com todos os países, desconsideramos os **agrupamentos** dados pelas regiões da OMS. Afinal, cada região tem variabilidade entre seus países, e na média, uma região pode ter um comportamento diferente da outra. Podemos ver isso fazendo uma regressão linear por região e por ano. Observe que, ao d
 
 ```{r message=FALSE, warning=FALSE}
 gapminder %>% 
@@ -2077,8 +2079,8 @@ gapminder %>%
   filter(vaccine == "BCG",
          region_complete != "Non-programme") %>% 
 ggplot() +
-  aes(x = lifeExp,
-    y = coverage,
+  aes(x = coverage,
+    y = lifeExp,
     color = region_complete) +
   geom_point(shape = "circle",
              aes(colour = region_complete,
@@ -2095,8 +2097,8 @@ ggplot() +
   theme_minimal() +
   labs(title = "Cobertura vacinal e Expectativa de vida",
        subtitle = "Vacina BCG", 
-       x = "Expectativa de vida (anos)",
-       y = "Cobertura vacinal (%)",
+       x = "Cobertura vacinal (%)",
+       y = "Expecativa de vida (anos)",
        color = "Região",
        shape = "População") +
   scale_color_npg() 

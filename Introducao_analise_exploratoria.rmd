@@ -1,12 +1,13 @@
 ---
 title: "CursoR - Introdução à análise de dados no R"
-author: 'Autor: Wasim Aluísio Prates Syed'
+author: 'Autor: Wasim Aluísio Prates Syed (@wasimvacinas)'
 date: "`r Sys.Date()`"
 output:
-  html_document: 
+  html_document:
+    theme: simplex
     toc: yes
-    collapsed: yes
-    df_print: default
+    toc_float:
+      collapsed: true
 ---
 
 # Sobre o curso
@@ -84,6 +85,12 @@ Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto
 > 3.  **Ao fazer a parte prática** com suas análises, faça no mesmo documento. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
 > 4.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
 
+## **Curtiu este material?**
+
+> Estamos disponibilizando este material de forma gratuita para, de alguma forma, compartilhar um conhecimento de qualidade e acessível para todos. Se você achou um material de boa qualidade e gostou do nosso trabalho, que tal nos ajudar com um valor simbólico?
+>
+> ☕ Nos pague um café clicando neste link e contribuindo com o valor que puder: <https://nubank.com.br/cobrar/vnb4e/664de10a-76e1-42b3-a566-1c1a1331cf22>
+
 # Dia 1
 
 # 1. Biblioteca e pacotes
@@ -109,7 +116,7 @@ options(repos = c(CRAN = "https://cran.r-project.org"))
 # install.packages("ggsci")
 # install.packages("gapminder")
 # install.packages("ggpmisc")
-#install.packages("gganimate") 
+# install.packages("gganimate")
 ```
 
 Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.
@@ -134,6 +141,7 @@ library(ggpmisc)
 library(scales)
 library(here)
 library(gganimate)
+library(GGally)
 ```
 
 # 2. Operações básicas
@@ -155,8 +163,8 @@ y
 z = y + x
 z
 
-multiplicacão = x * y
-multiplicacão
+multi = x * y
+multi
 ```
 
 As variáveis textuais são sempre definidas com aspas, mesmo sendo um número, como `string = "5"`.
@@ -394,7 +402,7 @@ Elas são interessantes para **organizar os objetos necessários para uma análi
 
 ```{r}
 #Criando a lista
-lista = list(a, b, h, j, multiplicacão, data, matrix, tibble)
+lista = list(a, b, h, j, multi, data, matrix, tibble)
 
 #View(lista) #Visualizando a lista
 
@@ -1095,11 +1103,13 @@ linha
 
 ## Salvando figuras
 
-Para salvar uma figura, vamos usar a função `ggsave()` e definir como tipo de arquivo `.png`. Há diferentes tipos de arquivos, como jpeg e tiff, mas usaremos o png por ser muito comum e também ser aceito por diferentes programas de edição, como o Google Slides, Powerpoint e Canva. Além disso, vamos definir também as dimensões da imagem final.
+Para salvar uma figura, vamos usar a função `ggsave()` e definir como tipo de arquivo `.png` e usar a função `here()`, que especifica o caminho do diretório ao qual salvaremos a figura. No caso, salvaremos dentro da pasta "Figuras".
+
+Há diferentes tipos de arquivos, como jpeg e tiff, mas usaremos o png por ser muito comum e também ser aceito por diferentes programas de edição, como o Google Slides, Powerpoint e Canva. Além disso, vamos definir também as dimensões da imagem final.
 
 ```{r}
 linha %>% 
-  ggsave(file = "linha_imc.png", width = 5, height = 5)
+  ggsave(file = here("Figuras","linha_imc.png"), width = 5, height = 5)
 ```
 
 Uma outra forma de salvar a imagem é colar `linha` no console, printá-la (apertar `Enter`) e salvar diretamente da aba "Plots". Você poderá salvá-la como .png ou como pdf também!
@@ -1145,7 +1155,7 @@ Para salvar, usaremos a mesma função `ggsave()`.
 ```{r}
 linha_barra = linha / barras + plot_layout(guides = "collect")
 
-ggsave(linha_barra, file = "linha_barra.png", width = 10, height = 5)
+ggsave(linha_barra, file = here("Figuras","linha_barra.png"), width = 10, height = 5)
 ```
 
 # Dia 2
@@ -1167,7 +1177,7 @@ cobertura_vacinal <- read_csv("cobertura_vacinal_anotada.csv")
 cobertura_vacinal
 ```
 
-Para baixar uma tabela de outra pasta, podemos usar a função `here()` do pacote `here`. Essa função sempre assumirá que o diretório inicial é o do projeto. Para acessar um arquivo dentro de uma pasta, no caso o arquivo `paises_anotados.rds` na pasta `raw-data`, escrevemos esse caminho entre aspas.
+Para baixar uma tabela de outra pasta, podemos usar a função `here()` do pacote `here`. Como dito anteriormente, essa função sempre assumirá que o diretório inicial é o do projeto. Para acessar um arquivo dentro de uma pasta, no caso o arquivo `paises_anotados.rds` na pasta `raw-data`, escrevemos esse caminho entre aspas.
 
 ```{r}
 #Caminho
@@ -1759,7 +1769,7 @@ plot =
 plot
 
 #Salvar
-ggsave(plot, file = "Sarampo_LatinAmerica_2000_2023.png", width = 10, height = 5)
+ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
 ```
 
 ## Unindo gráficos
@@ -1825,7 +1835,7 @@ deaths
 
 #Salvar
 (vaccination / deaths) %>% 
-  ggsave(file = "Sarampo_Brasil_1980_2023.png", width = 10, height = 5)
+  ggsave(file = here("Figuras","Sarampo_Brasil_1980_2023.png"), width = 10, height = 5)
 
 ```
 
@@ -2085,7 +2095,7 @@ patch
 ```{r}
 #Salvar
 ggsave(patch, 
-       file = "br_cov_mortes.png",
+       file = here("Figuras","br_cov_mortes.png"),
        width = 15, #Largura
        height = 10) #Altura
 ```
@@ -2168,7 +2178,9 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
 -   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
 
-# 7. Extra: Analisando distribuições e uma pincelada de estatística
+# Em construção: Curso de estatística
+
+## Analisando distribuições e uma pincelada de estatística
 
 Em um conjunto de dados que registra a cobertura vacinal ao longo do tempo para diferentes países, é comum encontrar registros ausentes (e NAs) para determinados países em determinados anos. Isso pode ser devido a vários motivos, como a introdução tardia de determinadas vacinas em alguns países ou a falta de disponibilidade de dados.
 
@@ -2277,7 +2289,7 @@ cobertura_vacinal %>%
   scale_fill_jama()
 ```
 
-# 8. Extra: Dados demográficos e economicos com o Gapminder
+## Dados demográficos e econômicos com o Gapminder
 
 O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população. Vamos ver se a cobertura vacinal tem alguma relação com a expectativa de vida nos países. Além disso, vamos classificar os páises de acordo com seu PIB per capita, seguindo a classificação da ONU.
 
@@ -2492,11 +2504,9 @@ ggplot() +
   scale_color_jama()
 ```
 
-Testando correlações entre mais variáveis
+Testando correlações entre mais pares de variáveis.
 
 ```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
-library(GGally)
-
 gapminder_mortes %>% 
   filter(year <= 2007,
          death_disease == "Tuberculosis") %>% 
@@ -2512,6 +2522,8 @@ gapminder_mortes %>%
                            "Mortes/100k Hab."),
           mapping = aes(color = continent, alpha = 0.5)) +
   theme_linedraw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
   labs(title = "Tuberculose",
        subtitle = "Variáveis demográficas e mortalidade") +
   scale_color_jama() +
@@ -2526,8 +2538,8 @@ O gráfico de forma estática já nos mostrou muito sobre o comportamento dos da
 gapminder_mortes %>% 
   mutate(year = as.integer(year)) %>% 
 ggplot() +
-  aes(gdpPercap, death_rate_100thousand_age_standardized, size = pop, colour = country) +
-  geom_point(alpha = 0.7, show.legend = FALSE) +
+  aes(gdpPercap, death_rate_100thousand_age_standardized, colour = country) +
+  geom_point(alpha = 0.7, show.legend = FALSE, mapping = aes(size = pop)) +
   scale_size(range = c(5, 5)) +
   scale_x_continuous(trans = "log10",
                      labels = scales::unit_format(unit = "k",
@@ -2543,5 +2555,3 @@ ggplot() +
   transition_time(year) +
   ease_aes('linear')
 ```
-
-# Em construção.

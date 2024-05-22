@@ -10,6 +10,8 @@ output:
       collapsed: true
 ---
 
+> **Nova versão otimizada para leitura aqui:** <https://wapsyed.github.io/cursor/>
+
 # Sobre o curso
 
 **Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).

@@ -7,7 +7,9 @@
 Desenvolvemos um curso para tornar o aprendizado de uma das linguagens de programação e análise de dados mais populares mais acessível, especialmente para aqueles que não têm formação em áreas de exatas, como TI e ciência da computação. Esta linguagem é amplamente utilizada por cientistas devido à sua variedade de ferramentas para análise de dados em ciências biológicas e da saúde. Com uma abordagem prática e interativa, os participantes explorarão conceitos e ferramentas para realizar análises de dados de forma simples e intuitiva. Além disso, terão acesso a um grupo de discussão para compartilhar dúvidas e ideias, criando um ambiente colaborativo e de aprendizado mútuo.
 
 **Slides**: [Link](https://docs.google.com/presentation/d/10lQTfw8OPG2ok83Tc9ctVhnDyhQ8GB-olWmQ17Zxs6k/edit?usp=drivesdk)
+
 **Slides em pdf** [Link](https://drive.google.com/file/d/1bGzsIMNpKwOCP4fXTPO_JQwusVebEL-M/view?usp=drive_link)
+
 **Tutorial gratuito**: [Link](https://wapsyed.github.io/cursor/)
 
 **Programação e conteúdo**

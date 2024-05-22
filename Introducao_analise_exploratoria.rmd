@@ -1172,19 +1172,19 @@ A função `read_csv()` acessa o local do seu arquivo (no caso, do tipo .csv) e 
 
 ```{r paged.print=TRUE}
 #Pelo readr
-cobertura_vacinal <- read_csv("cobertura_vacinal_anotada.csv")  
+cobertura_vacinal <- read_csv(here("Tabelas", "cobertura_vacinal_anotada.csv")) 
 
 cobertura_vacinal
 ```
 
-Para baixar uma tabela de outra pasta, podemos usar a função `here()` do pacote `here`. Como dito anteriormente, essa função sempre assumirá que o diretório inicial é o do projeto. Para acessar um arquivo dentro de uma pasta, no caso o arquivo `paises_anotados.rds` na pasta `raw-data`, escrevemos esse caminho entre aspas.
+Para baixar uma tabela de outra pasta, podemos usar a função `here()` do pacote `here`. Como dito anteriormente, essa função sempre assumirá que o diretório inicial é o do projeto. Para acessar um arquivo dentro de uma pasta, no caso o arquivo `paises_anotados.rds` na pasta `Tabelas`, escrevemos esse caminho entre aspas.
 
 ```{r paged.print=TRUE}
 #Caminho
 here()
 
 #Tabela de países
-paises_anotados <- readRDS(here("raw-data", "paises_anotados.rds")) 
+paises_anotados <- read_rds(here("Tabelas", "paises_anotados.rds")) 
 
 paises_anotados 
 ```
@@ -1193,7 +1193,7 @@ Poderíamos fazer o mesmo aqui, mas como o arquivo está na mesma pasta, especif
 
 ```{r paged.print=TRUE}
 #Tabela de mortes por doença
-mortes_doencas <- read_rds("Deaths_infectious_diseases_filtered.rds") 
+mortes_doencas <- read_rds(here("Tabelas","Deaths_infectious_diseases_filtered.rds"))
 
 mortes_doencas 
 ```
@@ -1213,7 +1213,7 @@ cobertura_vacinal = cobertura_vacinal %>%
 
 #Salvar
 cobertura_vacinal %>% 
-  saveRDS(file = "cobertura_vacinal_anotada_2.rds")
+  saveRDS(file = here("Tabelas", "cobertura_vacinal_anotada_2.rds"))
 ```
 
 ```{r paged.print=TRUE}
@@ -1223,7 +1223,7 @@ mortes_doencas = mortes_doencas %>%
 
 #Salvar
 mortes_doencas %>% 
-  saveRDS(file = "mortes_doencas.rds")
+  saveRDS(file = here("Tabelas","mortes_doencas.rds"))
 
 mortes_doencas
 

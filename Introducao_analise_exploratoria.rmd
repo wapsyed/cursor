@@ -8,6 +8,7 @@ output:
     toc: yes
     toc_float:
       collapsed: true
+    df-print: paged
 ---
 
 # Sobre o curso
@@ -218,7 +219,7 @@ j
 
 Perceba que, para um vetor ser classificado como numérico, todos os elementos têm de ser números, isto é, não estar dentro de aspas. Do contrário, se um elemento for uma string (contiver aspas), mesmo com um número dentro, do vetor inteiro será convertido em strings.
 
-```{r}
+```{r paged.print=TRUE}
 h = c(7, "10", 78)
 h
 
@@ -243,7 +244,7 @@ As **tibbles são diferentes dos dataframes** somente em sua apresentação no c
 
 Além disso, a criação do dataframe e da tibble são diferentes visualmente. Enquanto no dataframe usamos a função `data.frame()` para criar colunas com linhas definidas por um vetor, na tibble esse código é semelhante à forma que imputamos dados no excel.
 
-```{r}
+```{r paged.print=TRUE}
 #Dataframes e tibbles -----
 
 #Dataframe
@@ -474,7 +475,7 @@ Para adicionar uma linha com valores, usamos o `add_row()`, e para adicionar uma
 
 Para não alterarmos as tabelas originais, criamos uma nova variável chamada `data_2` e `tibble_2`. Entretanto, não é necessário sempre criar uma variável para cada operação que fizermos.
 
-```{r}
+```{r paged.print=TRUE}
 #Adicionar linha
 data_2 = add_row(data, 
                nome = "Rafaela", 
@@ -491,7 +492,7 @@ tibble_2 = add_row(tibble,
 tibble_2
 ```
 
-```{r}
+```{r paged.print=TRUE}
 #Adicionar coluna
 data_2 = add_column(data_2,
                     peso = c(50,
@@ -514,7 +515,7 @@ tibble_2
 
 Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No tidyverse, mais especificamente no pacote dplyr, usamos a função `filter()` e estabelecemos argumentos lógicos para a filtragem.
 
-```{r}
+```{r paged.print=TRUE}
 # Filtrando linhas ----
 idade = filter(data, idade <= 30)
 
@@ -530,7 +531,7 @@ Temos duas formas de fazer isso.
 
 A primeira é usando "OU" (`|`) e `%in% c()`. Veja que os resultados são iguais, mas a forma de escrever é diferente. No primeiro caso, temos de repetir "`nome ==`" a cada valor que quisermos incluir. No segundo caso, somente criamos um vetor com os valores separados por vírgula.
 
-```{r}
+```{r paged.print=TRUE}
 #Usando OU (|)
 filter(data, nome == "Júlia" | 
            nome == "Gabriela")
@@ -544,7 +545,7 @@ E a segunda é usando o **pipe** (`%>%`)**,** que permite "costurar" operações
 
 Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que contêm um valor. No caso, pegamos as linhas com idade maior ou igual a 30 e, depois, aquelas que contêm o nome "Gabriela".
 
-```{r}
+```{r paged.print=TRUE}
 # Usando o pipe "%>%" (lê-se "e então")
 data %>%                   # Tenho este objeto 
   filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
@@ -563,7 +564,7 @@ Para **retirar** uma coluna, use o `-` ou o `!`.
 
 Para **reordenar**, use `select(coluna, everything())`. Aqui, você coloca a coluna de interesse em primeiro lugar e todas as outras restantes em sequência.
 
-```{r}
+```{r paged.print=TRUE}
 # Selecionando colunas ----
 # Selecionar colunas específicas
 data_2 %>%
@@ -590,7 +591,7 @@ Para **renomear** uma coluna, é possível também usar o `select().`Mas, **cuid
 
 Por isso, temos a função **`rename()`**`,` que evita que isso aconteça.
 
-```{r}
+```{r paged.print=TRUE}
 #Renomeando coluna
 data_2 %>%   
   select(age = idade, everything())
@@ -605,7 +606,7 @@ data_2 %>%
 
 A função `mutate()` permite **criar ou modificar colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna. Por exemplo, podemos criar a coluna imc com o IMC todos os indivíduos, que é calculado com a razão do peso e a altura ao quadrado.
 
-```{r}
+```{r paged.print=TRUE}
 # Criando novas variáveis
 data_2 = data_2 %>%
   mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
@@ -614,7 +615,7 @@ data_2 = data_2 %>%
 
 Além disso, podemos criar uma coluna com o sexo daquele indivíduo. Como sabemos que todos são "feminino", podemos fazer dessa forma.
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% 
   mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
 ```
@@ -627,14 +628,14 @@ Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima 
 
 Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um IMC acima de 25, ela será considerada com sobrepeso, e se for abaixo, será classificada como normal.
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% 
   mutate(classificacao = if_else(imc > 25, "sobrepeso", "normal"))
 ```
 
 Mas, sabemos que o IMC pode ser classificado com outras categorias. Para isso, temos duas formas de classificar. A primeira é usando o `if_else()` imputando os valores manualmente e deixando os valores que ainda não foram categorizados como NA, e depois, de criar a primeira categoria, criamos a segunda categoria e deixamos os que já estavam na coluna.
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% 
   mutate(classificacao = if_else(imc >= 25 & imc <= 30 , "sobrepeso", NA),
          classificacao = if_else(imc > 30, "obesidade 1", classificacao),
@@ -644,7 +645,7 @@ data_2 %>%
 
 Veja que, depois da segunda linha de if_else, isso fica confuso de entender. Por isso, usamos o `case_when()`, que é um if_else mais versátil e deixa o código mais limpo e fácil de ler.
 
-```{r}
+```{r paged.print=TRUE}
 data_2 = data_2 %>% 
   mutate(classificacao = case_when(imc >= 25 & imc <= 30 ~ "sobrepeso",
                                    imc > 30 ~ "obesidade 1",
@@ -656,7 +657,7 @@ data_2 = data_2 %>%
 
 A função `summarize()` (ou `summarise()`) aplica a mesma lógica, mas a tabela gerada é muito menor, e se aplica à variável de interesse na tabela. Por exemplo, se quisermos obter a média (`mean()`), e a soma (`sum()`) das linhas de uma coluna, a summarize é capaz de fazer isso.
 
-```{r}
+```{r paged.print=TRUE}
 # Resumindo dados
 data_2 %>% 
   summarize(Media_idade = mean(idade))
@@ -669,7 +670,7 @@ data_2 %>%
 
 Em muitos casos, nós queremos realizar cálculos com categorias ou grupos diferentes. Por exemplo, considere que queremos saber a média (`mean()`) das idades por categoria da classificação pelo IMC, e além disso, queremos contar os indíviduos em cada categoria (`n()`). Para isso, temos de agrupar os dados por categorias (`sobrepeso, normal`, etc.) de uma variável (`classificacao`). Isso é feito com o `group_by()` seguido pelo `summarize()`.
 
-```{r}
+```{r paged.print=TRUE}
 #Média dos grupos
 data_2 %>% 
   group_by(classificacao) %>% 
@@ -685,7 +686,7 @@ data_2 %>%
 
 Podemos ordenar os dados de forma crescente e decrescente usando o `arrange().`
 
-```{r}
+```{r paged.print=TRUE}
 # Ordenando dados de forma crescente
 data_2 %>% 
   arrange(idade)
@@ -710,7 +711,7 @@ Dessa forma, é importante construir e dividir tabelas para facilitar nossa mani
 
 Para ilustrar isso, vamos criar uma tabela chamada `endereco`, que contem o nome, cidade e bairro de cada indivíduo.
 
-```{r}
+```{r paged.print=TRUE}
 endereco = tribble(~nome, ~cidade, ~bairro,
           "Gabriela", "São Paulo", "Consolação",
           "Júlia", "Ribeirão Preto", "Cidade Universitária",
@@ -726,7 +727,7 @@ Uma forma de unir a tabela `data_2` com a tabela `endereco` é pelas linhas de u
 
 Uma dessas funções é a `inner_join()`, que somente une as linhas correspondentes de duas tabelas. Ou seja, se tem uma linha com o nome X nas tabelas 1 e 2, as colunas das tabelas 1 e 2 serão unidas. Se existir uma linha com o nome X na tabela 1, mas não na tabela 2, então as colunas não serão unidas para aquela linha. Confuso, mas você vai entender visualizando aqui.
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
   inner_join(endereco, #Tabela para unir (tabela 2)
              by = "nome") #Coluna correspondente
@@ -738,7 +739,7 @@ Veja que a "Rafaela" não foi incluída, porque não havia dados sobre ela na ta
 
 Mas, suponhamos que seria interessante saber quem da tabela 1 **não** tem endereço cadastrado e, dessa forma, podemos procurar registrar em outra ocasião. Para isso, temos o `left_join()`. Nele, em vez de não mostrar a linha da Rafaela na nova tabela, a função inclui valores `NA` nessa linha. A função tem o nome de "**left**" porque considera a tabela 1 como a tabela da esquerda. **Em outras palavras**, queremos anotar todas as linhas da tabela da esquerda (tabela 1) com os dados da tabela da direita (tabela 2) a partir dos elementos da coluna em comum chamada "`nome`".
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
   left_join(endereco, #Tabela para unir (tabela 2)
              by = "nome") #Coluna correspondente
@@ -748,7 +749,7 @@ data_2 %>% #Tabela original (tabela 1)
 
 Da mesma forma, podemos obter somente as linhas que estão na tabela 1, mas não na tabela 2. Isso é feito com a função `anti_join()`. O output dela é somente a linha da Rafaela com as colunas da tabela 1.
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
   anti_join(endereco, #Tabela para unir (tabela 2)
              by = "nome") #Coluna correspondente
@@ -758,7 +759,7 @@ data_2 %>% #Tabela original (tabela 1)
 
 Observe que a tabela `endereco` também tem uma linha que não está na tabela 1, a "Thais", e que ela não foi mostrada nas funções anteriores. Para incluir, podemos usar o right_join(), que assim como o left_join(), mostra todas as linhas de uma tabela, incluindo aquelas que não estão na outra. No caso, ela mostra todas as linhas da tabela 2, mesmo aquelas que não estão anotadas com os dados da tabela 1. Além disso, ela não mostra as linhas da tabela 1 que não estão na tabela, no caso "Rafaela".
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
   right_join(endereco, #Tabela para unir (tabela 2)
              by = "nome") #Coluna correspondente
@@ -768,7 +769,7 @@ data_2 %>% #Tabela original (tabela 1)
 
 Agora, se quisermos ter uma tabela completa, com todas as linhas das tabelas 1 e 2, mesmo aquelas que não correspondem entre si, usamos a função `full_join()`.
 
-```{r}
+```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
   full_join(endereco, #Tabela para unir (tabela 2)
              by = "nome") #Coluna correspondente
@@ -1170,7 +1171,7 @@ Caso queira deixar automatizado, você pode copiar o código que é gerado e col
 
 A função `read_csv()` acessa o local do seu arquivo (no caso, do tipo .csv) e o importa para o ambiente do R. Existem funções para importar cada tipo de arquivo, como excel, tsv, etc.
 
-```{r}
+```{r paged.print=TRUE}
 #Pelo readr
 cobertura_vacinal <- read_csv("cobertura_vacinal_anotada.csv")  
 
@@ -1179,7 +1180,7 @@ cobertura_vacinal
 
 Para baixar uma tabela de outra pasta, podemos usar a função `here()` do pacote `here`. Como dito anteriormente, essa função sempre assumirá que o diretório inicial é o do projeto. Para acessar um arquivo dentro de uma pasta, no caso o arquivo `paises_anotados.rds` na pasta `raw-data`, escrevemos esse caminho entre aspas.
 
-```{r}
+```{r paged.print=TRUE}
 #Caminho
 here()
 
@@ -1191,7 +1192,7 @@ paises_anotados
 
 Poderíamos fazer o mesmo aqui, mas como o arquivo está na mesma pasta, especificaremos somente seu nome.
 
-```{r}
+```{r paged.print=TRUE}
 #Tabela de mortes por doença
 mortes_doencas <- read_rds("Deaths_infectious_diseases_filtered.rds") 
 
@@ -1216,7 +1217,7 @@ cobertura_vacinal %>%
   saveRDS(file = "cobertura_vacinal_anotada_2.rds")
 ```
 
-```{r}
+```{r paged.print=TRUE}
 #Organizar colunas
 mortes_doencas = mortes_doencas %>% 
   select(name, continent,region_complete, everything())
@@ -1233,7 +1234,7 @@ mortes_doencas
 
 ### Visualizando tabelas
 
-```{r}
+```{r paged.print=TRUE}
 # Explorando dados -----
 
 # Tabela completa
@@ -1256,7 +1257,7 @@ Cada coluna contendo strings repetidas nas linhas podem ser reduzidas aos valore
 
 Por exemplo, veja que as regiões, por estarem na tabela longa, são repetidas para cada país. Se quisermos saber todas as regiões incluídas no dataset de forma mais fácil, sem ficar procurando uma por uma, usamos o `distinct()`.
 
-```{r}
+```{r paged.print=TRUE}
 #Níveis de colunas
 cobertura_vacinal %>% 
   distinct(region_complete)
@@ -1275,7 +1276,7 @@ cobertura_vacinal %>%
 
 E se quisermos contar quantas vezes esses valores são repetidos no dataset? Podemos usar o `count()` seguido por `head()`, para visualizar os 10 primeiros valores. O `head()` é importante quando temos uma tabela muito grande e não queremos ver todos os valores.
 
-```{r}
+```{r paged.print=TRUE}
 #Contar linhas por coluna
 cobertura_vacinal %>% 
   count(name) %>% 
@@ -1296,7 +1297,7 @@ cobertura_vacinal %>%
 
 **Os dados foram registrados de que ano a que ano?**
 
-```{r}
+```{r paged.print=TRUE}
 cobertura_vacinal %>% 
   summarize(min_valor = min(year),
             max_valor = max(year))
@@ -1306,7 +1307,7 @@ cobertura_vacinal %>%
 
 1.  Usando o `filter()` e especificando a doença.
 
-```{r}
+```{r paged.print=TRUE}
 cobertura_vacinal %>% 
   filter(diseases == "Poliomielitis") %>% 
   distinct(vaccine) 
@@ -1314,7 +1315,7 @@ cobertura_vacinal %>%
 
 2.  Agrupando os dados com `group_by()`.
 
-```{r}
+```{r paged.print=TRUE}
 cobertura_vacinal %>% 
   group_by(diseases) %>% 
     distinct(vaccine) 
@@ -1378,7 +1379,7 @@ As tabelas produzidas a seguir serão utilizadas para trabalharmos a visualizaç
 
 Veja quais são os países da américa latina que mais vacinaram ao longo de 2000 a 2023, por vacina.
 
-```{r}
+```{r paged.print=TRUE}
 latin_2000_2023 = cobertura_vacinal %>% 
   
   #Missing values: Aqui, é importante retirá-los para não repetir linhas
@@ -1420,7 +1421,7 @@ Veja quais são os continentes que mais vacinaram ao longo de 2000 a 2023, por v
 
 Algumas modificações foram feitas na tabela original. Observe que os valores para "**`Other`**" incluem países que não foram identificados corretamente, sendo o motivo principal o nome utilizado e processos históricos, como divisão do país e mudança de nome. Como esses países podem ser interessantes para as análises posteriores, eles continuaram na tabela.
 
-```{r}
+```{r paged.print=TRUE}
 # Cobertura vacinal: Estatísticas de cada continente
 continentes_vac = cobertura_vacinal %>% 
   
@@ -1454,7 +1455,7 @@ continentes_vac
 
 **Por continente**
 
-```{r}
+```{r paged.print=TRUE}
 # Mortes cumulativas
 # Estatísticas de cada continente
 continentes_mortes = mortes_doencas %>% 
@@ -1487,7 +1488,7 @@ continentes_mortes
 
 **Por país**
 
-```{r}
+```{r paged.print=TRUE}
 # Mortes cumulativas
 # Estatísticas de cada país
 paises_mortes = mortes_doencas %>% 
@@ -2534,7 +2535,7 @@ gapminder_mortes %>%
 
 O gráfico de forma estática já nos mostrou muito sobre o comportamento dos dados, mas podemos explorá-los de forma mais dinâmica com uma animação. Para isso, usaremos o pacote `gganimate` e separaremos os continentes em facets.
 
-```{r message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 gapminder_mortes %>% 
   mutate(year = as.integer(year)) %>% 
 ggplot() +

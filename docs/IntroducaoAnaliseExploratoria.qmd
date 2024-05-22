@@ -1,0 +1,2557 @@
+---
+title: "CursoR - Introdução à análise de dados no R"
+author: 'Autor: Wasim Aluísio Prates Syed (@wasimvacinas)'
+date: today
+format:
+  html:
+    theme: litera
+    toc: true
+    toc-location: left
+df-print: paged
+---
+
+# Sobre o curso
+
+**Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
+
+**Descrição do curso:**
+
+Desenvolvemos um curso para tornar o aprendizado de uma das linguagens de programação e análise de dados mais populares mais acessível, especialmente para aqueles que não têm formação em áreas de exatas, como TI e ciência da computação. Esta linguagem é amplamente utilizada por cientistas devido à sua variedade de ferramentas para análise de dados em ciências biológicas e da saúde. Com uma abordagem prática e interativa, os participantes explorarão conceitos e ferramentas para realizar análises de dados de forma simples e intuitiva. Além disso, terão acesso a um grupo de discussão para compartilhar dúvidas e ideias, criando um ambiente colaborativo e de aprendizado mútuo.
+
+**Programação e conteúdo**
+
+Os participantes terão uma aula introdutória à ciência de dados e fundamentos da manipulação de dados no R e visualização de dados com o ggplot, no ambiente do RStudio. Em seguida, os participantes terão um tempo para praticar e desenvolver as análises com 5 países de escolha, e no final deverão criar um poster com os gráficos produzidos.
+
+-   **Introdução ao R:** Explicaremos por que o R é importante para cientistas e profissionais da saúde.
+
+-   **Fundamentos da Programação em R:** Abordaremos conceitos como funções, pacotes, variáveis e estruturas de dados, como data frames, listas e matrizes.
+
+-   **Manipulação e Visualização de Dados:** Exploraremos técnicas para importar, limpar, filtrar e visualizar dados usando pacotes do Tidyverse, como dplyr e ggplot2.
+
+-   **Análise Exploratória de Dados:** Realizaremos análises exploratórias de dados, incluindo estatísticas descritivas, gráficos e interpretação de resultados. Aplicaremos os conhecimentos adquiridos em um projeto prático com dados reais de saúde, incluindo análise de vacinação e indicadores de saúde pública.
+
+**Como será o projeto**:
+
+O projeto consistirá na geração de pelo menos 5 gráficos acompanhados de discussões pertinentes, e terão direito a um certificado à parte. Para isso, durante o curso, serão apresentadas perguntas que poderão ser utilizadas para desenvolver o projeto. O objetivo principal é explorar os diversos tipos de gráficos disponíveis, formular perguntas pertinentes e explicar os padrões e comportamentos observados nos dados analisados.
+
+Os participantes terão 1 mês para desenvolver o projeto, e poderão tirar dúvidas no grupo de WhatsApp e marcar uma mentoria individual, se necessário.
+
+> **Quer saber mais sobre o curso e outros materiais que estamos desenvolvendo?**
+>
+> Siga-nos no Instagram ([\@cursocursor](https://www.instagram.com/cursocursor/)) e acesse nosso [site](https://sites.google.com/view/cursocursor/home)!
+
+# Como usar este tutorial?
+
+Para rodar este tutorial, siga os seguintes passos:
+
+**Passo 1: Acesse o GitHub**
+
+-   Abra o seu navegador web e vá para o site do GitHub em <https://github.com/wapsyed/cursor>.
+
+**Passo 2: Baixe o projeto**
+
+-   No repositório do GitHub, clique no botão verde "Code".
+
+-   Selecione "Download ZIP". Isso iniciará o download do arquivo ZIP contendo o projeto.
+
+**Passo 3: Descompacte o arquivo ZIP**
+
+-   Após o download ser concluído, localize o arquivo ZIP em sua pasta de downloads.
+
+-   Clique com o botão direito do mouse no arquivo ZIP e selecione "Extrair tudo" ou "Descompactar".
+
+-   Escolha a pasta de destino onde deseja descompactar o arquivo e clique em "Extrair".
+
+**Passo 4: Configure o projeto no RStudio**
+
+-   Abra o RStudio em seu computador.
+
+-   No menu do RStudio, clique em "File" (Arquivo) e selecione "New Project" (Novo Projeto).
+
+-   Escolha a opção "Existing Directory" (Diretório Existente).
+
+-   Navegue até a pasta onde você descompactou o projeto.
+
+-   Selecione a pasta do projeto com um clique.
+
+-   Clique em "Create Project" (Criar Projeto).
+
+Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto para começar a trabalhar.
+
+## Recomendações para evitar erros comuns
+
+> 1.  **Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_analise_exploratoria.rmd`**". Se clicar no `.md`, não funcionará.
+> 2.  **Siga o tutorial todo neste documento ou crie uma copia para fazer as anotações**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site.
+> 3.  **Ao fazer a parte prática** com suas análises, faça no mesmo documento. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+> 4.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
+
+## **Curtiu este material?**
+
+> Estamos disponibilizando este material de forma gratuita para, de alguma forma, compartilhar um conhecimento de qualidade e acessível para todos. Se você achou um material de boa qualidade e gostou do nosso trabalho, que tal nos ajudar com um valor simbólico?
+>
+> ☕ Nos pague um café clicando neste link e contribuindo com o valor que puder: <https://nubank.com.br/cobrar/vnb4e/664de10a-76e1-42b3-a566-1c1a1331cf22>
+
+# Dia 1
+
+# 1. Biblioteca e pacotes
+
+Antes de rodarmos os códigos para as análises, é necessário instalar os pacotes cujos recursos, especialmente as funções, serão utilizados. Para isso, use o `install.packages("pacote")`[.]{.smallcaps}
+
+Nem sempre é necessário reinstalar os pacotes, pois isso toma tempo. Entretanto, é recomendável reinstalar os pacotes de vez em quando, para atualizar o pacote.
+
+Observe que o código abaixo está com `#` antes da função. Ao rodar pela primeira vez, retire estes `#` e execute clicando na linha do código e apertando `Ctrl + Enter`. Isso executará linha por linha. Caso queira rodar todas as linhas de uma vez, use `Ctrl + Shift + Enter`.
+
+```{r message=FALSE, warning=FALSE}
+options(repos = c(CRAN = "https://cran.r-project.org"))
+
+# Baixar pacotes do CRAN para a biblioteca 
+# install.packages("tidyverse")
+# install.packages("skimr")
+# install.packages("janitor")
+# install.packages("esquisse")
+# install.packages("ggthemes")
+# install.packages("plotly")
+# install.packages("gghighlight")
+# install.packages("patchwork")
+# install.packages("ggsci")
+# install.packages("gapminder")
+# install.packages("ggpmisc")
+# install.packages("gganimate")
+```
+
+Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.
+
+> **Lembre-se sempre de chamar os pacotes quando você iniciar uma nova sessão!**
+
+Não se preocupe com os "erros" dos outputs ao chamar as libraries, especialmente as do tidyverse.
+
+```{r message=FALSE, warning=FALSE}
+# Chamando os pacotes da biblioteca
+library(tidyverse) #Metapacote 
+library(skimr) #Diagnóstico de tabela
+library(janitor) #Limpeza de tabelas
+library(esquisse) #Plotagem de gráficos prática
+library(ggthemes) #Temas de ggplot
+library(plotly) #Gráficos interativos
+library(patchwork) #Unir gráficos
+library(gghighlight) #Marcar pontos e linhas 
+library(ggsci) #Paleta de cores 
+library(gapminder) #Dataset sobre população, PIB e expectativa de vida dos países
+library(ggpmisc) 
+library(scales)
+library(here)
+library(gganimate)
+library(GGally)
+```
+
+# 2. Operações básicas
+
+Podemos criar variáveis de diferentes classes, como numéricas (integer, double), textuais (string/character), e muitas outras. Além disso, essas variáveis podem ser nomeadas com o nome que você quiser, como letras e palavras.
+
+Entretanto, não podem ter espaço entre si `(variavel_a não é variavel a`) e, por mais que funcionem com palavras em portugues acentuadas ("`multiplicacão`"), é uma boa prática nomeá-las da forma mais simples possível, como `multiplicacao` ou `multi`.
+
+```{r}
+#Operações básicas -----
+
+#Variáveis numéricas
+x = 5
+x
+
+y = 7
+y
+
+z = y + x
+z
+
+multi = x * y
+multi
+```
+
+As variáveis textuais são sempre definidas com aspas, mesmo sendo um número, como `string = "5"`.
+
+> **Dica de ouro:** Nunca esqueça de fechar as aspas.
+
+```{r}
+# Variáveis textuais (characters, string)
+a = "Olá" #Uma palavra
+a
+
+b = "Tudo bem?" #Uma frase
+b
+```
+
+**Operações lógicas**
+
+Se usarmos operadores lógicos para determinar se o conteúdo de uma variável é igual (`==`), diferente (`!=`), maior (`>`) ou menor (`<`), os resultados retornarão `TRUE` ou `FALSE`.
+
+```{r}
+# Comparações lógicas (booleanas)
+a == b #Igual?
+a != b #Diferente?
+x < y # Menor?
+x > y # Maior?
+x <= 5 # Menor ou igual?
+```
+
+E, se criarmos outras variáveis com nomes diferentes, mas com os mesmos valores, elas ainda continuarão dando o mesmo resultado.
+
+```{r}
+aa = "Olá"
+aa == a 
+```
+
+## Vetores
+
+Os vetores são uma **sequência unidimensional** que podem ser números, strings, valores lógicos, entre outros. Podemos criar vetores com a função `c()`, de "concatenar".
+
+> **Dica de ouro**: Nunca deixe de fechar os parênteses em uma função, pois isso dará erro.
+
+```{r}
+# Vetores
+i = c(7, 5, 9, 10)
+i
+
+j = c("Olá", "Caneta", "Qualificacao")
+j
+
+```
+
+Perceba que, para um vetor ser classificado como numérico, todos os elementos têm de ser números, isto é, não estar dentro de aspas. Do contrário, se um elemento for uma string (contiver aspas), mesmo com um número dentro, do vetor inteiro será convertido em strings.
+
+```{r paged.print=TRUE}
+h = c(7, "10", 78)
+h
+
+```
+
+## Obtendo ajuda com funções
+
+O `c()` é um exemplo de função. Toda função contem um nome seguido por parenteses. No caso da função `c()`, inserimos os elementos que temos interesse.
+
+No entanto, outras funções que iremos aprender a seguir funcionam de forma diferente, muitas vezes intuitiva. Para acessar a documentação da função, use um `?` antes da função e aguarde a aba de ajuda abrir.
+
+```{r}
+# O que esta função faz? Use o "?" antes da função e rode.
+?c()
+```
+
+## Dataframes e tibbles
+
+Dataframes e tibbles são tabelas comuns e consistem de linhas e colunas de diferentes classes, como números, caracteres e fatores.
+
+As **tibbles são diferentes dos dataframes** somente em sua apresentação no console e facilitam muito o trabalho com tabelas grandes e largas.
+
+Além disso, a criação do dataframe e da tibble são diferentes visualmente. Enquanto no dataframe usamos a função `data.frame()` para criar colunas com linhas definidas por um vetor, na tibble esse código é semelhante à forma que imputamos dados no excel.
+
+```{r paged.print=TRUE}
+#Dataframes e tibbles -----
+
+#Dataframe
+data = data.frame(
+  nome = c("Gabriela", "Júlia", "Beatriz", "Luiza"),
+  altura = c(1.59, 1.60, 1.78, 1.73),
+  idade = c(30, 25, 31, 32)
+)
+data
+```
+
+E para criar uma tibble, usamos a função `tribble()`**.**
+
+```{r}
+#Tibble
+tibble = tribble(
+  ~nome, ~altura, ~idade,
+  "Gabriela", 1.59,   30,
+  "Júlia",   1.60,   25,
+  "Beatriz", 1.65,  31,
+  "Luiza",   1.73,   32 
+  )
+
+tibble
+```
+
+**É possível transformar quase todo objeto em uma tabela.**
+
+Por exemplo, se pegarmos os vetores criados anteriormente e usarmos a função `as.data.frame()`, será criada uma coluna com o nome do vetor, seguida por linhas contendo os elementos do vetor. É padrão no tidyverse e no R de, ao converter uma estrutura de dados em outra, usar o "`as`", como `as.data.frame()`, `as.matrix()`, `as.vector()`, etc.
+
+```{r}
+# Vetores em dataframe
+as.data.frame(i) #dataframe com coluna numérica
+as.data.frame(j) #dataframe com coluna textual
+as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
+```
+
+**Há diferentes formas de se visualizar uma tabela.**
+
+A diferença de cada objeto está na visualização no console e no documento. **Teste estas linhas de código no documento Markdown e no console.**
+
+```{r}
+#Visualizando o dataframe -----
+# Com print()
+print(data) #No documento ou console
+print(tibble)
+
+# Com nome do objeto
+data
+tibble 
+
+# Com glimpse(). #Descrição mais completa da tabela
+glimpse(data) 
+glimpse(tibble)
+
+# Com view() ou View(). A tabela completa com mais funcionalidades (filtragem manual, pesquisa e ordenamento) abrirá em uma nova janela
+view(data) 
+view(tibble)
+
+# Selecione o nome do objeto, segure Ctrl e clique com o botão direito do mouse.
+data
+tibble 
+```
+
+## Estatísticas gerais da tabela
+
+O R possui uma função muito prática de análise estatística descritiva, a `summary()`.
+
+No entanto, existem outros pacotes que realizam essas análises e até geram relatórios em HTML.
+
+Um deles é o skimr, cuja função `skim()` gera três outputs, um semelhante ao summary, e outras duas tabelas com a quantidade de valores não disponíveis (NA), estatísticas descritivas, e um histograma.
+
+```{r}
+# Estatísticas gerais 
+summary(tibble)
+summary(data)
+
+# Usando skim
+skim(tibble)
+skim(data)
+
+```
+
+## Pivotando tabelas: Long e Wide
+
+As tabelas tidy possuem dois formatos, um largo (wide) e outro longo (long). Converter uma em outra é conhecido como **pivotagem**, e conhecer essas funções é importantíssimo para obter, manipular e explorar dados.
+
+Para pivotar, utilizamos `pivot_longer()` e `pivot_wider()`. A pivotagem deve ser pensada com base na relação entre variáveis e seus valores.
+
+Por exemplo, se tivermos uma tabela larga com 10 colunas com anos (de 1990 a 2000), podemos reduzi-las em uma só coluna chamada "anos", que facilitará a manipulação de dados. Isso alongará a tabela.
+
+No exemplo abaixo, simplificamos todas as variáveis (`idade` e `altura`) em uma coluna (`variavel`), e jogamos os valores para uma única coluna (`valor`).
+
+```{r}
+# Trabalhando com dataframes -----
+#Transformando outros formatos em dataframe
+
+# Long table
+data_long = pivot_longer(data, #Tabela 
+             cols = c(altura, idade), #Colunas para alongar 
+             values_to = "valor", # Estocar valores em uma nova coluna
+             names_to = "variavel" # Estocar variáveis em uma nova coluna
+             ) 
+data
+data_long
+```
+
+Mas, se quisermos deixá-la mais fácil de ser interpretada por humanos, podemos pivotá-la em uma tabela larga, igual à tabela original.
+
+```{r}
+# Wide table
+data_wide = pivot_wider(data_long, #Tabela
+            names_from = variavel, #Dividir níveis de uma coluna em novas colunas
+            values_from = valor)   #Estocar valores relacionados à coluna nome e novas variáveis) 
+data_wide
+```
+
+## Matrizes
+
+É importante saber manipular matrizes para computar análises estatísticas, como a Principal Components Analysis.
+
+As matrizes são estruturas tabelares cujos valores são **somente numéricos**. Ou seja, não podemos ter uma coluna com strings, por exemplo.
+
+Para isso, é necessário converter a coluna de "nomes" (strings) em nomes de linhas (rownames) usando a função `column_to_rownames()`, e então converter a tabela em matriz, com o `as.matrix()`.
+
+A diferença aqui é a apresentação da tabela. Enquanto dataframes e tibbles são facilmente lidas, as matrizes são mais complicadas nesse sentido.
+
+```{r}
+#Matriz
+matrix = as.matrix(data) #Transformar tabela em matriz
+matrix #Os valores numéricos são strings
+
+data_matrix = column_to_rownames(data, "nome") #Converte coluna em rownames
+matrix = as.matrix(data_matrix)
+matrix #Agora, os valores são numéricos
+
+```
+
+**Caso você queira manipular a matriz com as funções do tidyverse**, é recomendável reconvertê-la em dataframe/tibble, manipular os dados, e depois converter novamente para matriz.
+
+```{r}
+# Reconverter para dataframe
+matrix_dr = as.data.frame(matrix)
+
+matrix_dr # Coluna "nome" continua como rownames e dificulta a manipulação.
+
+matrix_dr = rownames_to_column(matrix_dr, "nome") #Converter rownames em nova coluna
+matrix_dr
+```
+
+## Listas
+
+Listas são estruturas que podem conter um conjunto de elementos de diferentes classes, como **vetores, outras listas, dataframes, e matrizes**.
+
+Elas são interessantes para **organizar os objetos necessários para uma análise**, e são muito comuns em análises de RNAseq, por exemplo.
+
+```{r}
+#Criando a lista
+lista = list(a, b, h, j, multi, data, matrix, tibble)
+
+#View(lista) #Visualizando a lista
+
+#Acessando objetos diferentes da lista
+lista[[1]] #Primeiro objeto
+lista[[8]] #Oitavo objeto
+
+#Isolando o objeto
+df_list = lista[[8]]
+df_list
+
+```
+
+## Manipulação de tabelas com o R base
+
+O R possui funções e formas nativas de acessar e manipular tabelas. Essas operações, como as descritas abaixo, não são mais a melhor forma de trabalhar, pois são pouco intuitivas, e vamos usar outras muito melhores a seguir. Mas, **é importante conhecê-las**, pois, são utilizadas em alguns casos.
+
+Para acessar uma coluna no dataframe, digite o nome do dataframe seguido por `$` e o nome da coluna (`data$coluna`). Se você não lembra o nome da coluna, você pode digitar `data$` e apertar Tab.
+
+```{r}
+# Acessando colunas do data frame
+data$nome
+data$idade
+
+```
+
+Para adicionar uma nova coluna e preencher seus valores, crie um vetor com os valores e insira nessa coluna.
+
+```{r}
+
+# Criando nova variável para não sobrescrever a tabela original para os próximos exemplos
+data_2 = data
+
+# Adicionando uma nova coluna ao data frame
+data_2$peso = c(70, 
+                65, 
+                80, 
+                20)
+data_2
+
+```
+
+**Para remover uma coluna**, abra os colchetes `[linha, coluna]` após o nome do dataframe, selecione o índice da coluna e adicione um `-`. Os colchetes definem as linhas (antes da vírgula) e as colunas (depois da vírgula). Um pouco ~~muito~~ confuso, né?
+
+```{r}
+# Removendo uma coluna do data frame
+data_2 = data_2[ , -4]
+```
+
+Para filtrar e reordenar os dados, é ainda pior.
+
+```{r}
+# Filtrando linhas do data frame. df[linha, coluna]
+data_jovens = data_2[data_2$idade < 30, ]
+data_jovens
+
+# Ordenando o data frame por uma coluna
+data_ordenados <- data_2[order(data_2$idade), ]
+data_ordenados
+```
+
+# 3. Tidyverse
+
+O tidyverse é um **metapacote**, um pacote com diversos pacotes dentro, que facilita muito o trabalho no R. As funções conversam entre si, são padronizadas e, mais importante, são muito **intuitivas**.
+
+## `add_row()` e `add_column()`: Adicionando linhas e colunas
+
+Para adicionar uma linha com valores, usamos o `add_row()`, e para adicionar uma nova coluna com valores, usamos o `add_column()`. Bem intuitivo, né?
+
+Para não alterarmos as tabelas originais, criamos uma nova variável chamada `data_2` e `tibble_2`. Entretanto, não é necessário sempre criar uma variável para cada operação que fizermos.
+
+```{r paged.print=TRUE}
+#Adicionar linha
+data_2 = add_row(data, 
+               nome = "Rafaela", 
+               idade = 50,
+               altura = 1.85)
+
+data_2
+
+tibble_2 = add_row(tibble, 
+                   nome = "Rafaela", 
+                   idade = 50,
+                   altura = 1.85)
+
+tibble_2
+```
+
+```{r paged.print=TRUE}
+#Adicionar coluna
+data_2 = add_column(data_2,
+                    peso = c(50,
+                             80,
+                             40,
+                             100,
+                             70))
+data_2
+
+tibble_2 = add_column(tibble_2,
+                      peso = c(50,
+                               80,
+                               40,
+                               100,
+                               70))
+tibble_2
+```
+
+## `filter():` Filtrando linhas e usando o pipe
+
+Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No tidyverse, mais especificamente no pacote dplyr, usamos a função `filter()` e estabelecemos argumentos lógicos para a filtragem.
+
+```{r paged.print=TRUE}
+# Filtrando linhas ----
+idade = filter(data, idade <= 30)
+
+idade_nome = filter(idade,
+                    nome == "Júlia")
+
+idade_nome
+```
+
+Mas, e se eu quiser filtrar usando mais operações?
+
+Temos duas formas de fazer isso.
+
+A primeira é usando "OU" (`|`) e `%in% c()`. Veja que os resultados são iguais, mas a forma de escrever é diferente. No primeiro caso, temos de repetir "`nome ==`" a cada valor que quisermos incluir. No segundo caso, somente criamos um vetor com os valores separados por vírgula.
+
+```{r paged.print=TRUE}
+#Usando OU (|)
+filter(data, nome == "Júlia" | 
+           nome == "Gabriela")
+
+#Usando %in% c()
+filter(data, nome %in% c("Júlia", "Gabriela")) 
+
+```
+
+E a segunda é usando o **pipe** (`%>%`)**,** que permite "costurar" operações e resultados. Dessa forma, não precisamos criar uma variável/objeto sempre que uma função for aplicada. Usaremos muito o pipe nos próximos códigos.
+
+Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente linhas que contêm um valor. No caso, pegamos as linhas com idade maior ou igual a 30 e, depois, aquelas que contêm o nome "Gabriela".
+
+```{r paged.print=TRUE}
+# Usando o pipe "%>%" (lê-se "e então")
+data %>%                   # Tenho este objeto 
+  filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
+  filter(nome == "Gabriela")   # E então vou filtrar os indivíduos chamados "Gabriela"
+```
+
+## `select():` Selecionando colunas
+
+Da mesma forma que trabalhamos com linhas usando `filter(),` ao trabalhar com colunas, usamos o `select()`.
+
+A função select é muito versátil, e **além de selecionar colunas** que você quer trabalhar, podemos **reordená-las e renomeá-las manualmente**.
+
+Para **isolar a(s) coluna(s)**, use `select(coluna)`, que você produzirá uma tabela com somente aquela coluna.
+
+Para **retirar** uma coluna, use o `-` ou o `!`.
+
+Para **reordenar**, use `select(coluna, everything())`. Aqui, você coloca a coluna de interesse em primeiro lugar e todas as outras restantes em sequência.
+
+```{r paged.print=TRUE}
+# Selecionando colunas ----
+# Selecionar colunas específicas
+data_2 %>%
+  select(nome, altura) 
+
+# Selecionar da coluna nome (1) à coluna peso (4)
+data_2 %>% 
+  select(nome:idade) 
+
+#Retirando coluna
+data_2 %>% 
+  select(-idade) 
+
+data_2 %>%   
+  select(!idade)
+
+#Reordenando coluna
+data_2 %>%   
+  select(idade, everything())
+
+```
+
+Para **renomear** uma coluna, é possível também usar o `select().`Mas, **cuidado**, pois ao renomeá-las, se esquecermos do "**`everything()`**", ficamos somente com a coluna renomeada.
+
+Por isso, temos a função **`rename()`**`,` que evita que isso aconteça.
+
+```{r paged.print=TRUE}
+#Renomeando coluna
+data_2 %>%   
+  select(age = idade, everything())
+
+#Renomeando coluna com rename
+data_2 %>%   
+  rename(age = idade) #Retirando coluna
+
+```
+
+## `mutate():` Criando e realizando operações com novas variáveis
+
+A função `mutate()` permite **criar ou modificar colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna. Por exemplo, podemos criar a coluna imc com o IMC todos os indivíduos, que é calculado com a razão do peso e a altura ao quadrado.
+
+```{r paged.print=TRUE}
+# Criando novas variáveis
+data_2 = data_2 %>%
+  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
+
+```
+
+Além disso, podemos criar uma coluna com o sexo daquele indivíduo. Como sabemos que todos são "feminino", podemos fazer dessa forma.
+
+```{r paged.print=TRUE}
+data_2 %>% 
+  mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
+```
+
+## `if_else` e `case_when()`: Condições
+
+Mas, podemos também usar um argumento lógico também.
+
+Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima ou abaixo de um IMC específico, a partir dos valores da coluna `imc`.
+
+Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um IMC acima de 25, ela será considerada com sobrepeso, e se for abaixo, será classificada como normal.
+
+```{r paged.print=TRUE}
+data_2 %>% 
+  mutate(classificacao = if_else(imc > 25, "sobrepeso", "normal"))
+```
+
+Mas, sabemos que o IMC pode ser classificado com outras categorias. Para isso, temos duas formas de classificar. A primeira é usando o `if_else()` imputando os valores manualmente e deixando os valores que ainda não foram categorizados como NA, e depois, de criar a primeira categoria, criamos a segunda categoria e deixamos os que já estavam na coluna.
+
+```{r paged.print=TRUE}
+data_2 %>% 
+  mutate(classificacao = if_else(imc >= 25 & imc <= 30 , "sobrepeso", NA),
+         classificacao = if_else(imc > 30, "obesidade 1", classificacao),
+         classificacao = if_else(imc >= 18.5 & imc <25, "normal",classificacao),
+         classificacao = if_else(imc < 18.5, "magreza",classificacao))
+```
+
+Veja que, depois da segunda linha de if_else, isso fica confuso de entender. Por isso, usamos o `case_when()`, que é um if_else mais versátil e deixa o código mais limpo e fácil de ler.
+
+```{r paged.print=TRUE}
+data_2 = data_2 %>% 
+  mutate(classificacao = case_when(imc >= 25 & imc <= 30 ~ "sobrepeso",
+                                   imc > 30 ~ "obesidade 1",
+                                   imc >= 18.5 & imc < 25 ~ "normal",
+                                   imc < 18.5 ~ "magreza"))
+```
+
+## summarize(): resumindo estatísticas
+
+A função `summarize()` (ou `summarise()`) aplica a mesma lógica, mas a tabela gerada é muito menor, e se aplica à variável de interesse na tabela. Por exemplo, se quisermos obter a média (`mean()`), e a soma (`sum()`) das linhas de uma coluna, a summarize é capaz de fazer isso.
+
+```{r paged.print=TRUE}
+# Resumindo dados
+data_2 %>% 
+  summarize(Media_idade = mean(idade))
+
+data_2 %>% 
+  summarize(Soma_idade = sum(idade))
+```
+
+## `group_by`: Agrupando dados
+
+Em muitos casos, nós queremos realizar cálculos com categorias ou grupos diferentes. Por exemplo, considere que queremos saber a média (`mean()`) das idades por categoria da classificação pelo IMC, e além disso, queremos contar os indíviduos em cada categoria (`n()`). Para isso, temos de agrupar os dados por categorias (`sobrepeso, normal`, etc.) de uma variável (`classificacao`). Isso é feito com o `group_by()` seguido pelo `summarize()`.
+
+```{r paged.print=TRUE}
+#Média dos grupos
+data_2 %>% 
+  group_by(classificacao) %>% 
+  summarize(Media_idade = mean(idade))
+
+#Contagem
+data_2 %>% 
+  group_by(classificacao) %>% 
+  summarize(individuos = n())
+```
+
+## `arrange():` Ordenando dados
+
+Podemos ordenar os dados de forma crescente e decrescente usando o `arrange().`
+
+```{r paged.print=TRUE}
+# Ordenando dados de forma crescente
+data_2 %>% 
+  arrange(idade)
+
+# Ordenando de forma decrescente
+#Método 1
+data_2 %>% 
+  arrange(desc(idade))
+
+#Método 2
+data_2 %>% 
+  arrange(-idade)
+```
+
+## Joins: merging/unindo tabelas
+
+Na rotina de análise dados, temos de lidar com diferentes tabelas que, muitas vezes, estão associadas entre si por algum elemento. Por exemplo, podemos ter uma tabela com os dados antropométricos (altura, idade e peso) para cada indivíduo e outra com informações pessoais, como endereço, telefone, etc.
+
+**"Uai, mas não posso ter tudo em uma tabela só?"**. Pode, mas precisamos considerar que uma tabela com todos esses dados não são necessariamente úteis em todo o processo. Acima, avaliamos o IMC de cada indivíduo e não seria interessante saber o endereço de cada um. Mas, se tivermos uma tabela enorme, com milhões de pessoas, podemos procurar estabelecer uma associação entre peso e endereço, por exemplo. Ou mesmo encontrar relações entre essas variáveis e a incidência de alguma doença infecciosa.
+
+Dessa forma, é importante construir e dividir tabelas para facilitar nossa manipulação de dados e, não menos importante, reduzir o **tamanho dos arquivos individuais**.
+
+Para ilustrar isso, vamos criar uma tabela chamada `endereco`, que contem o nome, cidade e bairro de cada indivíduo.
+
+```{r paged.print=TRUE}
+endereco = tribble(~nome, ~cidade, ~bairro,
+          "Gabriela", "São Paulo", "Consolação",
+          "Júlia", "Ribeirão Preto", "Cidade Universitária",
+          "Beatriz", "Cuiabá", "Centro",
+          "Luiza", "São Paulo", "Centro",
+          "Thaís", "São Paulo", "Butantã")
+endereco
+```
+
+Uma forma de unir a tabela `data_2` com a tabela `endereco` é pelas linhas de uma coluna em comum, no caso a coluna `nome`. Essa operação é chamada de **merging**. Para isso, temos as funções `*_join()`. O `*_` seguido por `join()` significa que existem nomes diferentes de funções que terminam com "join" e fazem algo parecido.
+
+### inner_join()
+
+Uma dessas funções é a `inner_join()`, que somente une as linhas correspondentes de duas tabelas. Ou seja, se tem uma linha com o nome X nas tabelas 1 e 2, as colunas das tabelas 1 e 2 serão unidas. Se existir uma linha com o nome X na tabela 1, mas não na tabela 2, então as colunas não serão unidas para aquela linha. Confuso, mas você vai entender visualizando aqui.
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  inner_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+Veja que a "Rafaela" não foi incluída, porque não havia dados sobre ela na tabela de endereços.
+
+### left_join()
+
+Mas, suponhamos que seria interessante saber quem da tabela 1 **não** tem endereço cadastrado e, dessa forma, podemos procurar registrar em outra ocasião. Para isso, temos o `left_join()`. Nele, em vez de não mostrar a linha da Rafaela na nova tabela, a função inclui valores `NA` nessa linha. A função tem o nome de "**left**" porque considera a tabela 1 como a tabela da esquerda. **Em outras palavras**, queremos anotar todas as linhas da tabela da esquerda (tabela 1) com os dados da tabela da direita (tabela 2) a partir dos elementos da coluna em comum chamada "`nome`".
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  left_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+### anti_join()
+
+Da mesma forma, podemos obter somente as linhas que estão na tabela 1, mas não na tabela 2. Isso é feito com a função `anti_join()`. O output dela é somente a linha da Rafaela com as colunas da tabela 1.
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  anti_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+### right_join()
+
+Observe que a tabela `endereco` também tem uma linha que não está na tabela 1, a "Thais", e que ela não foi mostrada nas funções anteriores. Para incluir, podemos usar o right_join(), que assim como o left_join(), mostra todas as linhas de uma tabela, incluindo aquelas que não estão na outra. No caso, ela mostra todas as linhas da tabela 2, mesmo aquelas que não estão anotadas com os dados da tabela 1. Além disso, ela não mostra as linhas da tabela 1 que não estão na tabela, no caso "Rafaela".
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  right_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+### full_join()
+
+Agora, se quisermos ter uma tabela completa, com todas as linhas das tabelas 1 e 2, mesmo aquelas que não correspondem entre si, usamos a função `full_join()`.
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  full_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+## Usando o `pipe` para fazer múltiplas operações de uma vez
+
+Usando o pipe, podemos escrever e ler códigos em uma sequência lógica fácil.
+
+Por exemplo, abaixo:
+
+> 1.  *pegamos a tabela `data_2`, **ordenamos** a altura na ordem crescente,*
+> 2.  ***filtramos** somente as pessoas com idade acima de 30 e peso acima de 50 e **retiramos** os nomes.*
+> 3.  *Depois, **arredondamos** os valores do IMC para uma casa decimal (usando `round())` e **criamos uma nova variável** chamada `peso_x_idade`.*
+> 4.  *Por fim, **resumimos** os dados usando a média do peso e a média do imc, e criamos uma variável chamada `mega_pipe`*
+
+```{r}
+# Múltiplas operações em uma caixa
+mega_pipe = data_2 %>% 
+  arrange(altura) %>% 
+  filter(idade >= 30,
+         peso >= 50) %>% 
+  select(-nome) %>% 
+  mutate(imc = round(imc, 1),
+         peso_x_idade = peso * idade) %>%
+  summarise(mean_peso = mean(peso),
+            mean_peso = round(mean_peso, 1),
+            mean_imc = mean(imc) %>% round(1))
+mega_pipe
+```
+
+# 4. Visualização
+
+A visualização com o `ggplot2` é feito em **camadas**. Primeiro, temos um dataframe com os dados de interesse, depois chamamos a função `ggplot()` e adicionamos um `+`, que funciona aqui como um pipe, mas somente para gráficos. A partir disso, temos de mapear os eixos, cores, tamanho, etc. com as variáveis de interesse, usando o `aes()`. Para definir qual tipo de gráfico iremos criar, temos de definir a geometria (`geom_`), que no caso é de pontos (`geom_point()`). Isso já produz um gráfico, mas não é um dos melhores.
+
+## Gráfico de barras
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  aes(x = nome,
+      y = imc) +
+  geom_col()
+```
+
+Para melhorar, podemos adicionar mais funções, como labels para os pontos do gráfico (`geom_label()`), um tema pré-definido (`theme_few()`) ou customizável (`theme()`), e **título** para o gráfico, **eixos**, e **legendas** (`labs())`. Além disso, para **reordenar** os valores de uma variável categórica, como os países, por uma variável numérica, usamos o `fct_reorder()` dentro do `mutate()`.
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  aes(x = fct_reorder(nome, -imc), #Mapeando variáveis
+      y = imc) +
+  geom_col() + #Geometria
+  theme_few() + #Tema 
+  labs(x = "Nome", #Títulos
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa")
+```
+
+Observe que a fonte dos eixos x e y estão muito pequenas e difíceis de visualizar. Conseguimos mudar facilmente esses atributos usando a função `theme()` e os argumentos `axis.text.x` e `axis.text.y`. Além disso, podemos melhorar o título do gráfico, deixando-o em negrito (`face = "bold"`) e centralizado ou justificado ao meio (`hjust`). Para isso, devemos usar a função `element_text(),` que aceita como parâmetros `size`, `color`, `face`, `angle`, etc. Não confunda com `theme_few()` ou qualquer outro tema pronto. Veja também que, quando adicionamos modificações no `theme()`, o `theme_few()` permanece como estava.
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  
+  #Mapeando variáveis
+  aes(x = fct_reorder(nome, -imc), 
+      y = imc) +
+  
+  #Geometria
+  geom_col() + 
+  
+  #Tema pré-estabelecido
+  theme_few() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  #Títulos
+  labs(x = "Nome", 
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa")
+```
+
+## Cores
+
+Agora, vamos adicionar cores ao gráfico. Como vamos preencher os retângulos de acordo com os valores de uma variável (`classificacao`), atribuimos o nome da variável ao argumento `fill` em aesthetics (`aes()`). Adicionalmente, vamos renomear o título da legenda para o `fill` usando a função `labs()` e deixar os níveis começando com a letra maíuscula usando a função `scale_fill_discrete()`.
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  
+  #Mapeando variáveis
+  aes(x = fct_reorder(nome, -imc), 
+      y = imc,
+      fill = classificacao) +
+  
+  #Geometria
+  geom_col() + 
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  #Títulos
+  labs(x = "Nome", 
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa") +
+  
+  #Renomeando levels
+  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+                               "normal" = "Normal",
+                               "obesidade 1" = "Obesidade I")) 
+```
+
+Por padrão, o ggplot2 utiliza uma paleta de cores nativa, mas podemos especificar a de nosso interesse. Existem diversos pacotes com paletas pré-definidas. Um dos pacotes é o `ggsci`, que apresenta as paletas dos principais journals acadêmicos, como a Nature, Science, e a The Lancet, além de filmes e séries de ficção, como jama, Tron e Futurama. Para acessar as paletas, use `vignette("ggsci"),` e para visualizar os códigos das cores, especifique a paleta usando `pal_` e depois `show_col()`. Aqui, usaremos a paleta dos **jama**. Definir as paletas é uma etapa importante para garantir a padronização dos gráficos no seu trabalho.
+
+```{r message=FALSE, warning=FALSE}
+# Cores
+#Mudando a paleta
+vignette("ggsci") 
+
+jama = pal_jama("default", #Especificar paleta
+              alpha = 0.7)(8) #Gerar 8 cores com transparencia = 70%
+jama %>% 
+  show_col()
+```
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  
+  #Mapeando variáveis
+  aes(x = fct_reorder(nome, -imc),
+      y = imc,
+      fill = classificacao) +
+  
+  #Adicionando geometrias
+  geom_col() +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Adicionando títulos
+  labs(x = "Nome", 
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa",
+       fill = "Classificação") +
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  
+  #Renomeando levels
+  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+                               "normal" = "Normal",
+                               "obesidade 1" = "Obesidade I")) +
+  scale_fill_jama()
+```
+
+E se quisermos definir uma paleta manualmente, podemos usar a função `scale_fill_manual()`, na qual atribuimos as cores específicas a cada categoria. Observe que podemos escrever o nome da cor ou o código, e o RStudio interpretará no próprio bloco de código. Para ver mais cores, acesse o site [coolors.co](https://coolors.co/). Lembre-se de sempre adicionar um `#` antes do código da cor.
+
+```{r}
+barras = data_2 %>% 
+  ggplot() +
+  aes(x = fct_reorder(nome, -imc),
+      y = imc,
+      fill = classificacao) +
+  geom_col() +
+  labs(x = "Nome", #Títulos
+       y = "IMC",
+       title = "Índice de massa corporal",
+       fill = "Classificação") +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  
+  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+                               "normal" = "Normal",
+                               "obesidade 1" = "Obesidade I")) +
+  scale_fill_manual(values = c("magreza" = "red", 
+                               "normal" = "blue",
+                               "obesidade 1" = "#ffb703"))
+
+barras
+```
+
+## Gráfico de dispersão
+
+Um gráfico com pontos que relaciona duas variáveis numéricas é interessante para visualizar uma associação. Vamos fazer exatamente o que fizemos com os gráficos de barras, mas agora definiremos a geometria com `geom_point()` e a cor será definida pelo argumento color. Ao definirmos as cores de pontos e linhas (unidimensionais), usamos `color`, e no caso de formas geométricas bidimensionais como barras e colunas, usamos `fill`. Além disso, podemos adicionar uma paleta de cores para cada nível da variável classificacao com `scale_color_*()`.
+
+```{r}
+
+data_2 %>% 
+  ggplot() +
+  aes(x = peso,
+      y = imc,
+      color = classificacao) +
+  geom_point() +
+  
+  #Títulos
+    labs(x = "Peso (kg)", 
+       y = "IMC",
+       title = "Índice de massa corporal versus peso",
+       color = "IMC") +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold"))  +
+  
+  #Cores
+  scale_color_jama()
+```
+
+Além disso, podemos criar um gradiente usando `scale_color_gradient()` e definindo as cores pros valores mínimo e máximo.
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  aes(x = peso,
+      y = imc,
+      color = imc) +
+  geom_point() +
+  
+  #Títulos
+    labs(x = "Peso (kg)", 
+       y = "IMC",
+       title = "Índice de massa corporal versus peso",
+       color = "IMC") +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold"))  +
+  
+  #Gradiente de cores
+  scale_color_gradient(low = "yellow", 
+                       high = "brown", 
+                       na.value = NA)
+```
+
+## Adicionando mais geoms
+
+Por enquanto, somente visualizamos gráficos com uma geometria, mas podemos adicionar mais de uma. Agora, adicionaremos uma linha (`geom_line()`) para conectar os pontos. Além disso, vamos definir outros parâmetros para essas geometrias, como espessura (`size`) da linha e do ponto. Lembre-se que o ggplot2 é um sistema de camadas, então se adicionarmos a linha antes dos pontos no código, os pontos irão se sobrepor às linhas.
+
+```{r}
+linha = data_2 %>% 
+  ggplot() +
+  
+  #Mapping
+  aes(x = peso,
+      y = imc,
+      color = imc) +
+  
+  #Geometrias
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  
+  #Títulos
+    labs(x = "Peso (kg)", 
+       y = "IMC",
+       title = "Índice de massa corporal versus peso",
+       color = "IMC") +
+
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold"))  +
+  
+  #Gradiente de cores
+  scale_color_gradient(low = "yellow", 
+                       high = "brown", 
+                       na.value = NA)
+
+linha
+```
+
+## Salvando figuras
+
+Para salvar uma figura, vamos usar a função `ggsave()` e definir como tipo de arquivo `.png` e usar a função `here()`, que especifica o caminho do diretório ao qual salvaremos a figura. No caso, salvaremos dentro da pasta "Figuras".
+
+Há diferentes tipos de arquivos, como jpeg e tiff, mas usaremos o png por ser muito comum e também ser aceito por diferentes programas de edição, como o Google Slides, Powerpoint e Canva. Além disso, vamos definir também as dimensões da imagem final.
+
+```{r}
+linha %>% 
+  ggsave(file = here("Figuras","linha_imc.png"), width = 5, height = 5)
+```
+
+Uma outra forma de salvar a imagem é colar `linha` no console, printá-la (apertar `Enter`) e salvar diretamente da aba "Plots". Você poderá salvá-la como .png ou como pdf também!
+
+## Gráfico interativo: Plotly
+
+Em alguns casos, converter um gráfico estático em um interativo é muito interessante para explorar os dados, especialmente em gráficos com pontos mais complexos do que este. Para isso, usamos o pacote `plotly`.
+
+```{r message=FALSE, warning=FALSE}
+linha %>% 
+  ggplotly() 
+```
+
+## Visualização rápida com o Esquisse
+
+O pacote **`esquisse`** é uma ferramenta interativa para a construção de gráficos, de forma rápida e intuitiva.
+
+**Lembre-se de retirar os `#` antes de rodar.** Teste todos os parâmetros, como filtragem, cores, escalas, e veja como os dados se comportam nos diferentes tipos de gráficos. Observe também, no botão do lado inferior direito, que você pode gerar os códigos do gráfico e copiar para o bloco de código. Dessa forma, você automatiza seu gráfico sem precisar ficar abrindo esta janela sempre.
+
+```{r}
+# data_2 %>% 
+#   esquisser()
+```
+
+## Uma figura, mais gráficos
+
+Geramos diferentes gráficos acima. Entretanto, é interessante uni-los em uma só imagem. Afinal, são os mesmos dados explorados de formas diferentes. Para isso, temos o pacote patchwork, que funciona da forma mais simples possível usando operadores matemáticos, como `+`, `/` e `().`
+
+Para colocar um gráfico do lado do outro, use `+`.
+
+```{r}
+linha + barras + plot_layout(guides = "collect")
+```
+
+E para colocar um gráfico em cima do outro, use `/`.
+
+```{r}
+linha / barras + plot_layout(guides = "collect")
+```
+
+Para salvar, usaremos a mesma função `ggsave()`.
+
+```{r}
+linha_barra = linha / barras + plot_layout(guides = "collect")
+
+ggsave(linha_barra, file = here("Figuras","linha_barra.png"), width = 10, height = 5)
+```
+
+# Dia 2
+
+# 5. Trabalhando com dados reais
+
+## Importando tabelas
+
+Podemos importar tabelas de forma manual, clicando no nome do arquivo no quadrante onde encontramos a aba "Files" e selecionando "Import dataset", que é realizado pelo pacote `readr`.
+
+Caso queira deixar automatizado, você pode copiar o código que é gerado e colar no seu bloco de código aqui.
+
+A função `read_csv()` acessa o local do seu arquivo (no caso, do tipo .csv) e o importa para o ambiente do R. Existem funções para importar cada tipo de arquivo, como excel, tsv, etc.
+
+```{r paged.print=TRUE}
+#Pelo readr
+cobertura_vacinal <- read_csv(here("cobertura_vacinal_anotada.csv"))  
+
+cobertura_vacinal
+```
+
+Para baixar uma tabela de outra pasta, podemos usar a função `here()` do pacote `here`. Como dito anteriormente, essa função sempre assumirá que o diretório inicial é o do projeto. Para acessar um arquivo dentro de uma pasta, no caso o arquivo `paises_anotados.rds` na pasta `raw-data`, escrevemos esse caminho entre aspas.
+
+```{r paged.print=TRUE}
+#Caminho
+here()
+
+#Tabela de países
+paises_anotados <- readRDS(here("raw-data", "paises_anotados.rds")) 
+
+paises_anotados 
+```
+
+Poderíamos fazer o mesmo aqui, mas como o arquivo está na mesma pasta, especificaremos somente seu nome.
+
+```{r paged.print=TRUE}
+#Tabela de mortes por doença
+mortes_doencas <- read_rds(here("Deaths_infectious_diseases_filtered.rds")) 
+
+mortes_doencas 
+```
+
+## Padronizando tabelas
+
+Para trabalharmos de forma fácil com uma tabela, precisamos padronizá-la.
+
+Isso significa que **trocaremos e reordenaremos os nomes das colunas** para fazerem mais sentido, completaremos os valores `NA` quando for possível (e fizer sentido), e explicitaremos algumas coisas, como o nome das doenças contra as quais as vacinas protegem, e daremos o nome completo de cada região, pois somente temos os códigos delas.
+
+Finalmente, salvaremos essa mesma tabela processada em outra, utilizando a função `saveRDS()`. **RDS** é um arquivo específico do R que tem seu tamanho reduzido e os dados otimizados. Poderíamos também salvar como arquivo de **Excel** (`write.xlsx()`) ou .**csv** (`write_csv()`) para trabalharmos nessa tabela manualmente no Google Sheets ou no próprio Excel, mas como é uma tabela grande e essa não é uma necessidade, continuaremos com o arquivo RDS.
+
+```{r}
+#Organizar colunas
+cobertura_vacinal = cobertura_vacinal %>% 
+  select(type, name, country_abrev, continent, region, region_complete, year, everything())
+
+#Salvar
+cobertura_vacinal %>% 
+  saveRDS(file = here("cobertura_vacinal_anotada_2.rds"))
+```
+
+```{r paged.print=TRUE}
+#Organizar colunas
+mortes_doencas = mortes_doencas %>% 
+  select(name, continent,region_complete, everything())
+
+#Salvar
+mortes_doencas %>% 
+  saveRDS(file = here("mortes_doencas.rds"))
+
+mortes_doencas
+
+```
+
+## Explorando dados
+
+### Visualizando tabelas
+
+```{r paged.print=TRUE}
+# Explorando dados -----
+
+# Tabela completa
+view(cobertura_vacinal) 
+
+# Descrição geral
+glimpse(cobertura_vacinal)
+
+# Primeiras 10 linhas
+head(cobertura_vacinal, 10)
+
+# Últimas 10 linhas
+tail(cobertura_vacinal, 10)
+
+#Summary statistics
+summary(cobertura_vacinal)
+```
+
+Cada coluna contendo strings repetidas nas linhas podem ser reduzidas aos valores únicos.
+
+Por exemplo, veja que as regiões, por estarem na tabela longa, são repetidas para cada país. Se quisermos saber todas as regiões incluídas no dataset de forma mais fácil, sem ficar procurando uma por uma, usamos o `distinct()`.
+
+```{r paged.print=TRUE}
+#Níveis de colunas
+cobertura_vacinal %>% 
+  distinct(region_complete)
+
+cobertura_vacinal %>% 
+  distinct(continent)
+
+cobertura_vacinal %>% 
+  distinct(name) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  distinct(vaccine)
+
+```
+
+E se quisermos contar quantas vezes esses valores são repetidos no dataset? Podemos usar o `count()` seguido por `head()`, para visualizar os 10 primeiros valores. O `head()` é importante quando temos uma tabela muito grande e não queremos ver todos os valores.
+
+```{r paged.print=TRUE}
+#Contar linhas por coluna
+cobertura_vacinal %>% 
+  count(name) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(vaccine) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(continent) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(diseases) %>% 
+  head(10)
+```
+
+**Os dados foram registrados de que ano a que ano?**
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  summarize(min_valor = min(year),
+            max_valor = max(year))
+```
+
+**Quais são as vacinas que protegem contra cada doença? Podemos descobrir isso de duas formas.**
+
+1.  Usando o `filter()` e especificando a doença.
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  filter(diseases == "Poliomielitis") %>% 
+  distinct(vaccine) 
+```
+
+2.  Agrupando os dados com `group_by()`.
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  group_by(diseases) %>% 
+    distinct(vaccine) 
+```
+
+Temos também uma forma de contar a frequência dessas linhas. Veja que há uma diferença nas observações/linhas por região, sendo a região da américa latina a que mais contém observações, e a região do sul-asiático a que tem menos.
+
+Além disso, a região "`Non-programme`" inclui países que não estão nos programas de assistência da ONU/OMS, como a Estônia e o Qatar, entretanto não há uma explicação completa em nenhuma das fontes que consultei. É importante incluir esses dados, ainda que não contribuam muito para nossas conclusões.
+
+No caso de "`Global`", esses dados se referem à cobertura vacinal do conjunto de todos os países para cada vacina (`n = 14`), e por isso tem `n = 441`.
+
+```{r}
+#Tabela de frequências
+cobertura_vacinal %>% 
+  tabyl(region_complete)
+```
+
+### Dados faltantes
+
+Valores `NA` (*Not Available*) podem surgir por diversos motivos, como erros de coleta de dados, falhas em dispositivos de medição, ou simplesmente porque a informação não está disponível.
+
+Use a função `skim()` e faça um diagnóstico da tabela. Existem dados faltantes? Por que existem e onde estão?
+
+```{r}
+# Dados faltantes ----
+skim(cobertura_vacinal) 
+
+# Como são essas linhas?
+cobertura_vacinal %>% 
+  filter(!complete.cases(.)) 
+
+```
+
+Observe que somente há dados faltantes na coluna coverage. Isso acontece porque, apesar de uma vacina ter sido incorporada a programas de vacinação nacionais, isso não ocorreu ao mesmo tempo com todos os países. Dessa forma, podemos excluir essas linhas, mas não substituir os NAs por 0, porque isso significaria que a vacina estava disponível e ninguém foi vacinado.
+
+### Estatísticas descritivas
+
+Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função `drop_na()` na coluna onde temos mais `NA`s.
+
+```{r}
+#Retirando os NAs
+cobertura_vacinal = cobertura_vacinal %>% 
+  drop_na(coverage)
+
+#Sobraram linhas com NAs?
+cobertura_vacinal %>% 
+  filter(!complete.cases(.))
+```
+
+Além disso, queremos filtrar somente os dados dos países latinoamericanos entre os anos 2000 e 2023. Para isso, usamos o between() dentro da função `filter()`, e especificamos que queremos o `type == "country"`, pois também temos dados da região como um todo.
+
+Como não queremos trabalhar com os nomes completos das regiões, podemos ser menos específicos. Por exemplo, se sabemos que existe a região "`Latin America and Caribbean Region (LACR)`", podemos somente usar uma função que pega um pedaço do nome completo e nos retorna aquela linha. Isso é feito com o `str_detect().`
+
+Para calcularmos as estatísticas gerais com summarize, precisamos agrupar os dados com `group_by()`. Isso porque temos dados da cobertura vacinal por país em 23 anos e para mais de uma vacina. Dessa forma, agruparemos por país (`name`) e vacina (`vaccine`). Ao final, vamos desagrupar esses dados.
+
+As tabelas produzidas a seguir serão utilizadas para trabalharmos a visualização dos dados!
+
+**Siga o tutorial, mas já comece a testar com outros países, regiões, vacinas, doenças e anos!**
+
+**Por país**
+
+Veja quais são os países da américa latina que mais vacinaram ao longo de 2000 a 2023, por vacina.
+
+```{r paged.print=TRUE}
+latin_2000_2023 = cobertura_vacinal %>% 
+  
+  #Missing values: Aqui, é importante retirá-los para não repetir linhas
+  
+  drop_na(coverage) %>% 
+   
+  #Filtrando os dados no intervalo e
+  filter(between(year, 2000, 2022),
+         str_detect(region_complete, "Latin"),
+         type == "country") %>% 
+  
+  #Agrupar por vacina e país
+  group_by(vaccine, name) %>% 
+  
+  #Resumir estatísticas
+  # Estatísticas da cobertura vacinal para cada país em um continente
+  # Média, mediana, mínimo e máximo de uma variável numérica
+  summarise(
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
+  ) %>% 
+  
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
+  #Desagrupar
+  ungroup()
+
+latin_2000_2023
+```
+
+**Por continente**
+
+Veja quais são os continentes que mais vacinaram ao longo de 2000 a 2023, por vacina.
+
+Algumas modificações foram feitas na tabela original. Observe que os valores para "**`Other`**" incluem países que não foram identificados corretamente, sendo o motivo principal o nome utilizado e processos históricos, como divisão do país e mudança de nome. Como esses países podem ser interessantes para as análises posteriores, eles continuaram na tabela.
+
+```{r paged.print=TRUE}
+# Cobertura vacinal: Estatísticas de cada continente
+continentes_vac = cobertura_vacinal %>% 
+  
+  drop_na(coverage,
+          continent) %>% 
+  
+  filter(between(year, 2000, 2023),
+         type == "country") %>% 
+  
+  group_by(vaccine, continent) %>% 
+  
+  summarise(
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
+  ) %>% 
+  
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
+  ungroup()
+
+#Visualizar
+continentes_vac
+```
+
+### Mortes cumulativas
+
+**Por continente**
+
+```{r paged.print=TRUE}
+# Mortes cumulativas
+# Estatísticas de cada continente
+continentes_mortes = mortes_doencas %>% 
+  
+  drop_na(total_deaths,
+          continent) %>%
+  
+  filter(between(year, 2000, 2023)) %>% 
+  
+  group_by(death_disease, continent) %>%
+  
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  
+  #Aqui, queremos os países com maior número de mortes
+  arrange(death_disease, - cumulativo) %>% 
+  
+  
+  ungroup()
+
+continentes_mortes
+```
+
+**Por país**
+
+```{r paged.print=TRUE}
+# Mortes cumulativas
+# Estatísticas de cada país
+paises_mortes = mortes_doencas %>% 
+  drop_na(total_deaths,
+          name) %>% 
+  filter(between(year, 2000, 2023)) %>% 
+  group_by(death_disease, name) %>% 
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  arrange(death_disease, desc(cumulativo)) %>% 
+  ungroup()
+
+paises_mortes
+```
+
+# 6. Visualização
+
+## Vacinação
+
+**Por continente**
+
+```{r}
+#Gráfico de barras simples
+continente_barras_vac = continentes_vac %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  mutate(continent = fct_reorder(continent, median)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = continent,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = continent, 
+                label = median),
+            hjust = -0.5) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Cobertura vacinal",
+       x = "Mediana (Cobertura vacinal %)",
+       y = "",
+       fill = "Continente")  +
+  
+  #Limites
+  xlim(0, 105) +
+  
+  scale_fill_jama()
+
+continente_barras_vac
+
+```
+
+**Por país**
+
+```{r, fig.width = 10, fig.height = 10}
+#Gráfico de barras simples
+pais_barras_vac = latin_2000_2023 %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = name,
+      fill = median) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = name, 
+                label = median),
+            hjust = -0.5,
+            size = 5) +
+  
+  #Tema
+  theme_few() +
+  
+  scale_fill_binned(type = "viridis") +
+  
+  #Labels
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Países, entre 2000 e 2023",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "",
+       fill = "Mediana") +
+  
+  xlim(0, 105)
+
+pais_barras_vac
+```
+
+## Mortes
+
+**Por continente**
+
+```{r}
+#Gráfico de pontos simples
+barras_mortes = continentes_mortes %>% #Dataframe
+  filter(death_disease == "Measles") %>% 
+  mutate(cobertura_vacinal = fct_reorder(continent, cumulativo)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = cobertura_vacinal,
+      fill = cobertura_vacinal) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = cobertura_vacinal, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "") +
+  
+  scale_fill_jama()+
+  
+  #Eixo x
+  xlim(0, 10000) #Aumentar limites 
+  
+barras_mortes 
+
+```
+
+De acordo com o gráfico, o continente asiático contribuiu para 84% das mortes por sarampo, em 23 anos. Mas, a doença foi endêmica no continente todo ou somente em alguns países?
+
+```{r}
+#Gráfico de barras simples
+paises_barras_mortes = paises_mortes %>% #Dataframe
+  inner_join(paises_anotados %>% select(-region_complete), by = "name") %>% 
+  filter(death_disease == "Measles") %>% 
+  mutate(name = fct_reorder(name, cumulativo)) %>% 
+  slice_max(order_by = cumulativo, n = 10) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = name,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = name, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "") +
+  
+    scale_fill_jama() +
+  
+  #Eixo x
+  xlim(0, 10000) #Aumentar limites 
+  
+paises_barras_mortes
+```
+
+As Filipinas foi o país que mais contribuiu para 80% das mortes no mundo todo. Na Ásia, o Japão, Mongólia e Tailândia também registraram muitas mortes pela doença, o que poderia indicar que a doença se espalhou entre esses países ou isso ocorreu em tempos diferentes. Interessante, não? Para explorar mais, considere os gráficos que faremos a seguir com outros exemplos.
+
+## Melhorando o gráfico
+
+Chegamos a um gráfico interessante. Por isso, copiamos e colamos o código aqui, para permitir que façamos outras modificações no gráfico.
+
+Nele, queremos filtrar a cobertura vacinal contra o sarampo nos países da américa latina e identificar aqueles países que apresentem cobertura vacinal maior ou igual a 95%. Caso o país tenha cobertura menor, ele será marcado de vermelho. Para isso, usamos o `gghighlight()`
+
+```{r, fig.width = 8, fig.height = 5}
+# Melhorando o gráfico -----
+
+plot = 
+  
+  # Manipular tabela
+  latin_2000_2023 %>%
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+ 
+  #Criar base do gráfico
+  ggplot() +
+  aes(x = median, y = name, colour = median) + #Aesthetics (mapping)
+  
+  #Geometria
+  geom_point(shape = "circle", 
+             size = 1) +
+  #Highlight (add sempre após geom_)
+  gghighlight(median >= 95, #Filtragem
+              label_key = name, #Nome do label
+              label_params = list(size = 3), #Tamanho da fonte
+              unhighlighted_params = list(colour = "red")) +
+  
+  #Marcações
+  #Add Linha vertical
+  geom_vline(xintercept = 95,
+             colour = "black",
+             linewidth =0.2,
+             linetype = 2) +
+  
+  #Tema, aparência
+  theme_light() + 
+  
+  # Labels, titulo, subtitulo, titulo dos eixos
+    
+  labs(title = "Vacinação em países da América Latina",
+     subtitle = "Sarampo, MCV1, Dose 1, entre 2000 e 2023",
+     y = "",
+     x = "Mediana (Cobertura %)",
+     colour = "Cobertura vacinal",
+     caption = "Fonte: Feito pela UPVacina") +
+  
+  # Aparência especifica
+  theme(
+    
+    #Texto geral
+    text = element_text(family = "sans",  #sans, mono, serif
+                        color = "black"), 
+    
+    #Título, subtítulo e tag
+    plot.title = element_text(size = 12, 
+                              face = "bold", 
+                              hjust = 0,
+                              vjust = 0.5),
+    plot.subtitle = element_text(size = 10),
+    plot.tag.position = "topleft",
+    plot.tag = element_text(vjust = 5,
+                            size = 12, 
+                            face = "bold"),
+    
+    #Legenda
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10),
+    
+    #Eixos
+    axis.title.x = element_text(size = 10,
+                                angle = 0,
+                                color = "black"),
+    axis.text.x = element_text(color = "black",
+                               size = 8,
+                               angle = 0),
+    axis.text.y = element_text(size = 8,
+                               color = "black"),
+    
+    #Margens do gráfico
+    plot.margin = unit(c(0.5, #Top
+                         1, #Right
+                         0.5, #Bottom
+                         0), #Left 
+                       "cm") #Unidade) 
+  ) 
+
+#Visualizar
+plot
+
+#Salvar
+ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
+```
+
+## Unindo gráficos
+
+```{r}
+#Unindo gráficos -----
+vaccination = cobertura_vacinal %>% 
+  filter(name == "Brazil",
+         vaccine == "MCV1",
+         year >= 1980, 
+         year <= 2020) %>% 
+    ggplot() +
+  geom_line(mapping = aes(
+    x = year,
+    y = coverage),
+    colour = "#4DBBD5B2",
+    linewidth = 2) +
+    geom_text(aes(x = year, 
+                  y = coverage, 
+                  label = coverage),
+            vjust = -0.5,
+            size = 2) +
+    theme_few() +
+  labs(title = "Cobertura vacinal contra o sarampo, Brasil",
+       x = "Ano",
+       y = "Cobertura vacinal (%)") +
+   ylim(0, 110)
+
+vaccination
+```
+
+```{r}
+
+#Mortes
+deaths = mortes_doencas %>% 
+  filter(name == "Brazil",
+         death_disease == "Measles",
+         year >= 1980, year <= 2020) %>% 
+    ggplot() +
+  aes(x = year, y = total_deaths) +
+  geom_col(fill = "#DC0000B2") +
+  geom_text(aes(label = total_deaths),
+            vjust = 0.5,
+            hjust = -0.2,
+            angle = 90,
+            size = 2) +
+  theme_few() +
+  theme(text = element_text(size = 10),
+        plot.title = element_text(hjust= 0.5)) +
+    labs(title = "Mortes por sarampo, Brasil",
+       x = "Ano",
+       y = "Mortes") +
+   ylim(0, 3700)
+
+deaths
+```
+
+### Unindo gráficos em uma imagem
+
+```{r}
+#Unir gráficos
+(vaccination / deaths) 
+
+#Salvar
+(vaccination / deaths) %>% 
+  ggsave(file = here("Figuras","Sarampo_Brasil_1980_2023.png"), width = 10, height = 5)
+
+```
+
+### Boxplots
+
+```{r}
+#Boxplot simples por ano
+boxplot_years = cobertura_vacinal %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(1990, 2000, 2010, 2019)) %>% 
+  
+  
+ ggplot() +
+  aes(x = "", 
+      y = coverage, 
+      fill = continent) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
+  theme_few() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   vjust = 1,
+                                   hjust = 1),
+        plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        legend.position = "right",
+        plot.title = element_text(hjust= 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(year), ncol = 4) +
+  
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Primeira dose (MCV1)",
+      x = "",
+       y = "Cobertura vacinal (%)",
+       fill = "Continente") +
+    scale_fill_jama()
+
+
+#Visualizar
+boxplot_years 
+```
+
+```{r message=FALSE, warning=FALSE}
+#Boxplot simples de ano
+boxplot_regions = cobertura_vacinal %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(1990, 2000, 2010, 2020)) %>% 
+  mutate(year = as.factor(year)) %>% 
+ ggplot() +
+  aes(x = year, y = coverage, fill = year) +
+  theme_few() +
+  theme(plot.title = element_text(hjust= 0.5)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(aes(label = name),
+              alpha = 0.2,
+              na.rm = T) +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
+  scale_color_distiller(palette = "Set2", direction = 1) +
+  facet_wrap(vars(continent)) +
+  scale_fill_jama()
+
+boxplot_regions
+
+```
+
+```{r}
+# Gráfico interativo
+boxplot_regions %>%  
+  ggplotly()
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Boxplot por vacina
+cobertura_vacinal %>% 
+  filter(type == "country",
+         year == 2015) %>% 
+ ggplot() +
+  aes(x = "", y = coverage, fill = continent) +
+  geom_boxplot() +
+  theme_few() +
+  theme(plot.title = element_text(hjust= 0.5)) +
+  facet_wrap(vars(vaccine)) +
+  labs(x = "",
+       y = "Cobertura",
+       title = "Cobertura vacinal por região, em 2000",
+       fill = "Continente") +
+  scale_fill_jama()  
+
+```
+
+## Múltiplos gráficos
+
+### Isolando linhas com filter()
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Highlight linhas específicas
+
+#Método 1
+br_cov = cobertura_vacinal %>%
+ filter(year >= 2012 & year <= 2022,
+        name %in% c("Brazil", "Colombia")) %>%
+ ggplot() +
+  aes(x = year, 
+      y = coverage,
+      colour = name) +
+  
+  geom_line(linewidth = 2) +
+
+  theme_few() +
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)",
+       color = "País")  +
+  
+  scale_color_jama() 
+
+br_cov 
+```
+
+### Isolando linhas com gghighlight()
+
+A `gghighlight()` é uma função do pacote com o mesmo nome que permite destacar linhas, pontos e colunas de interesse, **sem precisar filtrar antes**, como fizemos acima. O interessante é que, ao chamarmos a função aqui, podemos ainda ver as linhas dos outros países, embora transparentes, para comparação.
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Método 2
+br_cov = cobertura_vacinal %>%
+ filter(year >= 2012 & year <= 2022,
+        region %in% c("LACR")) %>%
+ ggplot() +
+  
+  geom_line(aes(x = year, 
+      y = coverage,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few() +
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)") +
+  
+  gghighlight(name %in% c("Brazil", "Colombia"), 
+              calculate_per_facet = T, #Add quando tiver facets. Caso seja um gráfico somente, use calculate_per_facet = F
+              unhighlighted_params = list(linewidth = 1, #Parametros para as outras linhas
+                                          colour = "gray90", #Cor cinza
+                                          alpha = 0.3)) + #Transparencia de 30%
+  scale_color_jama()
+
+br_cov
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2022,
+        region_complete == "Latin America and Caribbean") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few()  + 
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_jama()
+
+br_mortes 
+
+```
+
+Estes dados são interessantes, porque n**ão há casos e mortes registradas por polio no Brasil e nas Américas desde 1989**, quando a doença foi eliminada no continente. Além disso, não há registro algum nos sites da OMS e da UNICEF que citem esses números, além da base de dados original ([WHO Mortality database](https://platform.who.int/mortality/themes/theme-details/mdb/communicable-maternal-perinatal-and-nutritional-conditions)). Provavelmente, é um erro de registro. Essa observação é interessante para ficarmos **atentos** à **qualidade** e **coerência** dos dados. Por isso, vamos retirar os dados de mortes por polio.
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2022,
+        region_complete == "Latin America and Caribbean",
+        death_disease != "Poliomyelitis") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few()  + 
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5))+
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_jama()
+
+br_mortes 
+```
+
+E vamos unir esses gráficos
+
+```{r message=FALSE, warning=FALSE, fig.width = 15, fig.height = 10}
+
+# Unir gráficos
+patch = br_cov + br_mortes + plot_layout(guides = "collect")
+patch
+```
+
+```{r}
+#Salvar
+ggsave(patch, 
+       file = here("Figuras","br_cov_mortes.png"),
+       width = 15, #Largura
+       height = 10) #Altura
+```
+
+# Agora é a sua vez!
+
+Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados, como o boxplot interativo.
+
+**Recomendações**
+
+1.  **Ao fazer a parte prática com suas análises, faça no mesmo documento**. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+
+2.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
+
+    **Por exemplo:**
+
+```{r}
+#Código exemplo
+#...
+```
+
+> "Meu código... Gráfico do tipo A dos países XYZ."
+
+```{r}
+#Seu código
+#...
+```
+
+**Alguns exemplos de perguntas que você pode se fazer:**
+
+-   **Quem**:
+
+    -   Quais são os **países** que **menos** vacinaram em cada **continente**?
+
+    -   Quais são os **países** que **mais** vacinaram em cada **continente**?
+
+    -   Quais são os **países** que **mais** tiveram **mortes** por uma **doença X**? A **difteria** aparentemente teve um surto em algum país **latinoamericano** a partir de **2016**. Qual é este país e por que isso ocorreu? Será que é a baixa **cobertura vacinal**?
+
+-   **Quando**:
+
+    -   Será que a cobertura vacinal ou o número de mortes **sempre** foi assim (alto ou baixo) ou é algo **recente** dos últimos 5 a 10 anos?
+
+    -   Será que a **pandemia** afetou a vacinação contra outras doenças?
+
+    -   Ou a cobertura vacinal já estava caindo **antes mesmo da pandemia**?
+
+-   **Comparações**:
+
+    -   Qual seria a média de vacinação contra uma doença x para o continente y e onde seus países de escolha estão? (Dica: use `group_by()` e `summarize()`).
+
+**Alguns conselhos:**
+
+-   **Explore e leia os códigos do tutorial atentamente**. Tente entender o que cada linha de código faz.
+
+-   Pense **quais variáveis** você quer analisar:
+
+    -   É uma variável **numérica** ou **categórica**?
+
+    -   O gráfico que você quer analisar combina **duas variáveis numéricas** (anos e cobertura vacinal) ou **uma variável categórica** (países) e outra **numérica** (cobertura vacinal)?
+
+    -   A variável numérica é **temporal**? Por exemplo, você vai usar uma **série temporal** (2010, 2011, 2012...) ou somente a **média** de um período (2010 a 2020)?
+
+        -   Caso use todos os anos em uma **série temporal**, recomendo usar um gráfico de **linhas**, onde o eixo x representa os anos e o eixo y, a cobertura vacinal ou numero de mortes.
+
+        -   Agora, caso analise as **médias ou medianas de um período**, um gráfico de **colunas** é recomendado, onde o **eixo x é um ano e o y, o número de mortes ou cobertura vacinal.**
+
+    -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
+
+    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)\[<https://r-graph-gallery.com/>\].
+
+-   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
+
+-   **Use o ChatGPT.** O ChatGPT é uma ferramenta extremamente útil para a sua evolução na programação e você precisa aprender a usá-lo e a fazer perguntas corretas. 80% das vezes ele dá respostas perfeitas. Você pode usá-lo para explicar, consertar e criar códigos!
+
+    -   Copie e cole um bloco de código e peça para ele **explicar** cada linha e função.
+
+    -   Deu algum **erro** no código? Manda pra ele também o código e o erro que aparece no console.
+
+    -   Quer fazer algo **específico** e pontual no código? Manda pro ChatGPT!
+
+-   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
+
+# Em construção: Curso de estatística
+
+## Analisando distribuições e uma pincelada de estatística
+
+Em um conjunto de dados que registra a cobertura vacinal ao longo do tempo para diferentes países, é comum encontrar registros ausentes (e NAs) para determinados países em determinados anos. Isso pode ser devido a vários motivos, como a introdução tardia de determinadas vacinas em alguns países ou a falta de disponibilidade de dados.
+
+Para investigar se há algum padrão na frequência de países que registram a cobertura vacinal ao longo dos anos, podemos criar um gráfico que represente essa frequência. Uma abordagem interessante é agrupar os países por região da OMS e observar se há um aumento na quantidade de países que começaram a registrar a cobertura vacinal ao longo do tempo.
+
+É importante ressaltar que estamos avaliando a frequência de países que registram a cobertura vacinal por ano e não a qualidade da cobertura vacinal em si.
+
+**Quantos países por região da OMS registraram os dados na UNICEF?**
+
+Observa-se que algumas vacinas, como BCG, DTP1, DTP3, POL3 e MCV1, já apresentam registros desde o ano de 1980, com a participação de muitos países. Isso ocorre devido ao fato de que essas vacinas já faziam parte do calendário de imunização de diversos países. No entanto, é importante ressaltar que nem todos os países podem ter reportado sua cobertura vacinal à OMS nesse período, ou até mesmo podem não ter implementado a vacinação.
+
+Por outro lado, algumas vacinas, como IPV1 e MCV2, começaram a ser registradas após o ano 2000, mas já contam com a participação de muitos países nos registros. Isso se deve ao fato de que essas vacinas estavam disponíveis muito antes do início dos registros, evidenciando sua ampla adoção em diferentes países.
+
+Além disso, é possível observar que algumas vacinas começaram a ser registradas de forma gradual ao longo do tempo, como HEPBB, HEPB3, PCV3, HIB3 e ROTAC. Esse padrão faz sentido, uma vez que essas vacinas foram desenvolvidas mais recentemente em comparação com as mencionadas anteriormente.
+
+Um caso interessante é o da vacina contra febre amarela (YFV), que existe desde a década de 1930. Surpreendentemente, sua cobertura vacinal apresenta um comportamento semelhante ao das vacinas introduzidas mais recentemente. Além disso, é importante observar que nem todas as regiões registram essa vacina, sendo mais concentrada em áreas tropicais onde a doença é endêmica.
+
+Essas observações mostram a complexidade e a heterogeneidade na implementação e registro da cobertura vacinal em diferentes regiões e ao longo do tempo. Ainda, refletem as diferentes políticas de saúde pública e condições epidemiológicas em todo o mundo.
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Quantos países por continente registraram os dados na UNICEF?
+#Todos os continentes juntos
+cobertura_vacinal %>%
+ filter(type == "country") %>% 
+  select(coverage, year, continent, vaccine) %>% 
+  mutate(continent = fct_reorder(continent, coverage)) %>% 
+  drop_na(coverage) %>% 
+  ggplot() +
+  aes(x = year, fill = continent) +
+  geom_histogram(bins = 43L) +
+  theme_few()  + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))+
+  facet_wrap(~vaccine, scale= "free_y") +
+    labs(title = "Cobertura vacinal por Continente",
+       subtitle = "Diferentes vacinas",
+       x = "Anos",
+       y = "",
+       fill = "Continente") +
+  scale_fill_jama()
+```
+
+**Qualidade da cobertura vacinal: Os países aumentaram sua cobertura vacinal ao longo das décadas?**
+
+Para visualizar a distribuição de dados em diferentes grupos, como regiões, podemos recorrer a um tipo de gráfico conhecido como **ridgeline**. Esses gráficos apresentam curvas de densidade sobrepostas, o que permite uma comparação direta entre as distribuições de cada grupo. Por exemplo, ao analisar a cobertura vacinal em diferentes regiões, podemos observar se os países convergem para um valor específico ou se apresentam variações significativas.
+
+```{r message=FALSE, warning=FALSE}
+#Pacote para o gráfico de ridgelines
+library(ggridges) 
+
+cobertura_vacinal %>%
+ filter(type == "country",
+        year %in% c(1990,2000, 2010, 2020),
+        diseases == "Measles") %>%
+  mutate(continent = fct_rev(continent)) %>% 
+ ggplot() +
+  aes(x = coverage, y = continent, fill = fct_rev(continent)) +
+   geom_density_ridges() +
+  theme_few()+
+  theme(plot.caption = element_text(size = 13L),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 90),
+        strip.text.y = element_text(angle = 0, 
+                                    hjust = 0)) +
+  facet_grid(~vaccine~year, scales = "free_y") +
+  labs(title = "Cobertura vacinal por Região da OMS",
+       subtitle = "Vacinas contra sarampo",
+       x = "Cobertura (%)",
+       y = "",
+       fill = "Região da OMS") +
+  scale_fill_jama() 
+
+```
+
+Quando todos os países de uma região têm valores semelhantes, a curva de densidade apresenta um único pico agudo. Nesse caso, esse pico representa a **moda**,a **mediana** e a **média** da distribuição, que são **medidas de centralidade**. A moda é o valor mais frequente. Além disso, também identificamos a **mediana**, que corresponde ao valor do meio quando os dados estão ordenados, e a **média**, que é calculada somando todos os valores e dividindo pelo número total de observações.
+
+No entanto, quando os países dentro de uma região apresentam coberturas vacinais diferentes, a curva de densidade tende a se achatar, indicando uma distribuição mais dispersa, e as medidas de centralidade não têm o mesmo valor.
+
+Em alguns casos, é possível observar dois ou mais picos distintos, o que caracteriza uma distribuição **bimodal** ou **multimodal**, dependendo do número de picos identificados. Isso é importante para identificar padrões em diferentes grupos ou categorias. Observe também que a cobertura vacinal para a maioria dos países aumentou ao longo das décadas, convergindo para 90 a 100%.
+
+Todavia, uma **curva** é uma suavização dessas frequências em um intervalo de valores. Usando um **histograma**, que nada mais é do que um gráfico de barras, podemos ver melhor essas nuances. Observe que o que foi modificado no código foram os argumentos usados na função `geom_density_ridges()`, com `stat = "binline"` e o número de `bins`. As bins são as discretizações de uma variável contínua, como a cobertura vacinal. Ou seja, dividimos o intervalo de 0-100% em 20. Se aumentarmos essas bins para 100, o gráfico ficará mais detalhado, mas menos informativo, mas o contrário também será verdade.
+
+Altere os valores e veja os resultados.
+
+```{r message=FALSE, warning=FALSE}
+#Qual a cobertura vacinal nos anos 1990 e 2019 para vacinas contra o sarampo?
+cobertura_vacinal %>%
+ filter(type == "country",
+        year %in% c(2000, 2010, 2020),
+        diseases == "Measles") %>%
+  mutate(continent = fct_rev(continent)) %>% 
+ ggplot() +
+  aes(x = coverage, y = continent, fill = fct_rev(continent)) +
+   geom_density_ridges(stat = "binline", bins = 20) +
+  theme_few()+
+  theme(plot.caption = element_text(size = 13L),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 90),
+        strip.text.y = element_text(angle = 0, 
+                                    hjust = 0)) +
+  facet_grid(~vaccine~year, scales = "free") +
+  labs(title = "Cobertura vacinal por Região da OMS",
+       subtitle = "Vacinas contra sarampo",
+       x = "Cobertura (%)",
+       y = "",
+       fill = "Região da OMS") +
+  scale_fill_jama()
+```
+
+## Dados demográficos e econômicos com o Gapminder
+
+O gapminder é um site e um pacote que apresenta diferentes dados sobre países ao longo dos anos. O pacote do R traz uma tabela dos anos 50 até 2007, com dados sobre expectativa de vida, PIB percapita e tamanho da população. Vamos ver se a cobertura vacinal tem alguma relação com a expectativa de vida nos países. Além disso, vamos classificar os páises de acordo com seu PIB per capita, seguindo a classificação da ONU.
+
+```{r message=FALSE, warning=FALSE}
+#Manipulação
+gapminder_vac = gapminder %>% 
+  left_join(cobertura_vacinal %>% rename(country = name) %>% select(-continent),
+            by = join_by(country, year))  %>% 
+  mutate(income = case_when(
+    gdpPercap < 1035 ~ "Low Income",
+    gdpPercap >= 1035 & gdpPercap < 4085 ~ "Lower Middle Income",
+    gdpPercap >= 4085 & gdpPercap < 12615 ~ "Upper Middle Income",
+    gdpPercap >= 12615 ~ "High Income"
+  ))
+
+#Plot
+gapminder_vac %>% 
+  filter(vaccine == "BCG") %>% 
+ggplot() +
+  aes(
+    x = coverage,
+    y = lifeExp,
+  ) +
+  geom_point(aes(colour = continent,
+    size = pop),
+    shape = "circle") +
+  facet_wrap(~year)+
+  theme_few() +
+  labs(title = "Cobertura vacinal e Expectativa de vida",
+       subtitle = "Vacina BCG", 
+       x = "Cobertura vacinal (%)",
+       y = "Expecativa de vida (anos)",
+       color = "Região",
+       shape = "População") +
+  scale_color_jama()
+```
+
+Aparentemente, quando a cobertura vacinal para a **BCG** aumenta, a expectativa de vida também aumenta, e isso ocorre ao longo dos anos. Além disso, veja que, principalmente entre 1982 e 1992, os países seguem um comportamento bem parecido com o de uma reta na diagonal.
+
+Em estatística, se duas variáveis se relacionam gerando formatos lineares (retas) ou não lineares (curvas), dizemos que elas estão **associadas**. Mas, qual a **direção** e **força** dessa associação? Bem, neste caso, se as duas aumentam juntas, dizemos que há uma **correlação positiva (\>0)**. Mas, **quão positiva** ela é?
+
+Neste caso, sabemos que elas **parecem** seguir uma **reta**, mas precisamos forçar um pouco, porque elas estão dispersas. Quanto mais os pontos se agrupam e menor é a dispersão, maior é a força dessa correlação. Além disso, por mais que os pontos pareçam se agrupar em uma reta, há diferentes formas de traçá-la, com angulos diferentes. A técnica que encontra a melhor reta em um gráfico de dispersão é chamada de **regressão**, que no caso é **linear**.
+
+No gráfico abaixo, usamos as funções `geom_smooth()` do ggplot2 e `stat_correlation()` do pacote `ggpmisc` para fazer a regressão linear e apresentar o coeficiente de correlação R (método de Pearson). Além disso, também calculamos o grau de dispersão dos pontos em relação à reta. Quando o R^2^ está mais próximo de 1, menor é a dispersão em torno da reta e melhor essa reta explica o comportamento. Por exemplo, se o R for 1, a correlação é positiva e forte, e se R^2^ for próximo de 1, podemos **predizer** que, a partir de um valor na variável do eixo X, o valor correspondente na variável do eixo Y será **predito** com alto grau de confiança.
+
+Em **estatística** e em **machine learning**, é comum atribuir nomes diferentes aos mesmos conceitos. Por exemplo, a variável no eixo X é denominada **variável independente** na estatística e **preditor** no contexto de machine learning. Já a variável no eixo Y é referida como **variável dependente** na estatística, enquanto no âmbito de machine learning, é denominada **variável resposta ou outcome**. Entender isso é importante porque, embora não exploraremos as técnicas e conceitos de machine learning, no presente curso, você pode se perder nesses diferentes contextos.
+
+Observe que o maior valor de **R** foi de 0.61 e de **R^2^**, de 0.37. Somente de observar os gráficos, vemos que esses resultados corroboram com a dispersão dos países, com muitos nas extremidades dos gráficos. Neste caso, podemos dizer que, apesar de uma associação entre as variáveis, a correlação é positiva e com força intermediária. Além disso, **a cobertura vacinal somente explica 37% da variação da expectativa de vida entre os países**.
+
+```{r message=FALSE, warning=FALSE}
+
+gapminder_vac %>% 
+  filter(vaccine == "BCG") %>% 
+ggplot() +
+  aes(x = coverage,
+    y = lifeExp) +
+  geom_point(shape = "circle",
+             aes(colour = continent,
+                 size = pop),
+             alpha = 0.2) +
+  geom_smooth(method = "lm",
+              color = "black",
+              se = F)+
+  stat_correlation(method = "pearson",
+                   size = 3,
+                   mapping = use_label(c("R", "R2"))) +
+  facet_wrap(~year)+
+  theme_few() +
+  labs(title = "Cobertura vacinal e Expectativa de vida",
+       subtitle = "Vacina BCG", 
+       x = "Cobertura vacinal (%)",
+       y = "Expecativa de vida (anos)",
+       color = "Continente",
+       shape = "População") +
+  scale_color_jama()
+```
+
+Ao aplicarmos a regressão linear considerando todos os países, estamos ignorando as distinções proporcionadas pelos continentes. Cada região apresenta uma variabilidade entre seus países, e, em média, uma região pode apresentar um comportamento distinto das demais. Diante disso, surgem diversas questões que poderiam contribuir para explicar essa variação regional, como fatores geográficos, sociais e econômicos. Assim, para uma análise mais aprofundada, é interessante realizar uma regressão linear separadamente para cada região e para cada ano, a fim de capturar melhor a complexidade e a heterogeneidade dos dados.
+
+```{r message=FALSE, warning=FALSE}
+gapminder_vac %>% 
+  filter(vaccine == "BCG") %>% 
+ggplot() +
+  aes(x = coverage,
+    y = lifeExp,
+    color = continent) +
+  geom_point(shape = "circle",
+             aes(colour = continent,
+                 size = pop),
+             alpha = 0.2) +
+  geom_smooth(aes(group = continent,
+                  color = continent),
+              method = "lm",
+              se = F)+
+  stat_correlation(method = "pearson",
+                   size = 2,
+                   mapping = use_label(c("R", "R2", "n"))) +
+  facet_wrap(~year)+
+  theme_few() +
+  labs(title = "Cobertura vacinal e Expectativa de vida",
+       subtitle = "Vacina BCG", 
+       x = "Cobertura vacinal (%)",
+       y = "Expectaiva de vida (anos)",
+       color = "Continente",
+       shape = "População") +
+  scale_color_jama()
+```
+
+Observamos que, ao estratificarmos a análise por continente, a correlação entre a cobertura vacinal da BCG e a expectativa de vida tornou-se mais forte, com uma dispersão reduzida em torno da reta de regressão. Em outras palavras, a cobertura vacinal da BCG apresentou uma capacidade maior de explicar a variação na expectativa de vida em diferentes continentes.
+
+Esse resultado é muito interessante, pois a vacinação com a BCG é uma das principais estratégias para o controle da tuberculose. Historicamente, a tuberculose estava presente em diversas condições sociais e econômicas, afetando tanto as classes com menor renda quanto as mais abastadas. No entanto, mais recentemente, a doença tornou-se mais associada às condições sociais e econômicas da população, com pacientes com HIV/AIDS apresentando um risco ainda maior de morte pela tuberculose.
+
+```{r message=FALSE, warning=FALSE}
+#Manipulação
+gapminder_mortes = gapminder %>% 
+  left_join(mortes_doencas %>% rename(country = name) %>% select(-continent),
+            by = join_by(country, year)) %>% 
+  mutate(income = case_when(
+    gdpPercap < 1035 ~ "Baixa",
+    gdpPercap >= 1035 & gdpPercap < 4085 ~ "Média-baixa",
+    gdpPercap >= 4085 & gdpPercap < 12615 ~ "Média-alta",
+    gdpPercap >= 12615 ~ "Alta"
+  ))
+
+gapminder_mortes %>% 
+    filter(year %in% c(1972, 1982, 1992, 2007)) %>% 
+  filter(death_disease == "Tuberculosis") %>% 
+ ggplot() +
+  aes(x = death_rate_100thousand_age_standardized, 
+      y = fct_rev(income), 
+      fill = income) +
+   geom_density_ridges() +
+  theme_few()+
+  theme(plot.caption = element_text(size = 13L),
+        legend.position = "right",
+        axis.title.x = element_text(vjust = -1),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_text(hjust = 0.5),
+        strip.text.x = element_text(size = 10,
+                                    color = "black")) +
+  facet_wrap(~year, scales = "free") +
+  labs(title = "Mortes por 100 mil habitantes, por continente",
+       subtitle = "Tuberculose", 
+       x = "Mortes por 100 mil habitantes",
+       y = "",
+       fill = "Renda") +
+  scale_fill_jama()
+```
+
+No gráfico abaixo, veja que a maioria dos Top 10 países com maior número de mortes por tuberculose deixaram de ser aqueles de alta renda e se concentraram nos de baixa e média renda, ao longo dos anos. Alguns países aparentemente tiveram surtos da doença, com números elevados de mortes, como as Filipinas em 1992, e a África do Sul, em 2007.
+
+```{r}
+gapminder_mortes %>% 
+  filter(year %in% c(1972, 1982, 1992, 2007),
+         death_disease == "Tuberculosis") %>% 
+  group_by(year) %>%
+  arrange(desc(death_rate_100thousand_age_standardized)) %>%
+  slice_head(n = 10) %>%
+  ungroup()%>% 
+ ggplot() +
+  aes(x = death_rate_100thousand_age_standardized, 
+      y = fct_reorder(country, death_rate_100thousand_age_standardized), 
+      fill = income) +
+  geom_col() +
+  theme_few()+
+  theme(plot.caption = element_text(size = 13L),
+        legend.position = "right",
+        axis.text.x = element_text(angle = 90,
+                                   size = 5),
+        strip.text.y = element_text(angle = 0, 
+                                    hjust = 0)) +
+  facet_wrap(~year, scales = "free") +
+  labs(title = "Mortes por 100 mil habitantes, por país e renda",
+       subtitle = "Tuberculose", 
+       x = "Mortes por 100 mil habitantes",
+       y = "",
+       fill = "Renda") +
+  scale_fill_jama()
+```
+
+Além disso, podemos visualizar essa associação ao plotarmos as mortes por tuberculose em relação ao PIB per capita. Notamos que, embora a correlação entre as mortes e o PIB per capita seja intermediária, houve uma redução gradual dessa correlação entre 1952 e 2007. Essa redução pode ser atribuída, em grande parte, ao aumento da cobertura vacinal, como discutido anteriormente.
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 6}
+gapminder_mortes %>% 
+    filter(year <= 2007) %>% 
+  filter(death_disease == "Tuberculosis") %>% 
+ggplot() +
+  aes(x = gdpPercap,
+    y = death_rate_100thousand_age_standardized) +
+  geom_point(shape = "circle",
+             aes(colour = income,
+                 size = pop),
+             alpha = 0.2) +
+  scale_x_continuous(trans = "log10",
+                     labels = scales::unit_format(unit = "k",
+                                                  scale = 1e-3)) +
+   geom_smooth(method = "lm",
+              color = "black",
+              se = F) +
+  stat_correlation(method = "pearson",
+                   size = 3,
+                   mapping = use_label(c("R", "R2", "n"))) + 
+  facet_wrap(~year, scales = "free") +
+  theme_few() +
+  labs(title = "PIB per capita e Mortes por doenças imunopreveníveis",
+       subtitle = "Tuberculose", 
+       x = "PIB per capita",
+       y = "Mortes por 100 mil habitantes",
+       color = "Renda",
+       shape = "População") +
+  scale_color_jama()
+```
+
+Testando correlações entre mais pares de variáveis.
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+gapminder_mortes %>% 
+  filter(year <= 2007,
+         death_disease == "Tuberculosis") %>% 
+  ggpairs(columns = c("year", 
+                      "lifeExp", 
+                      "pop", 
+                      "gdpPercap", 
+                      "death_rate_100thousand_age_standardized"),
+          columnLabels = c("Ano",
+                           "Expectativa de vida",
+                           "População",
+                           "PIB per capita",
+                           "Mortes/100k Hab."),
+          mapping = aes(color = continent, alpha = 0.5)) +
+  theme_linedraw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(title = "Tuberculose",
+       subtitle = "Variáveis demográficas e mortalidade") +
+  scale_color_jama() +
+  scale_fill_jama()
+```
+
+## Gráficos dinâmicos
+
+O gráfico de forma estática já nos mostrou muito sobre o comportamento dos dados, mas podemos explorá-los de forma mais dinâmica com uma animação. Para isso, usaremos o pacote `gganimate` e separaremos os continentes em facets.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+gapminder_mortes %>% 
+  mutate(year = as.integer(year)) %>% 
+ggplot() +
+  aes(gdpPercap, death_rate_100thousand_age_standardized, colour = country) +
+  geom_point(alpha = 0.7, show.legend = FALSE, mapping = aes(size = pop)) +
+  scale_size(range = c(5, 5)) +
+  scale_x_continuous(trans = "log10",
+                     labels = scales::unit_format(unit = "k",
+                                                  scale = 1e-3)) +
+  theme_few() + 
+  scale_colour_manual(values = country_colors) +
+  facet_wrap(~continent) +
+  # Animação
+  labs(title = "Mortes por tuberculose",
+       subtitle = 'Ano: {frame_time}', 
+       x = 'PIB per capita', 
+       y = 'Mortes por 100 mil habitantes') +
+  transition_time(year) +
+  ease_aes('linear')
+```

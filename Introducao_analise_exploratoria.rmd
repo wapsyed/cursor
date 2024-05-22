@@ -8,7 +8,6 @@ output:
     toc: yes
     toc_float:
       collapsed: true
-    df-print: paged
 ---
 
 # Sobre o curso

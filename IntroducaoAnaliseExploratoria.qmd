@@ -1,7 +1,7 @@
 ---
 project:
   type: website
-  output-dir: docs
+  output-dir: docs/
   
 website:
   title: "CursoR - Introdução à análise de dados no R"
@@ -10,7 +10,7 @@ website:
 
 format:
   html:
-    theme: lux
+    theme: flatly
     toc: true
     toc-location: left
 df-print: paged
@@ -86,7 +86,7 @@ Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto
 
 ## Recomendações para evitar erros comuns
 
-> 1.  **Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_analise_exploratoria.rmd`**". Se clicar no `.md`, não funcionará.
+> 1.  **Para encontrar este documento com as linhas de códigos**, clique no arquivo **QMD** "**`Introducao_analise_exploratoria.rmd`**". Se clicar no `.md`, não funcionará.
 > 2.  **Siga o tutorial todo neste documento ou crie uma copia para fazer as anotações**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site.
 > 3.  **Ao fazer a parte prática** com suas análises, faça no mesmo documento. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
 > 4.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.

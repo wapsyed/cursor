@@ -1,0 +1,1730 @@
+---
+title: "CursoR - Introdução à análise de dados no R"
+author: 'Autor: Wasim Aluísio Prates Syed (@wasimvacinas)'
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: simplex
+    toc: yes
+    toc_float:
+      collapsed: true
+---
+
+# Dia 1
+
+# 1. Biblioteca e pacotes
+
+```{r message=FALSE, warning=FALSE}
+options(repos = c(CRAN = "https://cran.r-project.org"))
+
+# Baixar pacotes do CRAN para a biblioteca 
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+install.packages("esquisse")
+install.packages("ggthemes")
+install.packages("plotly")
+install.packages("gghighlight")
+install.packages("patchwork")
+install.packages("ggsci")
+install.packages("gapminder")
+install.packages("ggpmisc")
+install.packages("gganimate")
+```
+
+> **Lembre-se sempre de chamar os pacotes quando você iniciar uma nova sessão!**
+
+```{r message=FALSE, warning=FALSE}
+# Chamando os pacotes da biblioteca
+library(tidyverse) #Metapacote 
+library(skimr) #Diagnóstico de tabela
+library(janitor) #Limpeza de tabelas
+library(esquisse) #Plotagem de gráficos prática
+library(ggthemes) #Temas de ggplot
+library(plotly) #Gráficos interativos
+library(patchwork) #Unir gráficos
+library(gghighlight) #Marcar pontos e linhas 
+library(ggsci) #Paleta de cores 
+library(gapminder) #Dataset sobre população, PIB e expectativa de vida dos países
+library(ggpmisc) 
+library(scales)
+library(here)
+library(gganimate)
+library(GGally)
+```
+
+# 2. Operações básicas
+
+```{r}
+#Operações básicas -----
+
+#Variáveis numéricas
+x = 5
+x
+
+y = 7
+y
+
+z = y + x
+z
+
+multi = x * y
+multi
+```
+
+> **Dica de ouro:** Nunca esqueça de fechar as aspas.
+
+```{r}
+# Variáveis textuais (characters, string)
+a = "Olá" #Uma palavra
+a
+
+b = "Tudo bem?" #Uma frase
+b
+```
+
+```{r}
+# Comparações lógicas (booleanas)
+a == b #Igual?
+a != b #Diferente?
+x < y # Menor?
+x > y # Maior?
+x <= 5 # Menor ou igual?
+```
+
+```{r}
+aa = "Olá"
+aa == a 
+```
+
+> **Dica de ouro**: Nunca deixe de fechar os parênteses em uma função, pois isso dará erro.
+
+```{r}
+# Vetores
+i = c(7, 5, 9, 10)
+i
+
+j = c("Olá", "Caneta", "Qualificacao")
+j
+
+h = c(7, "10", 78)
+h
+
+```
+
+```{r}
+# O que esta função faz? Use o "?" antes da função e rode.
+?c()
+```
+
+```{r}
+#Dataframes e tibbles -----
+
+#Dataframe
+data = data.frame(
+  nome = c("Gabriela", "Júlia", "Beatriz", "Luiza"),
+  altura = c(1.59, 1.60, 1.78, 1.73),
+  idade = c(30, 25, 31, 32)
+)
+data
+```
+
+```{r}
+#Tibble
+tibble = tribble(
+  ~nome, ~altura, ~idade,
+  "Gabriela", 1.59,   30,
+  "Júlia",   1.60,   25,
+  "Beatriz", 1.65,  31,
+  "Luiza",   1.73,   32 
+  )
+
+tibble
+```
+
+```{r}
+# Vetores em dataframe
+as.data.frame(i) #dataframe com coluna numérica
+as.data.frame(j) #dataframe com coluna textual
+as.data.frame(h) #dataframe com coluna textual, mesmo com valores numéricos
+```
+
+```{r}
+#Visualizando o dataframe -----
+# Com print()
+print(data) #No documento ou console
+print(tibble)
+
+# Com nome do objeto
+data
+tibble 
+
+# Com glimpse(). #Descrição mais completa da tabela
+glimpse(data) 
+glimpse(tibble)
+
+# Com view() ou View(). A tabela completa com mais funcionalidades (filtragem manual, pesquisa e ordenamento) abrirá em uma nova janela
+view(data) 
+view(tibble)
+
+# Selecione o nome do objeto, segure Ctrl e clique com o botão direito do mouse.
+data
+tibble 
+```
+
+```{r}
+# Estatísticas gerais 
+summary(tibble)
+summary(data)
+
+# Usando skim
+skim(tibble)
+skim(data)
+
+```
+
+```{r}
+# Trabalhando com dataframes -----
+#Transformando outros formatos em dataframe
+
+# Long table
+data_long = pivot_longer(data, #Tabela 
+             cols = c(altura, idade), #Colunas para alongar 
+             values_to = "valor", # Estocar valores em uma nova coluna
+             names_to = "variavel" # Estocar variáveis em uma nova coluna
+             ) 
+data
+data_long
+```
+
+```{r}
+# Wide table
+data_wide = pivot_wider(data_long, #Tabela
+            names_from = variavel, #Dividir níveis de uma coluna em novas colunas
+            values_from = valor)   #Estocar valores relacionados à coluna nome e novas variáveis) 
+data_wide
+```
+
+```{r}
+#Matriz
+matrix = as.matrix(data) #Transformar tabela em matriz
+matrix #Os valores numéricos são strings
+
+data_matrix = column_to_rownames(data, "nome") #Converte coluna em rownames
+matrix = as.matrix(data_matrix)
+matrix #Agora, os valores são numéricos
+
+```
+
+```{r}
+#Criando a lista
+lista = list(a, b, h, j, multi, data, matrix, tibble)
+
+#View(lista) #Visualizando a lista
+
+#Acessando objetos diferentes da lista
+lista[[1]] #Primeiro objeto
+lista[[8]] #Oitavo objeto
+
+#Isolando o objeto
+df_list = lista[[8]]
+df_list
+
+```
+
+```{r}
+# Acessando colunas do data frame
+data$nome
+data$idade
+
+```
+
+```{r}
+# Criando nova variável para não sobrescrever a tabela original para os próximos exemplos
+data_2 = data
+
+# Adicionando uma nova coluna ao data frame
+data_2$peso = c(70, 
+                65, 
+                80, 
+                20)
+data_2
+
+```
+
+```{r}
+# Removendo uma coluna do data frame
+data_2 = data_2[ , -4]
+```
+
+```{r}
+# Filtrando linhas do data frame. df[linha, coluna]
+data_jovens = data_2[data_2$idade < 30, ]
+data_jovens
+
+# Ordenando o data frame por uma coluna
+data_ordenados <- data_2[order(data_2$idade), ]
+data_ordenados
+```
+
+```{r paged.print=TRUE}
+#Adicionar linha
+data_2 = add_row(data, 
+               nome = "Rafaela", 
+               idade = 50,
+               altura = 1.85)
+
+data_2
+
+tibble_2 = add_row(tibble, 
+                   nome = "Rafaela", 
+                   idade = 50,
+                   altura = 1.85)
+
+tibble_2
+```
+
+```{r paged.print=TRUE}
+#Adicionar coluna
+data_2 = add_column(data_2,
+                    peso = c(50,
+                             80,
+                             40,
+                             100,
+                             70))
+data_2
+
+tibble_2 = add_column(tibble_2,
+                      peso = c(50,
+                               80,
+                               40,
+                               100,
+                               70))
+tibble_2
+```
+
+```{r paged.print=TRUE}
+# Filtrando linhas ----
+idade = filter(data, idade <= 30)
+
+idade_nome = filter(idade,
+                    nome == "Júlia")
+
+idade_nome
+```
+
+```{r paged.print=TRUE}
+#Usando OU (|)
+filter(data, nome == "Júlia" | 
+           nome == "Gabriela")
+
+#Usando %in% c()
+filter(data, nome %in% c("Júlia", "Gabriela")) 
+
+```
+
+```{r paged.print=TRUE}
+# Usando o pipe "%>%" (lê-se "e então")
+data %>%                   # Tenho este objeto 
+  filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
+  filter(nome == "Gabriela")   # E então vou filtrar os indivíduos chamados "Gabriela"
+```
+
+```{r paged.print=TRUE}
+# Selecionando colunas ----
+# Selecionar colunas específicas
+data_2 %>%
+  select(nome, altura) 
+
+# Selecionar da coluna nome (1) à coluna peso (4)
+data_2 %>% 
+  select(nome:idade) 
+
+#Retirando coluna
+data_2 %>% 
+  select(-idade) 
+
+data_2 %>%   
+  select(!idade)
+
+#Reordenando coluna
+data_2 %>%   
+  select(idade, everything())
+
+```
+
+```{r paged.print=TRUE}
+#Renomeando coluna
+data_2 %>%   
+  select(age = idade, everything())
+
+#Renomeando coluna com rename
+data_2 %>%   
+  rename(age = idade) #Retirando coluna
+
+```
+
+```{r paged.print=TRUE}
+# Criando novas variáveis
+data_2 = data_2 %>%
+  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
+
+```
+
+```{r paged.print=TRUE}
+data_2 %>% 
+  mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
+```
+
+```{r paged.print=TRUE}
+data_2 %>% 
+  mutate(classificacao = if_else(imc > 25, "sobrepeso", "normal"))
+```
+
+```{r paged.print=TRUE}
+data_2 %>% 
+  mutate(classificacao = if_else(imc >= 25 & imc <= 30 , "sobrepeso", NA),
+         classificacao = if_else(imc > 30, "obesidade 1", classificacao),
+         classificacao = if_else(imc >= 18.5 & imc <25, "normal",classificacao),
+         classificacao = if_else(imc < 18.5, "magreza",classificacao))
+```
+
+```{r paged.print=TRUE}
+data_2 = data_2 %>% 
+  mutate(classificacao = case_when(imc >= 25 & imc <= 30 ~ "sobrepeso",
+                                   imc > 30 ~ "obesidade 1",
+                                   imc >= 18.5 & imc < 25 ~ "normal",
+                                   imc < 18.5 ~ "magreza"))
+```
+
+```{r paged.print=TRUE}
+# Resumindo dados
+data_2 %>% 
+  summarize(Media_idade = mean(idade))
+
+data_2 %>% 
+  summarize(Soma_idade = sum(idade))
+```
+
+```{r paged.print=TRUE}
+#Média dos grupos
+data_2 %>% 
+  group_by(classificacao) %>% 
+  summarize(Media_idade = mean(idade))
+
+#Contagem
+data_2 %>% 
+  group_by(classificacao) %>% 
+  summarize(individuos = n())
+```
+
+```{r paged.print=TRUE}
+# Ordenando dados de forma crescente
+data_2 %>% 
+  arrange(idade)
+
+# Ordenando de forma decrescente
+#Método 1
+data_2 %>% 
+  arrange(desc(idade))
+
+#Método 2
+data_2 %>% 
+  arrange(-idade)
+```
+
+Joins: merging/unindo tabelas
+
+```{r paged.print=TRUE}
+endereco = tribble(~nome, ~cidade, ~bairro,
+          "Gabriela", "São Paulo", "Consolação",
+          "Júlia", "Ribeirão Preto", "Cidade Universitária",
+          "Beatriz", "Cuiabá", "Centro",
+          "Luiza", "São Paulo", "Centro",
+          "Thaís", "São Paulo", "Butantã")
+endereco
+```
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  inner_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  left_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  anti_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  right_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+```{r paged.print=TRUE}
+data_2 %>% #Tabela original (tabela 1)
+  full_join(endereco, #Tabela para unir (tabela 2)
+             by = "nome") #Coluna correspondente
+```
+
+> 1.  *pegamos a tabela `data_2`, **ordenamos** a altura na ordem crescente,*
+> 2.  ***filtramos** somente as pessoas com idade acima de 30 e peso acima de 50 e **retiramos** os nomes.*
+> 3.  *Depois, **arredondamos** os valores do IMC para uma casa decimal (usando `round())` e **criamos uma nova variável** chamada `peso_x_idade`.*
+> 4.  *Por fim, **resumimos** os dados usando a média do peso e a média do imc, e criamos uma variável chamada `mega_pipe`*
+
+```{r}
+# Múltiplas operações em uma caixa
+mega_pipe = data_2 %>% 
+  arrange(altura) %>% 
+  filter(idade >= 30,
+         peso >= 50) %>% 
+  select(-nome) %>% 
+  mutate(imc = round(imc, 1),
+         peso_x_idade = peso * idade) %>%
+  summarise(mean_peso = mean(peso),
+            mean_peso = round(mean_peso, 1),
+            mean_imc = mean(imc) %>% round(1))
+mega_pipe
+```
+
+Visualização
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  aes(x = nome,
+      y = imc) +
+  geom_col()
+```
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  aes(x = fct_reorder(nome, -imc), #Mapeando variáveis
+      y = imc) +
+  geom_col() + #Geometria
+  theme_few() + #Tema 
+  labs(x = "Nome", #Títulos
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa")
+```
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  
+  #Mapeando variáveis
+  aes(x = fct_reorder(nome, -imc), 
+      y = imc) +
+  
+  #Geometria
+  geom_col() + 
+  
+  #Tema pré-estabelecido
+  theme_few() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  #Títulos
+  labs(x = "Nome", 
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa")
+```
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  
+  #Mapeando variáveis
+  aes(x = fct_reorder(nome, -imc), 
+      y = imc,
+      fill = classificacao) +
+  
+  #Geometria
+  geom_col() + 
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  #Títulos
+  labs(x = "Nome", 
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa") +
+  
+  #Renomeando levels
+  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+                               "normal" = "Normal",
+                               "obesidade 1" = "Obesidade I")) 
+```
+
+```{r message=FALSE, warning=FALSE}
+# Cores
+#Mudando a paleta
+vignette("ggsci") 
+
+jama = pal_jama("default", #Especificar paleta
+              alpha = 0.7)(8) #Gerar 8 cores com transparencia = 70%
+jama %>% 
+  show_col()
+```
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  
+  #Mapeando variáveis
+  aes(x = fct_reorder(nome, -imc),
+      y = imc,
+      fill = classificacao) +
+  
+  #Adicionando geometrias
+  geom_col() +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Adicionando títulos
+  labs(x = "Nome", 
+       y = "IMC",
+       title = "Índice de massa corporal por pessoa",
+       fill = "Classificação") +
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  
+  #Renomeando levels
+  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+                               "normal" = "Normal",
+                               "obesidade 1" = "Obesidade I")) +
+  scale_fill_jama()
+```
+
+Para ver mais cores, acesse o site [coolors.co](https://coolors.co/). Lembre-se de sempre adicionar um `#` antes do código da cor.
+
+```{r}
+barras = data_2 %>% 
+  ggplot() +
+  aes(x = fct_reorder(nome, -imc),
+      y = imc,
+      fill = classificacao) +
+  geom_col() +
+  labs(x = "Nome", #Títulos
+       y = "IMC",
+       title = "Índice de massa corporal",
+       fill = "Classificação") +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold")) +
+  
+  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+                               "normal" = "Normal",
+                               "obesidade 1" = "Obesidade I")) +
+  scale_fill_manual(values = c("magreza" = "red", 
+                               "normal" = "blue",
+                               "obesidade 1" = "#ffb703"))
+
+barras
+```
+
+## Gráfico de dispersão
+
+```{r}
+
+data_2 %>% 
+  ggplot() +
+  aes(x = peso,
+      y = imc,
+      color = classificacao) +
+  geom_point() +
+  
+  #Títulos
+    labs(x = "Peso (kg)", 
+       y = "IMC",
+       title = "Índice de massa corporal versus peso",
+       color = "IMC") +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold"))  +
+  
+  #Cores
+  scale_color_jama()
+```
+
+Além disso, podemos criar um gradiente usando `scale_color_gradient()` e definindo as cores pros valores mínimo e máximo.
+
+```{r}
+data_2 %>% 
+  ggplot() +
+  aes(x = peso,
+      y = imc,
+      color = imc) +
+  geom_point() +
+  
+  #Títulos
+    labs(x = "Peso (kg)", 
+       y = "IMC",
+       title = "Índice de massa corporal versus peso",
+       color = "IMC") +
+  
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold"))  +
+  
+  #Gradiente de cores
+  scale_color_gradient(low = "yellow", 
+                       high = "brown", 
+                       na.value = NA)
+```
+
+```{r}
+linha = data_2 %>% 
+  ggplot() +
+  
+  #Mapping
+  aes(x = peso,
+      y = imc,
+      color = imc) +
+  
+  #Geometrias
+  geom_line(size = 2) +
+  geom_point(size = 4) +
+  
+  #Títulos
+    labs(x = "Peso (kg)", 
+       y = "IMC",
+       title = "Índice de massa corporal versus peso",
+       color = "IMC") +
+
+  #Tema pré-estabelecido
+  theme_light() + 
+  
+  #Modificando o tema
+  theme(axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        plot.title = element_text(size = 12,
+                                  color = "black",
+                                  hjust = 0.5,
+                                  face = "bold"))  +
+  
+  #Gradiente de cores
+  scale_color_gradient(low = "yellow", 
+                       high = "brown", 
+                       na.value = NA)
+
+linha
+```
+
+```{r}
+linha %>% 
+  ggsave(file = here("Figuras","linha_imc.png"), width = 5, height = 5)
+```
+
+```{r message=FALSE, warning=FALSE}
+linha %>% 
+  ggplotly() 
+```
+
+```{r}
+data_2 %>%
+  esquisser()
+```
+
+```{r}
+linha + barras + plot_layout(guides = "collect")
+```
+
+```{r}
+linha / barras + plot_layout(guides = "collect")
+```
+
+```{r}
+linha_barra = linha / barras + plot_layout(guides = "collect")
+
+ggsave(linha_barra, file = here("Figuras","linha_barra.png"), width = 10, height = 5)
+```
+
+# Dia 2
+
+```{r paged.print=TRUE}
+#Pelo readr
+cobertura_vacinal <- read_csv(here("Tabelas", "cobertura_vacinal_anotada.csv")) 
+
+cobertura_vacinal
+```
+
+```{r paged.print=TRUE}
+#Caminho
+here()
+
+#Tabela de países
+paises_anotados <- read_rds(here("Tabelas", "paises_anotados.rds")) 
+
+paises_anotados 
+```
+
+```{r paged.print=TRUE}
+#Tabela de mortes por doença
+mortes_doencas <- read_rds(here("Tabelas","Deaths_infectious_diseases_filtered.rds"))
+
+mortes_doencas 
+```
+
+```{r}
+#Organizar colunas
+cobertura_vacinal = cobertura_vacinal %>% 
+  select(type, name, country_abrev, continent, region, region_complete, year, everything())
+
+#Salvar
+cobertura_vacinal %>% 
+  saveRDS(file = here("Tabelas", "cobertura_vacinal_anotada_2.rds"))
+```
+
+```{r paged.print=TRUE}
+#Organizar colunas
+mortes_doencas = mortes_doencas %>% 
+  select(name, continent,region_complete, everything())
+
+#Salvar
+mortes_doencas %>% 
+  saveRDS(file = here("Tabelas","mortes_doencas.rds"))
+
+mortes_doencas
+
+```
+
+```{r paged.print=TRUE}
+# Explorando dados -----
+
+# Tabela completa
+view(cobertura_vacinal) 
+
+# Descrição geral
+glimpse(cobertura_vacinal)
+
+# Primeiras 10 linhas
+head(cobertura_vacinal, 10)
+
+# Últimas 10 linhas
+tail(cobertura_vacinal, 10)
+
+#Summary statistics
+summary(cobertura_vacinal)
+```
+
+```{r paged.print=TRUE}
+#Níveis de colunas
+cobertura_vacinal %>% 
+  distinct(region_complete)
+
+cobertura_vacinal %>% 
+  distinct(continent)
+
+cobertura_vacinal %>% 
+  distinct(name) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  distinct(vaccine)
+
+```
+
+```{r paged.print=TRUE}
+#Contar linhas por coluna
+cobertura_vacinal %>% 
+  count(name) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(vaccine) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(continent) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(diseases) %>% 
+  head(10)
+```
+
+**Os dados foram registrados de que ano a que ano?**
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  summarize(min_valor = min(year),
+            max_valor = max(year))
+```
+
+**Quais são as vacinas que protegem contra cada doença? Podemos descobrir isso de duas formas.**
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  filter(diseases == "Poliomielitis") %>% 
+  distinct(vaccine) 
+```
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  group_by(diseases) %>% 
+    distinct(vaccine) 
+```
+
+```{r}
+#Tabela de frequências
+cobertura_vacinal %>% 
+  tabyl(region_complete)
+```
+
+```{r}
+# Dados faltantes ----
+skim(cobertura_vacinal) 
+
+# Como são essas linhas?
+cobertura_vacinal %>% 
+  filter(!complete.cases(.)) 
+
+```
+
+```{r}
+#Retirando os NAs
+cobertura_vacinal = cobertura_vacinal %>% 
+  drop_na(coverage)
+
+#Sobraram linhas com NAs?
+cobertura_vacinal %>% 
+  filter(!complete.cases(.))
+```
+
+**Siga o tutorial, mas já comece a testar com outros países, regiões, vacinas, doenças e anos!**
+
+**Por país**
+
+```{r paged.print=TRUE}
+latin_2000_2023 = cobertura_vacinal %>% 
+  
+  #Missing values: Aqui, é importante retirá-los para não repetir linhas
+  
+  drop_na(coverage) %>% 
+   
+  #Filtrando os dados no intervalo e
+  filter(between(year, 2000, 2022),
+         str_detect(region_complete, "Latin"),
+         type == "country") %>% 
+  
+  #Agrupar por vacina e país
+  group_by(vaccine, name) %>% 
+  
+  #Resumir estatísticas
+  # Estatísticas da cobertura vacinal para cada país em um continente
+  # Média, mediana, mínimo e máximo de uma variável numérica
+  summarise(
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
+  ) %>% 
+  
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
+  #Desagrupar
+  ungroup()
+
+latin_2000_2023
+```
+
+**Por continente**
+
+```{r paged.print=TRUE}
+# Cobertura vacinal: Estatísticas de cada continente
+continentes_vac = cobertura_vacinal %>% 
+  
+  drop_na(coverage,
+          continent) %>% 
+  
+  filter(between(year, 2000, 2023),
+         type == "country") %>% 
+  
+  group_by(vaccine, continent) %>% 
+  
+  summarise(
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
+  ) %>% 
+  
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
+  ungroup()
+
+#Visualizar
+continentes_vac
+```
+
+### Mortes cumulativas
+
+**Por continente**
+
+```{r paged.print=TRUE}
+# Mortes cumulativas
+# Estatísticas de cada continente
+continentes_mortes = mortes_doencas %>% 
+  
+  drop_na(total_deaths,
+          continent) %>%
+  
+  filter(between(year, 2000, 2023)) %>% 
+  
+  group_by(death_disease, continent) %>%
+  
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  
+  #Aqui, queremos os países com maior número de mortes
+  arrange(death_disease, - cumulativo) %>% 
+  
+  
+  ungroup()
+
+continentes_mortes
+```
+
+**Por país**
+
+```{r paged.print=TRUE}
+# Mortes cumulativas
+# Estatísticas de cada país
+paises_mortes = mortes_doencas %>% 
+  drop_na(total_deaths,
+          name) %>% 
+  filter(between(year, 2000, 2023)) %>% 
+  group_by(death_disease, name) %>% 
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  arrange(death_disease, desc(cumulativo)) %>% 
+  ungroup()
+
+paises_mortes
+```
+
+# 6. Visualização
+
+**Por continente**
+
+```{r}
+#Gráfico de barras simples
+continente_barras_vac = continentes_vac %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  mutate(continent = fct_reorder(continent, median)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = continent,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = continent, 
+                label = median),
+            hjust = -0.5) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Cobertura vacinal",
+       x = "Mediana (Cobertura vacinal %)",
+       y = "",
+       fill = "Continente")  +
+  
+  #Limites
+  xlim(0, 105) +
+  
+  scale_fill_jama()
+
+continente_barras_vac
+
+```
+
+**Por país**
+
+```{r, fig.width = 10, fig.height = 10}
+#Gráfico de barras simples
+pais_barras_vac = latin_2000_2023 %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = name,
+      fill = median) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = name, 
+                label = median),
+            hjust = -0.5,
+            size = 5) +
+  
+  #Tema
+  theme_few() +
+  
+  scale_fill_binned(type = "viridis") +
+  
+  #Labels
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Países, entre 2000 e 2023",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "",
+       fill = "Mediana") +
+  
+  xlim(0, 105)
+
+pais_barras_vac
+```
+
+## Mortes
+
+**Por continente**
+
+```{r}
+#Gráfico de pontos simples
+barras_mortes = continentes_mortes %>% #Dataframe
+  filter(death_disease == "Measles") %>% 
+  mutate(cobertura_vacinal = fct_reorder(continent, cumulativo)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = cobertura_vacinal,
+      fill = cobertura_vacinal) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = cobertura_vacinal, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "") +
+  
+  scale_fill_jama()+
+  
+  #Eixo x
+  xlim(0, 10000) #Aumentar limites 
+  
+barras_mortes 
+
+```
+
+```{r}
+#Gráfico de barras simples
+paises_barras_mortes = paises_mortes %>% #Dataframe
+  inner_join(paises_anotados %>% select(-region_complete), by = "name") %>% 
+  filter(death_disease == "Measles") %>% 
+  mutate(name = fct_reorder(name, cumulativo)) %>% 
+  slice_max(order_by = cumulativo, n = 10) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = name,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = name, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "") +
+  
+    scale_fill_jama() +
+  
+  #Eixo x
+  xlim(0, 10000) #Aumentar limites 
+  
+paises_barras_mortes
+```
+
+```{r, fig.width = 8, fig.height = 5}
+# Melhorando o gráfico -----
+
+plot = 
+  
+  # Manipular tabela
+  latin_2000_2023 %>%
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+ 
+  #Criar base do gráfico
+  ggplot() +
+  aes(x = median, y = name, colour = median) + #Aesthetics (mapping)
+  
+  #Geometria
+  geom_point(shape = "circle", 
+             size = 1) +
+  #Highlight (add sempre após geom_)
+  gghighlight(median >= 95, #Filtragem
+              label_key = name, #Nome do label
+              label_params = list(size = 3), #Tamanho da fonte
+              unhighlighted_params = list(colour = "red")) +
+  
+  #Marcações
+  #Add Linha vertical
+  geom_vline(xintercept = 95,
+             colour = "black",
+             linewidth =0.2,
+             linetype = 2) +
+  
+  #Tema, aparência
+  theme_light() + 
+  
+  # Labels, titulo, subtitulo, titulo dos eixos
+    
+  labs(title = "Vacinação em países da América Latina",
+     subtitle = "Sarampo, MCV1, Dose 1, entre 2000 e 2023",
+     y = "",
+     x = "Mediana (Cobertura %)",
+     colour = "Cobertura vacinal",
+     caption = "Fonte: Feito pela UPVacina") +
+  
+  # Aparência especifica
+  theme(
+    
+    #Texto geral
+    text = element_text(family = "sans",  #sans, mono, serif
+                        color = "black"), 
+    
+    #Título, subtítulo e tag
+    plot.title = element_text(size = 12, 
+                              face = "bold", 
+                              hjust = 0,
+                              vjust = 0.5),
+    plot.subtitle = element_text(size = 10),
+    plot.tag.position = "topleft",
+    plot.tag = element_text(vjust = 5,
+                            size = 12, 
+                            face = "bold"),
+    
+    #Legenda
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10),
+    
+    #Eixos
+    axis.title.x = element_text(size = 10,
+                                angle = 0,
+                                color = "black"),
+    axis.text.x = element_text(color = "black",
+                               size = 8,
+                               angle = 0),
+    axis.text.y = element_text(size = 8,
+                               color = "black"),
+    
+    #Margens do gráfico
+    plot.margin = unit(c(0.5, #Top
+                         1, #Right
+                         0.5, #Bottom
+                         0), #Left 
+                       "cm") #Unidade) 
+  ) 
+
+#Visualizar
+plot
+
+#Salvar
+ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
+```
+
+```{r}
+#Unindo gráficos -----
+vaccination = cobertura_vacinal %>% 
+  filter(name == "Brazil",
+         vaccine == "MCV1",
+         year >= 1980, 
+         year <= 2020) %>% 
+    ggplot() +
+  geom_line(mapping = aes(
+    x = year,
+    y = coverage),
+    colour = "#4DBBD5B2",
+    linewidth = 2) +
+    geom_text(aes(x = year, 
+                  y = coverage, 
+                  label = coverage),
+            vjust = -0.5,
+            size = 2) +
+    theme_few() +
+  labs(title = "Cobertura vacinal contra o sarampo, Brasil",
+       x = "Ano",
+       y = "Cobertura vacinal (%)") +
+   ylim(0, 110)
+
+vaccination
+```
+
+```{r}
+
+#Mortes
+deaths = mortes_doencas %>% 
+  filter(name == "Brazil",
+         death_disease == "Measles",
+         year >= 1980, year <= 2020) %>% 
+    ggplot() +
+  aes(x = year, y = total_deaths) +
+  geom_col(fill = "#DC0000B2") +
+  geom_text(aes(label = total_deaths),
+            vjust = 0.5,
+            hjust = -0.2,
+            angle = 90,
+            size = 2) +
+  theme_few() +
+  theme(text = element_text(size = 10),
+        plot.title = element_text(hjust= 0.5)) +
+    labs(title = "Mortes por sarampo, Brasil",
+       x = "Ano",
+       y = "Mortes") +
+   ylim(0, 3700)
+
+deaths
+```
+
+```{r}
+#Unir gráficos
+(vaccination / deaths) 
+
+#Salvar
+(vaccination / deaths) %>% 
+  ggsave(file = here("Figuras","Sarampo_Brasil_1980_2023.png"), width = 10, height = 5)
+
+```
+
+### Boxplots
+
+```{r}
+#Boxplot simples por ano
+boxplot_years = cobertura_vacinal %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(1990, 2000, 2010, 2019)) %>% 
+  
+  
+ ggplot() +
+  aes(x = "", 
+      y = coverage, 
+      fill = continent) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
+  theme_few() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   vjust = 1,
+                                   hjust = 1),
+        plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        legend.position = "right",
+        plot.title = element_text(hjust= 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(year), ncol = 4) +
+  
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Primeira dose (MCV1)",
+      x = "",
+       y = "Cobertura vacinal (%)",
+       fill = "Continente") +
+    scale_fill_jama()
+
+
+#Visualizar
+boxplot_years 
+```
+
+```{r message=FALSE, warning=FALSE}
+#Boxplot simples de ano
+boxplot_regions = cobertura_vacinal %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(1990, 2000, 2010, 2020)) %>% 
+  mutate(year = as.factor(year)) %>% 
+ ggplot() +
+  aes(x = year, y = coverage, fill = year) +
+  theme_few() +
+  theme(plot.title = element_text(hjust= 0.5)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(aes(label = name),
+              alpha = 0.2,
+              na.rm = T) +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
+  scale_color_distiller(palette = "Set2", direction = 1) +
+  facet_wrap(vars(continent)) +
+  scale_fill_jama()
+
+boxplot_regions
+
+```
+
+```{r}
+# Gráfico interativo
+boxplot_regions %>%  
+  ggplotly()
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Boxplot por vacina
+cobertura_vacinal %>% 
+  filter(type == "country",
+         year == 2015) %>% 
+ ggplot() +
+  aes(x = "", y = coverage, fill = continent) +
+  geom_boxplot() +
+  theme_few() +
+  theme(plot.title = element_text(hjust= 0.5)) +
+  facet_wrap(vars(vaccine)) +
+  labs(x = "",
+       y = "Cobertura",
+       title = "Cobertura vacinal por região, em 2000",
+       fill = "Continente") +
+  scale_fill_jama()  
+
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Highlight linhas específicas
+
+#Método 1
+br_cov = cobertura_vacinal %>%
+ filter(year >= 2012 & year <= 2022,
+        name %in% c("Brazil", "Colombia")) %>%
+ ggplot() +
+  aes(x = year, 
+      y = coverage,
+      colour = name) +
+  
+  geom_line(linewidth = 2) +
+
+  theme_few() +
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)",
+       color = "País")  +
+  
+  scale_color_jama() 
+
+br_cov 
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Método 2
+br_cov = cobertura_vacinal %>%
+ filter(year >= 2012 & year <= 2022,
+        region %in% c("LACR")) %>%
+ ggplot() +
+  
+  geom_line(aes(x = year, 
+      y = coverage,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few() +
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)") +
+  
+  gghighlight(name %in% c("Brazil", "Colombia"), 
+              calculate_per_facet = T, #Add quando tiver facets. Caso seja um gráfico somente, use calculate_per_facet = F
+              unhighlighted_params = list(linewidth = 1, #Parametros para as outras linhas
+                                          colour = "gray90", #Cor cinza
+                                          alpha = 0.3)) + #Transparencia de 30%
+  scale_color_jama()
+
+br_cov
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2022,
+        region_complete == "Latin America and Caribbean") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few()  + 
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_jama()
+
+br_mortes 
+
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2022,
+        region_complete == "Latin America and Caribbean",
+        death_disease != "Poliomyelitis") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few()  + 
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5))+
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_jama()
+
+br_mortes 
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 15, fig.height = 10}
+
+# Unir gráficos
+patch = br_cov + br_mortes + plot_layout(guides = "collect")
+patch
+```
+
+```{r}
+#Salvar
+ggsave(patch, 
+       file = here("Figuras","br_cov_mortes.png"),
+       width = 15, #Largura
+       height = 10) #Altura
+```
+
+# Agora é a sua vez!
+
+Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados, como o boxplot interativo.
+
+**Recomendações**
+
+1.  **Ao fazer a parte prática com suas análises, faça no mesmo documento**. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+
+2.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
+
+    **Por exemplo:**
+
+```{r}
+#Código exemplo
+#...
+```
+
+> "Meu código... Gráfico do tipo A dos países XYZ."
+
+```{r}
+#Seu código
+#...
+```
+
+**Alguns exemplos de perguntas que você pode se fazer:**
+
+-   **Quem**:
+
+    -   Quais são os **países** que **menos** vacinaram em cada **continente**?
+
+    -   Quais são os **países** que **mais** vacinaram em cada **continente**?
+
+    -   Quais são os **países** que **mais** tiveram **mortes** por uma **doença X**? A **difteria** aparentemente teve um surto em algum país **latinoamericano** a partir de **2016**. Qual é este país e por que isso ocorreu? Será que é a baixa **cobertura vacinal**?
+
+-   **Quando**:
+
+    -   Será que a cobertura vacinal ou o número de mortes **sempre** foi assim (alto ou baixo) ou é algo **recente** dos últimos 5 a 10 anos?
+
+    -   Será que a **pandemia** afetou a vacinação contra outras doenças?
+
+    -   Ou a cobertura vacinal já estava caindo **antes mesmo da pandemia**?
+
+-   **Comparações**:
+
+    -   Qual seria a média de vacinação contra uma doença x para o continente y e onde seus países de escolha estão? (Dica: use `group_by()` e `summarize()`).
+
+**Alguns conselhos:**
+
+-   **Explore e leia os códigos do tutorial atentamente**. Tente entender o que cada linha de código faz.
+
+-   Pense **quais variáveis** você quer analisar:
+
+    -   É uma variável **numérica** ou **categórica**?
+
+    -   O gráfico que você quer analisar combina **duas variáveis numéricas** (anos e cobertura vacinal) ou **uma variável categórica** (países) e outra **numérica** (cobertura vacinal)?
+
+    -   A variável numérica é **temporal**? Por exemplo, você vai usar uma **série temporal** (2010, 2011, 2012...) ou somente a **média** de um período (2010 a 2020)?
+
+        -   Caso use todos os anos em uma **série temporal**, recomendo usar um gráfico de **linhas**, onde o eixo x representa os anos e o eixo y, a cobertura vacinal ou numero de mortes.
+
+        -   Agora, caso analise as **médias ou medianas de um período**, um gráfico de **colunas** é recomendado, onde o **eixo x é um ano e o y, o número de mortes ou cobertura vacinal.**
+
+    -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
+
+    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
+
+-   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
+
+-   **Use o ChatGPT.** O ChatGPT é uma ferramenta extremamente útil para a sua evolução na programação e você precisa aprender a usá-lo e a fazer perguntas corretas. 80% das vezes ele dá respostas perfeitas. Você pode usá-lo para explicar, consertar e criar códigos!
+
+    -   Copie e cole um bloco de código e peça para ele **explicar** cada linha e função.
+
+    -   Deu algum **erro** no código? Manda pra ele também o código e o erro que aparece no console.
+
+    -   Quer fazer algo **específico** e pontual no código? Manda pro ChatGPT!
+
+-   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.

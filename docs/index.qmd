@@ -1,12 +1,7 @@
 ---
-project:
-  type: website
-  
-website:
-  title: "CursoR - Introdução à análise de dados no R"
-  author: 'Autor: Wasim Aluísio Prates Syed (@wasimvacinas)'
-  date: today
-
+title: "CursoR - Introdução à análise de dados no R"
+author: 'Autor: Wasim Aluísio Prates Syed (@wasimvacinas)'
+date: today
 format:
   html:
     theme: flatly
@@ -2169,7 +2164,7 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
     -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
 
-    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
+    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)\[<https://r-graph-gallery.com/>\].
 
 -   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
 

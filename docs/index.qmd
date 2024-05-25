@@ -64,7 +64,7 @@ Para rodar este tutorial, siga os seguintes passos:
 
 **Passo 4: Configure o projeto no RStudio**
 
--   Abra o RStudio em seu computador.
+-   Abra o RStudio em seu computador. Caso não o tenha, siga as instruções e baixe o R e o R Studio [aqui](https://posit.co/download/rstudio-desktop/).
 
 -   No menu do RStudio, clique em "File" (Arquivo) e selecione "New Project" (Novo Projeto).
 

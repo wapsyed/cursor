@@ -14,6 +14,8 @@ output:
 
 # 1. Biblioteca e pacotes
 
+Baixamos e instalamos os pacotes seguintes:
+
 ```{r message=FALSE, warning=FALSE}
 options(repos = c(CRAN = "https://cran.r-project.org"))
 
@@ -81,6 +83,11 @@ a
 
 b = "Tudo bem?" #Uma frase
 b
+
+u = "5"
+u
+
+i = "Individuo 1"
 ```
 
 ```{r}
@@ -101,24 +108,33 @@ aa == a
 
 ```{r}
 # Vetores
+
 i = c(7, 5, 9, 10)
 i
 
 j = c("Olá", "Caneta", "Qualificacao")
 j
 
-h = c(7, "10", 78)
-h
+h = c(7, "5",  78)
 
+as.data.frame(h)
 ```
 
 ```{r}
 # O que esta função faz? Use o "?" antes da função e rode.
 ?c()
+c(1,7:9)
 ```
 
 ```{r}
 #Dataframes e tibbles -----
+
+data = data.frame(
+  nome = c("Gabriela", "Júlia", "Beatriz", "Luiza"),
+  altura = c(1.59, 1.60, 1.78, 1.73),
+  idade = c(30, 25, 31, 32)
+)
+
 
 #Dataframe
 data = data.frame(
@@ -130,6 +146,7 @@ data
 ```
 
 ```{r}
+
 #Tibble
 tibble = tribble(
   ~nome, ~altura, ~idade,
@@ -180,12 +197,20 @@ summary(data)
 # Usando skim
 skim(tibble)
 skim(data)
-
 ```
 
 ```{r}
 # Trabalhando com dataframes -----
 #Transformando outros formatos em dataframe
+
+?pivot_longer()
+
+pivot_longer(
+  values_to = "valor", #Valores
+  cols = c(altura, idade), # Colunas
+  names_to = "variavel", #Nova coluna
+  data = data #tabela
+)
 
 # Long table
 data_long = pivot_longer(data, #Tabela 
@@ -198,6 +223,12 @@ data_long
 ```
 
 ```{r}
+
+pivot_wider(
+  data_long,
+  
+)
+
 # Wide table
 data_wide = pivot_wider(data_long, #Tabela
             names_from = variavel, #Dividir níveis de uma coluna em novas colunas
@@ -220,7 +251,7 @@ matrix #Agora, os valores são numéricos
 #Criando a lista
 lista = list(a, b, h, j, multi, data, matrix, tibble)
 
-#View(lista) #Visualizando a lista
+View(lista) #Visualizando a lista
 
 #Acessando objetos diferentes da lista
 lista[[1]] #Primeiro objeto
@@ -254,12 +285,14 @@ data_2
 
 ```{r}
 # Removendo uma coluna do data frame
-data_2 = data_2[ , -4]
+
+data_2 = data_2[-4]
+data_2
 ```
 
 ```{r}
 # Filtrando linhas do data frame. df[linha, coluna]
-data_jovens = data_2[data_2$idade < 30, ]
+data_jovens = data_2[data_2$idade < 35, ]
 data_jovens
 
 # Ordenando o data frame por uma coluna
@@ -305,9 +338,14 @@ tibble_2
 
 ```{r paged.print=TRUE}
 # Filtrando linhas ----
-idade = filter(data, idade <= 30)
 
-idade_nome = filter(idade,
+filter(data,
+       idade <= 30)
+
+idade_menos_30 = filter(data, idade <= 30)
+idade_menos_30
+
+idade_nome = filter(idade_menos_30,
                     nome == "Júlia")
 
 idade_nome
@@ -315,6 +353,7 @@ idade_nome
 
 ```{r paged.print=TRUE}
 #Usando OU (|)
+
 filter(data, nome == "Júlia" | 
            nome == "Gabriela")
 
@@ -324,6 +363,12 @@ filter(data, nome %in% c("Júlia", "Gabriela"))
 ```
 
 ```{r paged.print=TRUE}
+
+data %>% 
+  filter(idade >= 30) %>% 
+  filter(nome == "Gabriela")
+
+
 # Usando o pipe "%>%" (lê-se "e então")
 data %>%                   # Tenho este objeto 
   filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
@@ -355,12 +400,16 @@ data_2 %>%
 
 ```{r paged.print=TRUE}
 #Renomeando coluna
+
+data_2 %>% 
+  select(age = idade)
+
 data_2 %>%   
   select(age = idade, everything())
 
 #Renomeando coluna com rename
 data_2 %>%   
-  rename(age = idade) #Retirando coluna
+  rename(age = idade)
 
 ```
 
@@ -385,7 +434,7 @@ data_2 %>%
 data_2 %>% 
   mutate(classificacao = if_else(imc >= 25 & imc <= 30 , "sobrepeso", NA),
          classificacao = if_else(imc > 30, "obesidade 1", classificacao),
-         classificacao = if_else(imc >= 18.5 & imc <25, "normal",classificacao),
+         classificacao = if_else(imc >= 18.5 & imc < 25, "normal",classificacao),
          classificacao = if_else(imc < 18.5, "magreza",classificacao))
 ```
 
@@ -431,23 +480,29 @@ data_2 %>%
 #Método 2
 data_2 %>% 
   arrange(-idade)
+
+data_long %>% 
+  group_by(variavel) %>% 
+  arrange(valor)
 ```
 
 Joins: merging/unindo tabelas
 
 ```{r paged.print=TRUE}
-endereco = tribble(~nome, ~cidade, ~bairro,
+endereco = tribble(
+          ~nome, ~cidade, ~bairro,
           "Gabriela", "São Paulo", "Consolação",
           "Júlia", "Ribeirão Preto", "Cidade Universitária",
           "Beatriz", "Cuiabá", "Centro",
           "Luiza", "São Paulo", "Centro",
           "Thaís", "São Paulo", "Butantã")
 endereco
+data_2
 ```
 
 ```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
-  inner_join(endereco, #Tabela para unir (tabela 2)
+  inner_join(endereco, #tabela para unir (tabela 2)
              by = "nome") #Coluna correspondente
 ```
 
@@ -484,8 +539,8 @@ data_2 %>% #Tabela original (tabela 1)
 # Múltiplas operações em uma caixa
 mega_pipe = data_2 %>% 
   arrange(altura) %>% 
-  filter(idade >= 30,
-         peso >= 50) %>% 
+  filter(peso >= 50,
+         idade >= 30) %>% 
   select(-nome) %>% 
   mutate(imc = round(imc, 1),
          peso_x_idade = peso * idade) %>%

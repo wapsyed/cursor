@@ -550,7 +550,7 @@ mega_pipe = data_2 %>%
 mega_pipe
 ```
 
-Visualização
+# **Visualização**
 
 ```{r}
 data_2 %>% 
@@ -734,7 +734,7 @@ data_2 %>%
   geom_point() +
   
   #Títulos
-    labs(x = "Peso (kg)", 
+  labs(x = "Peso (kg)", 
        y = "IMC",
        title = "Índice de massa corporal versus peso",
        color = "IMC") +
@@ -833,7 +833,12 @@ linha
 
 ```{r}
 linha %>% 
-  ggsave(file = here("Figuras","linha_imc.png"), width = 5, height = 5)
+  ggsave(file = "linha_imc.png", width = 5, height = 5)
+
+here()
+
+linha %>% 
+  ggsave(file = here("Figuras","linha_imc.png"), width = 10, height = 10)
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -847,6 +852,7 @@ data_2 %>%
 ```
 
 ```{r}
+
 linha + barras + plot_layout(guides = "collect")
 ```
 
@@ -860,11 +866,16 @@ linha_barra = linha / barras + plot_layout(guides = "collect")
 ggsave(linha_barra, file = here("Figuras","linha_barra.png"), width = 10, height = 5)
 ```
 
-# Dia 2
+# Trabalhando com dados reais
 
 ```{r paged.print=TRUE}
+
+here
+
 #Pelo readr
 cobertura_vacinal <- read_csv(here("Tabelas", "cobertura_vacinal_anotada.csv")) 
+
+view(cobertura_vacinal)
 
 cobertura_vacinal
 ```
@@ -888,6 +899,9 @@ mortes_doencas
 
 ```{r}
 #Organizar colunas
+
+glimpse(cobertura_vacinal)
+
 cobertura_vacinal = cobertura_vacinal %>% 
   select(type, name, country_abrev, continent, region, region_complete, year, everything())
 
@@ -989,7 +1003,7 @@ cobertura_vacinal %>%
 ```{r}
 #Tabela de frequências
 cobertura_vacinal %>% 
-  tabyl(region_complete)
+  tabyl(continent)
 ```
 
 ```{r}
@@ -1010,6 +1024,10 @@ cobertura_vacinal = cobertura_vacinal %>%
 #Sobraram linhas com NAs?
 cobertura_vacinal %>% 
   filter(!complete.cases(.))
+
+# tabela_limpa = tabela %>% 
+#   mutate(coluna = if_else(coluna == "-", NA, coluna)) %>% 
+#   drop_na()
 ```
 
 **Siga o tutorial, mas já comece a testar com outros países, regiões, vacinas, doenças e anos!**
@@ -1017,39 +1035,30 @@ cobertura_vacinal %>%
 **Por país**
 
 ```{r paged.print=TRUE}
-latin_2000_2023 = cobertura_vacinal %>% 
-  
-  #Missing values: Aqui, é importante retirá-los para não repetir linhas
-  
-  drop_na(coverage) %>% 
+latin_2022 = cobertura_vacinal %>% 
    
   #Filtrando os dados no intervalo e
-  filter(between(year, 2000, 2022),
+  filter(year == 2022,
          str_detect(region_complete, "Latin"),
          type == "country") %>% 
   
-  #Agrupar por vacina e país
-  group_by(vaccine, name) %>% 
-  
-  #Resumir estatísticas
-  # Estatísticas da cobertura vacinal para cada país em um continente
-  # Média, mediana, mínimo e máximo de uma variável numérica
-  summarise(
-    mean = mean(coverage),
-    median = median(coverage),
-    max = max(coverage),
-    min = min(coverage),
-    sd = sd(coverage),
-    var = var(coverage)
-  ) %>% 
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(coverage))
+
+latin_2022
+
+
+cobertura_vacinal %>% 
+   
+  #Filtrando os dados no intervalo e
+  filter(year == 2022,
+         str_detect(name, "Co"),
+         type == "country") %>% 
   
   #Ordenar continentes pela mediana de forma decrescente 
-  arrange(vaccine, desc(mean)) %>% 
-  
-  #Desagrupar
-  ungroup()
+  arrange(vaccine, desc(coverage))
 
-latin_2000_2023
+
 ```
 
 **Por continente**
@@ -1058,10 +1067,7 @@ latin_2000_2023
 # Cobertura vacinal: Estatísticas de cada continente
 continentes_vac = cobertura_vacinal %>% 
   
-  drop_na(coverage,
-          continent) %>% 
-  
-  filter(between(year, 2000, 2023),
+  filter(year == 2022,
          type == "country") %>% 
   
   group_by(vaccine, continent) %>% 
@@ -1096,7 +1102,7 @@ continentes_mortes = mortes_doencas %>%
   drop_na(total_deaths,
           continent) %>%
   
-  filter(between(year, 2000, 2023)) %>% 
+  filter(between(year, 2000, 2022)) %>% 
   
   group_by(death_disease, continent) %>%
   
@@ -1113,7 +1119,6 @@ continentes_mortes = mortes_doencas %>%
   #Aqui, queremos os países com maior número de mortes
   arrange(death_disease, - cumulativo) %>% 
   
-  
   ungroup()
 
 continentes_mortes
@@ -1127,7 +1132,7 @@ continentes_mortes
 paises_mortes = mortes_doencas %>% 
   drop_na(total_deaths,
           name) %>% 
-  filter(between(year, 2000, 2023)) %>% 
+  filter(between(year, 2000, 2022)) %>% 
   group_by(death_disease, name) %>% 
   summarise(
     cumulativo = sum(total_deaths),
@@ -1152,12 +1157,11 @@ paises_mortes
 #Gráfico de barras simples
 continente_barras_vac = continentes_vac %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
-  mutate(continent = fct_reorder(continent, median)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
   aes(x = median,
-      y = continent,
+      y = fct_reorder(continent, median),
       fill = continent) +
   
   #Geometrias
@@ -1166,13 +1170,13 @@ continente_barras_vac = continentes_vac %>% #Dataframe
   geom_text(aes(x = median, 
                 y = continent, 
                 label = median),
-            hjust = -0.5) +
+            hjust = - 0.5) +
   
   #Tema
   theme_few() +
   
   #Labels
-  labs(title = "Cobertura vacinal",
+  labs(title = "Cobertura vacinal, MCV1",
        x = "Mediana (Cobertura vacinal %)",
        y = "",
        fill = "Continente")  +
@@ -1190,22 +1194,21 @@ continente_barras_vac
 
 ```{r, fig.width = 10, fig.height = 10}
 #Gráfico de barras simples
-pais_barras_vac = latin_2000_2023 %>% #Dataframe
-  filter(vaccine %in% "MCV1") %>%
-  mutate(name = fct_reorder(name, median)) %>% 
+pais_barras_vac = latin_2022 %>% #Dataframe
+  filter(vaccine == "MCV1") %>%
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
-  aes(x = median,
-      y = name,
-      fill = median) +
+  aes(x = coverage,
+      y = fct_reorder(name, coverage),
+      fill = coverage) +
   
   #Geometrias
   geom_col() +
   
-  geom_text(aes(x = median, 
+  geom_text(aes(x = coverage, 
                 y = name, 
-                label = median),
+                label = coverage),
             hjust = -0.5,
             size = 5) +
   
@@ -1216,10 +1219,11 @@ pais_barras_vac = latin_2000_2023 %>% #Dataframe
   
   #Labels
   labs(title = "Cobertura vacinal contra o sarampo",
-       subtitle = "Países, entre 2000 e 2023",
+       subtitle = "Países, entre 2022",
        x = "Mediana (Cobertura vacinal%)",
        y = "",
-       fill = "Mediana") +
+       fill = "Mediana",
+       tag = "Figura 1") +
   
   xlim(0, 105)
 
@@ -1248,7 +1252,9 @@ barras_mortes = continentes_mortes %>% #Dataframe
   geom_label(aes(x = cumulativo, 
                 y = cobertura_vacinal, 
                 label = cumulativo),
-            hjust = -0.2) +
+             color = "black",
+             fill = "white",
+            hjust = - 0.2) +
   
   #Tema
   theme_few() +
@@ -1256,7 +1262,8 @@ barras_mortes = continentes_mortes %>% #Dataframe
   #Labels
   labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
        x = "Mortes",
-       y = "") +
+       y = "",
+       fill = "Continentes") +
   
   scale_fill_jama()+
   
@@ -1270,10 +1277,10 @@ barras_mortes
 ```{r}
 #Gráfico de barras simples
 paises_barras_mortes = paises_mortes %>% #Dataframe
-  inner_join(paises_anotados %>% select(-region_complete), by = "name") %>% 
   filter(death_disease == "Measles") %>% 
   mutate(name = fct_reorder(name, cumulativo)) %>% 
   slice_max(order_by = cumulativo, n = 10) %>% 
+  
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
@@ -1303,6 +1310,7 @@ paises_barras_mortes = paises_mortes %>% #Dataframe
   xlim(0, 10000) #Aumentar limites 
   
 paises_barras_mortes
+
 ```
 
 ```{r, fig.width = 8, fig.height = 5}
@@ -1311,29 +1319,30 @@ paises_barras_mortes
 plot = 
   
   # Manipular tabela
-  latin_2000_2023 %>%
+  latin_2022 %>%
   filter(vaccine %in% "MCV1") %>%
-  mutate(name = fct_reorder(name, median)) %>% 
+  mutate(name = fct_reorder(name, coverage)) %>% 
  
   #Criar base do gráfico
   ggplot() +
-  aes(x = median, y = name, colour = median) + #Aesthetics (mapping)
+  aes(x = coverage, y = name, colour = coverage) + #Aesthetics (mapping)
   
   #Geometria
   geom_point(shape = "circle", 
              size = 1) +
-  #Highlight (add sempre após geom_)
-  gghighlight(median >= 95, #Filtragem
-              label_key = name, #Nome do label
-              label_params = list(size = 3), #Tamanho da fonte
-              unhighlighted_params = list(colour = "red")) +
   
-  #Marcações
+    #Marcações
   #Add Linha vertical
   geom_vline(xintercept = 95,
              colour = "black",
              linewidth =0.2,
-             linetype = 2) +
+             linetype = 2) + 
+  
+  #Highlight (add sempre após geom_)
+  gghighlight(coverage >= 95, #Filtragem
+              label_key = name, #Nome do label
+              label_params = list(size = 3), #Tamanho da fonte
+              unhighlighted_params = list(colour = "red")) +
   
   #Tema, aparência
   theme_light() + 
@@ -1341,9 +1350,9 @@ plot =
   # Labels, titulo, subtitulo, titulo dos eixos
     
   labs(title = "Vacinação em países da América Latina",
-     subtitle = "Sarampo, MCV1, Dose 1, entre 2000 e 2023",
+     subtitle = "Sarampo, MCV1, Dose 1, entre 2022",
      y = "",
-     x = "Mediana (Cobertura %)",
+     x = "Cobertura %",
      colour = "Cobertura vacinal",
      caption = "Fonte: Feito pela UPVacina") +
   
@@ -1351,7 +1360,7 @@ plot =
   theme(
     
     #Texto geral
-    text = element_text(family = "sans",  #sans, mono, serif
+    text = element_text(family = "mono",  #sans, mono, serif
                         color = "black"), 
     
     #Título, subtítulo e tag
@@ -1383,7 +1392,7 @@ plot =
     plot.margin = unit(c(0.5, #Top
                          1, #Right
                          0.5, #Bottom
-                         0), #Left 
+                         0.5), #Left 
                        "cm") #Unidade) 
   ) 
 
@@ -1391,14 +1400,14 @@ plot =
 plot
 
 #Salvar
-ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
+ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2022.png"), width = 10, height = 5)
 ```
 
 ```{r}
 #Unindo gráficos -----
 vaccination = cobertura_vacinal %>% 
   filter(name == "Brazil",
-         vaccine == "MCV1",
+         vaccine == "BCG",
          year >= 1980, 
          year <= 2020) %>% 
     ggplot() +
@@ -1413,7 +1422,7 @@ vaccination = cobertura_vacinal %>%
             vjust = -0.5,
             size = 2) +
     theme_few() +
-  labs(title = "Cobertura vacinal contra o sarampo, Brasil",
+  labs(title = "Cobertura vacinal por BCG, Brasil",
        x = "Ano",
        y = "Cobertura vacinal (%)") +
    ylim(0, 110)
@@ -1426,7 +1435,7 @@ vaccination
 #Mortes
 deaths = mortes_doencas %>% 
   filter(name == "Brazil",
-         death_disease == "Measles",
+         death_disease == "Tuberculosis",
          year >= 1980, year <= 2020) %>% 
     ggplot() +
   aes(x = year, y = total_deaths) +
@@ -1439,10 +1448,10 @@ deaths = mortes_doencas %>%
   theme_few() +
   theme(text = element_text(size = 10),
         plot.title = element_text(hjust= 0.5)) +
-    labs(title = "Mortes por sarampo, Brasil",
+    labs(title = "Mortes por Tuberculose, Brasil",
        x = "Ano",
-       y = "Mortes") +
-   ylim(0, 3700)
+       y = "Mortes") 
+   # ylim(0, 3700)
 
 deaths
 ```
@@ -1468,7 +1477,7 @@ boxplot_years = cobertura_vacinal %>%
   
   
  ggplot() +
-  aes(x = "", 
+  aes(x = continent, 
       y = coverage, 
       fill = continent) +
   geom_boxplot() +
@@ -1482,7 +1491,7 @@ boxplot_years = cobertura_vacinal %>%
         plot.title = element_text(hjust= 0.5),
         plot.subtitle = element_text(hjust = 0.5)) +
   
-  facet_wrap(vars(year), ncol = 4) +
+  facet_wrap(~ year, ncol = 4) +
   
   labs(title = "Cobertura vacinal contra o sarampo",
        subtitle = "Primeira dose (MCV1)",
@@ -1539,7 +1548,7 @@ cobertura_vacinal %>%
   facet_wrap(vars(vaccine)) +
   labs(x = "",
        y = "Cobertura",
-       title = "Cobertura vacinal por região, em 2000",
+       title = "Cobertura vacinal por região, em 2015",
        fill = "Continente") +
   scale_fill_jama()  
 
@@ -1599,8 +1608,8 @@ br_cov = cobertura_vacinal %>%
        x = "Ano",
        y = "Cobertura (%)") +
   
-  gghighlight(name %in% c("Brazil", "Colombia"), 
-              calculate_per_facet = T, #Add quando tiver facets. Caso seja um gráfico somente, use calculate_per_facet = F
+  gghighlight(name %in% c("Brazil", "Argentina"), 
+              calculate_per_facet = T, 
               unhighlighted_params = list(linewidth = 1, #Parametros para as outras linhas
                                           colour = "gray90", #Cor cinza
                                           alpha = 0.3)) + #Transparencia de 30%
@@ -1650,6 +1659,49 @@ br_mortes
 
 ```
 
+```{r}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2015,
+        region_complete == "Latin America and Caribbean") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few()  + 
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_jama()
+
+br_mortes 
+
+```
+
+# Mortes por tuberculose (Wasim)
+
 ```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
 #Mortes
 br_mortes = mortes_doencas %>%
@@ -1694,13 +1746,13 @@ br_mortes
 ```{r message=FALSE, warning=FALSE, fig.width = 15, fig.height = 10}
 
 # Unir gráficos
-patch = br_cov + br_mortes + plot_layout(guides = "collect")
-patch
+mortes_vacinas = br_cov + br_mortes + plot_layout(guides = "collect")
+mortes_vacinas
 ```
 
 ```{r}
 #Salvar
-ggsave(patch, 
+ggsave(mortes_vacinas, 
        file = here("Figuras","br_cov_mortes.png"),
        width = 15, #Largura
        height = 10) #Altura

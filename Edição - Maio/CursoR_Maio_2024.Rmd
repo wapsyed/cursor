@@ -1720,7 +1720,7 @@ br_mortes = mortes_doencas %>%
   theme_few()  + 
   
   theme(axis.text.x = element_text(angle = 90),
-        plot.title = element_text(hjust = 0.5))+
+        plot.title = element_text(hjust = 0.5)) +
   
   facet_wrap(vars(death_disease), 
              scales = "free", 

@@ -14,8 +14,6 @@ output:
 
 # Sobre o curso
 
-**sadsadsa**
-
 **\
 Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
 
@@ -47,7 +45,11 @@ Os participantes terão 1 mês para desenvolver o projeto, e poderão tirar dúv
 
 # Como usar este tutorial?
 
-Para rodar este tutorial, siga os seguintes passos:
+**RStudio no navegador:**
+
+**O R e o RStudio baixado para o desktop pode não ser a melhor opção para todos**. Por isso, uma opção viável que encontramos seria usar o R na versão da nuvem, disponível no navegador. Para testar, entre em [posit.cloud](posit.cloud), crie uma conta, acesse seu login, clique em "New Project" e em "New Project from Git Repository" e cole o link: <https://github.com/wapsyed/cursor.git.> Isso abrirá o R studio no próprio navegador.
+
+**Para rodar este tutorial no R Studio Desktop:**
 
 **Passo 1: Acesse o GitHub**
 
@@ -81,7 +83,7 @@ Para rodar este tutorial, siga os seguintes passos:
 
 -   Clique em "Create Project" (Criar Projeto).
 
-Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto para começar a trabalhar.
+**Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto para começar a trabalhar.**
 
 ## Recomendações para evitar erros comuns
 
@@ -110,21 +112,21 @@ Observe que o código abaixo está com `#` antes da função. Ao rodar pela prim
 options(repos = c(CRAN = "https://cran.r-project.org"))
 
 # Baixar pacotes do CRAN para a biblioteca 
-install.packages("tidyverse")
-install.packages("skimr")
-install.packages("janitor")
-install.packages("esquisse")
-install.packages("ggthemes")
-install.packages("plotly")
-install.packages("gghighlight")
-install.packages("patchwork")
-install.packages("ggsci")
-install.packages("gapminder")
-install.packages("here")
-install.packages("gganimate")
-install.packages("scales")
-install.packages("GGally")
-install.packages("ggpmisc")
+# install.packages("tidyverse")
+# install.packages("skimr")
+# install.packages("janitor")
+# install.packages("esquisse")
+# install.packages("ggthemes")
+# install.packages("plotly")
+# install.packages("gghighlight")
+# install.packages("patchwork")
+# install.packages("ggsci")
+# install.packages("gapminder")
+# install.packages("here")
+# install.packages("gganimate")
+# install.packages("scales")
+# install.packages("GGally")
+# install.packages("ggpmisc")
 ```
 
 Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.

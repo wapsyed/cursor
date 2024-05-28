@@ -1700,7 +1700,7 @@ br_mortes
 
 ```
 
-# Mortes por tuberculose (Wasim)
+# Mortes por Tuberculose (Aluno)
 
 ```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
 #Mortes

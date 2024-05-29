@@ -1612,19 +1612,19 @@ pais_barras_vac
 #Gráfico de pontos simples
 barras_mortes = continentes_mortes %>% #Dataframe
   filter(death_disease == "Measles") %>% 
-  mutate(cobertura_vacinal = fct_reorder(continent, cumulativo)) %>% 
+  mutate(continent = fct_reorder(continent, cumulativo)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
   aes(x = cumulativo,
-      y = cobertura_vacinal,
-      fill = cobertura_vacinal) +
+      y = continent,
+      fill = continent) +
   
   #Geometrias
   geom_col() +
   
   geom_label(aes(x = cumulativo, 
-                y = cobertura_vacinal, 
+                y = continent, 
                 label = cumulativo),
             hjust = -0.2) +
   

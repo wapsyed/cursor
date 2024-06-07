@@ -61,8 +61,7 @@ Os participantes terão 1 mês para desenvolver o projeto, e poderão tirar dúv
 ## Recomendações para evitar erros comuns
 
 > 1.  **Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_tarefa.rmd`**". Se clicar no `.md`, não funcionará.
-> 1.  **Use este documento para fazer suas análises**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site.
-Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados na aula, como o boxplot interativo, ou com as perguntas baixo.
+> 2.  **Use este documento para fazer suas análises**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site. Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados na aula, como o boxplot interativo, ou com as perguntas baixo.
 
 **Recomendações**
 
@@ -130,9 +129,6 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
     -   Quer fazer algo **específico** e pontual no código? Manda pro ChatGPT!
 
 -   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
-
-
-
 
 ## Importando tabelas
 
@@ -1059,5 +1055,3 @@ ggsave(patch,
        width = 15, #Largura
        height = 10) #Altura
 ```
-
-

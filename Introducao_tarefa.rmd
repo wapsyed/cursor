@@ -1,0 +1,1063 @@
+---
+title: "CursoR - Introdução à análise de dados no R"
+author: 'Autor: Wasim Aluísio Prates Syed (@wasimvacinas)'
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: simplex
+    toc: yes
+    toc_float:
+      collapsed: true
+---
+
+**Como será o projeto**:
+
+O projeto consistirá na geração de pelo menos 5 gráficos acompanhados de discussões pertinentes, e terão direito a um certificado à parte. Para isso, durante o curso, serão apresentadas perguntas que poderão ser utilizadas para desenvolver o projeto. O objetivo principal é explorar os diversos tipos de gráficos disponíveis, formular perguntas pertinentes e explicar os padrões e comportamentos observados nos dados analisados.
+
+Os participantes terão 1 mês para desenvolver o projeto, e poderão tirar dúvidas no grupo de WhatsApp e marcar uma mentoria individual, se necessário.
+
+# Como usar este tutorial?
+
+**RStudio no navegador:**
+
+**O R e o RStudio baixado para o desktop pode não ser a melhor opção para todos**. Por isso, uma opção viável que encontramos seria usar o R na versão da nuvem, disponível no navegador. Para testar, entre em [posit.cloud](posit.cloud), crie uma conta, acesse seu login, clique em "New Project" e em "New Project from Git Repository" e cole o link: <https://github.com/wapsyed/cursor.git.> Isso abrirá o R studio no próprio navegador.
+
+**Para rodar este tutorial no R Studio Desktop:**
+
+**Passo 1: Acesse o GitHub**
+
+-   Abra o seu navegador web e vá para o site do GitHub em <https://github.com/wapsyed/cursor>.
+
+**Passo 2: Baixe o projeto**
+
+-   No repositório do GitHub, clique no botão verde "Code".
+
+-   Selecione "Download ZIP". Isso iniciará o download do arquivo ZIP contendo o projeto.
+
+**Passo 3: Descompacte o arquivo ZIP**
+
+-   Após o download ser concluído, localize o arquivo ZIP em sua pasta de downloads.
+
+-   Clique com o botão direito do mouse no arquivo ZIP e selecione "Extrair tudo" ou "Descompactar".
+
+-   Escolha a pasta de destino onde deseja descompactar o arquivo e clique em "Extrair".
+
+**Passo 4: Configure o projeto no RStudio**
+
+-   Abra o RStudio em seu computador. Caso não o tenha, siga as instruções e baixe o R e o R Studio [aqui](https://posit.co/download/rstudio-desktop/).
+
+-   No menu do RStudio, clique em "File" (Arquivo) e selecione "New Project" (Novo Projeto).
+
+-   Escolha a opção "Existing Directory" (Diretório Existente).
+
+-   Navegue até a pasta onde você descompactou o projeto.
+
+-   Selecione a pasta do projeto com um clique.
+
+-   Clique em "Create Project" (Criar Projeto).
+
+**Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto para começar a trabalhar.**
+
+## Recomendações para evitar erros comuns
+
+> 1.  **Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_tarefa.rmd`**". Se clicar no `.md`, não funcionará.
+> 1.  **Use este documento para fazer suas análises**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site.
+Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados na aula, como o boxplot interativo, ou com as perguntas baixo.
+
+**Recomendações**
+
+1.  **Ao fazer a parte prática com suas análises, faça no mesmo documento**. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+
+2.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
+
+> "Meu código... Gráfico do tipo A dos países XYZ."
+
+```{r}
+#Seu código
+#...
+```
+
+**Alguns exemplos de perguntas que você pode se fazer:**
+
+-   **Quem**:
+
+    -   Quais são os **países** que **menos** vacinaram em cada **continente**?
+
+    -   Quais são os **países** que **mais** vacinaram em cada **continente**?
+
+    -   Quais são os **países** que **mais** tiveram **mortes** por uma **doença X**? A **difteria** aparentemente teve um surto em algum país **latinoamericano** a partir de **2016**. Qual é este país e por que isso ocorreu? Será que é a baixa **cobertura vacinal**?
+
+-   **Quando**:
+
+    -   Será que a cobertura vacinal ou o número de mortes **sempre** foi assim (alto ou baixo) ou é algo **recente** dos últimos 5 a 10 anos?
+
+    -   Será que a **pandemia** afetou a vacinação contra outras doenças?
+
+    -   Ou a cobertura vacinal já estava caindo **antes mesmo da pandemia**?
+
+-   **Comparações**:
+
+    -   Qual seria a média de vacinação contra uma doença x para o continente y e onde seus países de escolha estão? (Dica: use `group_by()` e `summarize()`).
+
+**Alguns conselhos:**
+
+-   **Explore e leia os códigos do tutorial atentamente**. Tente entender o que cada linha de código faz.
+
+-   Pense **quais variáveis** você quer analisar:
+
+    -   É uma variável **numérica** ou **categórica**?
+
+    -   O gráfico que você quer analisar combina **duas variáveis numéricas** (anos e cobertura vacinal) ou **uma variável categórica** (países) e outra **numérica** (cobertura vacinal)?
+
+    -   A variável numérica é **temporal**? Por exemplo, você vai usar uma **série temporal** (2010, 2011, 2012...) ou somente a **média** de um período (2010 a 2020)?
+
+        -   Caso use todos os anos em uma **série temporal**, recomendo usar um gráfico de **linhas**, onde o eixo x representa os anos e o eixo y, a cobertura vacinal ou numero de mortes.
+
+        -   Agora, caso analise as **médias ou medianas de um período**, um gráfico de **colunas** é recomendado, onde o **eixo x é um ano e o y, o número de mortes ou cobertura vacinal.**
+
+    -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
+
+    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
+
+-   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
+
+-   **Use o ChatGPT.** O ChatGPT é uma ferramenta extremamente útil para a sua evolução na programação e você precisa aprender a usá-lo e a fazer perguntas corretas. 80% das vezes ele dá respostas perfeitas. Você pode usá-lo para explicar, consertar e criar códigos!
+
+    -   Copie e cole um bloco de código e peça para ele **explicar** cada linha e função.
+
+    -   Deu algum **erro** no código? Manda pra ele também o código e o erro que aparece no console.
+
+    -   Quer fazer algo **específico** e pontual no código? Manda pro ChatGPT!
+
+-   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
+
+
+
+
+## Importando tabelas
+
+Podemos importar tabelas de forma manual, clicando no nome do arquivo no quadrante onde encontramos a aba "Files" e selecionando "Import dataset", que é realizado pelo pacote `readr`.
+
+Caso queira deixar automatizado, você pode copiar o código que é gerado e colar no seu bloco de código aqui.
+
+A função `read_csv()` acessa o local do seu arquivo (no caso, do tipo .csv) e o importa para o ambiente do R. Existem funções para importar cada tipo de arquivo, como excel, tsv, etc.
+
+```{r paged.print=TRUE}
+#Pelo readr
+cobertura_vacinal <- read_csv(here("Tabelas", "cobertura_vacinal_anotada.csv")) 
+
+cobertura_vacinal
+```
+
+Para baixar uma tabela de outra pasta, podemos usar a função `here()` do pacote `here`. Como dito anteriormente, essa função sempre assumirá que o diretório inicial é o do projeto. Para acessar um arquivo dentro de uma pasta, no caso o arquivo `paises_anotados.rds` na pasta `Tabelas`, escrevemos esse caminho entre aspas.
+
+```{r paged.print=TRUE}
+#Caminho
+here()
+
+#Tabela de países
+paises_anotados <- read_rds(here("Tabelas", "paises_anotados.rds")) 
+
+paises_anotados 
+```
+
+Poderíamos fazer o mesmo aqui, mas como o arquivo está na mesma pasta, especificaremos somente seu nome.
+
+```{r paged.print=TRUE}
+#Tabela de mortes por doença
+mortes_doencas <- read_rds(here("Tabelas","Deaths_infectious_diseases_filtered.rds"))
+
+mortes_doencas 
+```
+
+## Padronizando tabelas
+
+Para trabalharmos de forma fácil com uma tabela, precisamos padronizá-la.
+
+Isso significa que **trocaremos e reordenaremos os nomes das colunas** para fazerem mais sentido, completaremos os valores `NA` quando for possível (e fizer sentido), e explicitaremos algumas coisas, como o nome das doenças contra as quais as vacinas protegem, e daremos o nome completo de cada região, pois somente temos os códigos delas.
+
+Finalmente, salvaremos essa mesma tabela processada em outra, utilizando a função `saveRDS()`. **RDS** é um arquivo específico do R que tem seu tamanho reduzido e os dados otimizados. Poderíamos também salvar como arquivo de **Excel** (`write.xlsx()`) ou .**csv** (`write_csv()`) para trabalharmos nessa tabela manualmente no Google Sheets ou no próprio Excel, mas como é uma tabela grande e essa não é uma necessidade, continuaremos com o arquivo RDS.
+
+```{r}
+#Organizar colunas
+cobertura_vacinal = cobertura_vacinal %>% 
+  select(type, name, country_abrev, continent, region, region_complete, year, everything())
+
+#Salvar
+cobertura_vacinal %>% 
+  saveRDS(file = here("Tabelas", "cobertura_vacinal_anotada_2.rds"))
+```
+
+```{r paged.print=TRUE}
+#Organizar colunas
+mortes_doencas = mortes_doencas %>% 
+  select(name, continent,region_complete, everything())
+
+#Salvar
+mortes_doencas %>% 
+  saveRDS(file = here("Tabelas","mortes_doencas.rds"))
+
+mortes_doencas
+
+```
+
+## Explorando dados
+
+### Visualizando tabelas
+
+```{r paged.print=TRUE}
+# Explorando dados -----
+
+# Tabela completa
+view(cobertura_vacinal) 
+
+# Descrição geral
+glimpse(cobertura_vacinal)
+
+# Primeiras 10 linhas
+head(cobertura_vacinal, 10)
+
+# Últimas 10 linhas
+tail(cobertura_vacinal, 10)
+
+#Summary statistics
+summary(cobertura_vacinal)
+```
+
+Cada coluna contendo strings repetidas nas linhas podem ser reduzidas aos valores únicos.
+
+Por exemplo, veja que as regiões, por estarem na tabela longa, são repetidas para cada país. Se quisermos saber todas as regiões incluídas no dataset de forma mais fácil, sem ficar procurando uma por uma, usamos o `distinct()`.
+
+```{r paged.print=TRUE}
+#Níveis de colunas
+cobertura_vacinal %>% 
+  distinct(region_complete)
+
+cobertura_vacinal %>% 
+  distinct(continent)
+
+cobertura_vacinal %>% 
+  distinct(name) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  distinct(vaccine)
+
+```
+
+E se quisermos contar quantas vezes esses valores são repetidos no dataset? Podemos usar o `count()` seguido por `head()`, para visualizar os 10 primeiros valores. O `head()` é importante quando temos uma tabela muito grande e não queremos ver todos os valores.
+
+```{r paged.print=TRUE}
+#Contar linhas por coluna
+cobertura_vacinal %>% 
+  count(name) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(vaccine) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(continent) %>% 
+  head(10)
+
+cobertura_vacinal %>% 
+  count(diseases) %>% 
+  head(10)
+```
+
+**Os dados foram registrados de que ano a que ano?**
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  summarize(min_valor = min(year),
+            max_valor = max(year))
+```
+
+**Quais são as vacinas que protegem contra cada doença? Podemos descobrir isso de duas formas.**
+
+```{r paged.print=TRUE}
+cobertura_vacinal %>% 
+  group_by(diseases) %>% 
+    distinct(vaccine) 
+```
+
+Temos também uma forma de contar a frequência dessas linhas. Veja que há uma diferença nas observações/linhas por região, sendo a região da américa latina a que mais contém observações, e a região do sul-asiático a que tem menos.
+
+Além disso, a região "`Non-programme`" inclui países que não estão nos programas de assistência da ONU/OMS, como a Estônia e o Qatar, entretanto não há uma explicação completa em nenhuma das fontes que consultei. É importante incluir esses dados, ainda que não contribuam muito para nossas conclusões.
+
+No caso de "`Global`", esses dados se referem à cobertura vacinal do conjunto de todos os países para cada vacina (`n = 14`), e por isso tem `n = 441`.
+
+```{r}
+#Tabela de frequências
+cobertura_vacinal %>% 
+  tabyl(continent)
+```
+
+### Dados faltantes
+
+Valores `NA` (*Not Available*) podem surgir por diversos motivos, como erros de coleta de dados, falhas em dispositivos de medição, ou simplesmente porque a informação não está disponível.
+
+Use a função `skim()` e faça um diagnóstico da tabela. Existem dados faltantes? Por que existem e onde estão?
+
+```{r}
+# Dados faltantes ----
+skim(cobertura_vacinal) 
+
+# Como são essas linhas?
+cobertura_vacinal %>% 
+  filter(!complete.cases(.)) 
+
+```
+
+Observe que somente há dados faltantes na coluna coverage. Isso acontece porque, apesar de uma vacina ter sido incorporada a programas de vacinação nacionais, isso não ocorreu ao mesmo tempo com todos os países. Dessa forma, podemos excluir essas linhas, mas não substituir os NAs por 0, porque isso significaria que a vacina estava disponível e ninguém foi vacinado.
+
+### Estatísticas descritivas
+
+Abaixo, queremos obter o resumo dos dados de cada país na região da América latina. Como a tabela tem linhas com dados faltantes, algumas operações podem confundir os resultados. Por isso, usamos a função `drop_na()` na coluna onde temos mais `NA`s.
+
+```{r}
+#Retirando os NAs
+cobertura_vacinal = cobertura_vacinal %>% 
+  drop_na(coverage)
+
+#Sobraram linhas com NAs?
+cobertura_vacinal %>% 
+  filter(!complete.cases(.))
+```
+
+Além disso, queremos filtrar somente os dados dos países latinoamericanos entre os anos 2000 e 2023. Para isso, usamos o between() dentro da função `filter()`, e especificamos que queremos o `type == "country"`, pois também temos dados da região como um todo.
+
+Como não queremos trabalhar com os nomes completos das regiões, podemos ser menos específicos. Por exemplo, se sabemos que existe a região "`Latin America and Caribbean Region (LACR)`", podemos somente usar uma função que pega um pedaço do nome completo e nos retorna aquela linha. Isso é feito com o `str_detect().`
+
+Para calcularmos as estatísticas gerais com summarize, precisamos agrupar os dados com `group_by()`. Isso porque temos dados da cobertura vacinal por país em 23 anos e para mais de uma vacina. Dessa forma, agruparemos por país (`name`) e vacina (`vaccine`). Ao final, vamos desagrupar esses dados.
+
+As tabelas produzidas a seguir serão utilizadas para trabalharmos a visualização dos dados!
+
+**Siga o tutorial, mas já comece a testar com outros países, regiões, vacinas, doenças e anos!**
+
+**Por país**
+
+Aqui, vemos os países da **américa latina** que mais vacinaram ao longo de 2000 a 2023, por vacina.
+
+> Agora, mude para a região dos países do seu interesse.
+
+```{r paged.print=TRUE}
+meu_continente = cobertura_vacinal %>% 
+   
+  #Filtrando os dados no intervalo e
+  filter(between(year, 2000, 2022), #Defina o periodo aqui
+         str_detect(region_complete, "Latin"), #Defina a região aqui
+         type == "country") %>% 
+  
+  #Agrupar por vacina e país
+  group_by(vaccine, name) %>% 
+  
+  #Resumir estatísticas
+  # Estatísticas da cobertura vacinal para cada país em um continente
+  # Média, mediana, mínimo e máximo de uma variável numérica
+  summarise(
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
+  ) %>% 
+  
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
+  #Desagrupar
+  ungroup()
+
+meu_continente
+```
+
+**Por continente**
+
+Veja quais são os continentes que mais vacinaram ao longo de 2000 a 2023, por vacina.
+
+Algumas modificações foram feitas na tabela original. Observe que os valores para "**`Other`**" incluem países que não foram identificados corretamente, sendo o motivo principal o nome utilizado e processos históricos, como divisão do país e mudança de nome. Como esses países podem ser interessantes para as análises posteriores, eles continuaram na tabela.
+
+```{r paged.print=TRUE}
+# Cobertura vacinal: Estatísticas de cada continente
+continentes_vac = cobertura_vacinal %>% 
+  
+  drop_na(coverage,
+          continent) %>% 
+  
+  filter(between(year, 2000, 2023),
+         type == "country") %>% 
+  
+  group_by(vaccine, continent) %>% 
+  
+  summarise(
+    mean = mean(coverage),
+    median = median(coverage),
+    max = max(coverage),
+    min = min(coverage),
+    sd = sd(coverage),
+    var = var(coverage)
+  ) %>% 
+  
+  #Ordenar continentes pela mediana de forma decrescente 
+  arrange(vaccine, desc(mean)) %>% 
+  
+  ungroup()
+
+#Visualizar
+continentes_vac
+```
+
+### Mortes cumulativas
+
+**Por continente**
+
+```{r paged.print=TRUE}
+# Mortes cumulativas
+# Estatísticas de cada continente
+continentes_mortes = mortes_doencas %>% 
+  
+  drop_na(total_deaths,
+          continent) %>%
+  
+  filter(between(year, 2000, 2023)) %>% 
+  
+  group_by(death_disease, continent) %>%
+  
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  
+  #Aqui, queremos os países com maior número de mortes
+  arrange(death_disease, - cumulativo) %>% 
+  
+  
+  ungroup()
+
+continentes_mortes
+```
+
+**Por país**
+
+```{r paged.print=TRUE}
+# Mortes cumulativas
+# Estatísticas de cada país
+paises_mortes = mortes_doencas %>% 
+  drop_na(total_deaths,
+          name) %>% 
+  filter(between(year, 2000, 2023)) %>% 
+  group_by(death_disease, name) %>% 
+  summarise(
+    cumulativo = sum(total_deaths),
+    mean = mean(total_deaths),
+    median = median(total_deaths),
+    max = max(total_deaths),
+    min = min(total_deaths),
+    sd = sd(total_deaths),
+    var = var(total_deaths)
+  ) %>% 
+  arrange(death_disease, desc(cumulativo)) %>% 
+  ungroup()
+
+paises_mortes
+```
+
+# 6. Visualização
+
+## Vacinação
+
+**Por continente**
+
+```{r}
+#Gráfico de barras simples
+continente_barras_vac = continentes_vac %>% #Dataframe
+  filter(vaccine == "MCV1") %>%
+  mutate(continent = fct_reorder(continent, median)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = continent,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = continent, 
+                label = median),
+            hjust = -0.5) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Cobertura vacinal",
+       x = "Mediana (Cobertura vacinal %)",
+       y = "",
+       fill = "Continente")  +
+  
+  #Limites
+  xlim(0, 105) +
+  
+  scale_fill_jama()
+
+continente_barras_vac
+
+```
+
+**Por país**
+
+```{r, fig.width = 10, fig.height = 10}
+#Gráfico de barras simples
+pais_barras_vac = latin_2000_2023 %>% #Dataframe
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = median,
+      y = name,
+      fill = median) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_text(aes(x = median, 
+                y = name, 
+                label = median),
+            hjust = -0.5,
+            size = 5) +
+  
+  #Tema
+  theme_few() +
+  
+  scale_fill_binned(type = "viridis") +
+  
+  #Labels
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Países, entre 2000 e 2023",
+       x = "Mediana (Cobertura vacinal%)",
+       y = "",
+       fill = "Mediana") +
+  
+  xlim(0, 105)
+
+pais_barras_vac
+```
+
+## Mortes
+
+**Por continente**
+
+```{r}
+#Gráfico de pontos simples
+barras_mortes = continentes_mortes %>% #Dataframe
+  filter(death_disease == "Measles") %>% 
+  mutate(cobertura_vacinal = fct_reorder(continent, cumulativo)) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = cobertura_vacinal,
+      fill = cobertura_vacinal) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = cobertura_vacinal, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "") +
+  
+  scale_fill_jama()+
+  
+  #Eixo x
+  xlim(0, 10000) #Aumentar limites 
+  
+barras_mortes 
+
+```
+
+Quais países?
+
+```{r}
+#Gráfico de barras simples
+paises_barras_mortes = paises_mortes %>% #Dataframe
+  inner_join(paises_anotados %>% select(-region_complete), by = "name") %>% 
+  filter(death_disease == "Measles") %>% 
+  mutate(name = fct_reorder(name, cumulativo)) %>% 
+  slice_max(order_by = cumulativo, n = 10) %>% 
+  ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
+  
+  #Mapeando os eixos
+  aes(x = cumulativo,
+      y = name,
+      fill = continent) +
+  
+  #Geometrias
+  geom_col() +
+  
+  geom_label(aes(x = cumulativo, 
+                y = name, 
+                label = cumulativo),
+            hjust = -0.2) +
+  
+  #Tema
+  theme_few() +
+  
+  #Labels
+  labs(title = "Mortes cumulativas por Sarampo, de 2000 a 2023",
+       x = "Mortes",
+       y = "") +
+  
+    scale_fill_jama() +
+  
+  #Eixo x
+  xlim(0, 10000) #Aumentar limites 
+  
+paises_barras_mortes
+```
+
+As Filipinas foi o país que mais contribuiu para 80% das mortes no mundo todo. Na Ásia, o Japão, Mongólia e Tailândia também registraram muitas mortes pela doença, o que poderia indicar que a doença se espalhou entre esses países ou isso ocorreu em tempos diferentes. Interessante, não? Para explorar mais, considere os gráficos que faremos a seguir com outros exemplos.
+
+## Melhorando o gráfico
+
+Chegamos a um gráfico interessante. Por isso, copiamos e colamos o código aqui, para permitir que façamos outras modificações no gráfico.
+
+Nele, queremos filtrar a cobertura vacinal contra o sarampo nos países da américa latina e identificar aqueles países que apresentem cobertura vacinal maior ou igual a 95%. Caso o país tenha cobertura menor, ele será marcado de vermelho. Para isso, usamos o `gghighlight()`
+
+```{r, fig.width = 8, fig.height = 5}
+# Melhorando o gráfico -----
+
+plot = 
+  
+  # Manipular tabela
+  latin_2000_2023 %>%
+  filter(vaccine %in% "MCV1") %>%
+  mutate(name = fct_reorder(name, median)) %>% 
+ 
+  #Criar base do gráfico
+  ggplot() +
+  aes(x = median, y = name, colour = median) + #Aesthetics (mapping)
+  
+  #Geometria
+  geom_point(shape = "circle", 
+             size = 1) +
+  #Highlight (add sempre após geom_)
+  gghighlight(median >= 95, #Filtragem
+              label_key = name, #Nome do label
+              label_params = list(size = 3), #Tamanho da fonte
+              unhighlighted_params = list(colour = "red")) +
+  
+  #Marcações
+  #Add Linha vertical
+  geom_vline(xintercept = 95,
+             colour = "black",
+             linewidth =0.2,
+             linetype = 2) +
+  
+  #Tema, aparência
+  theme_light() + 
+  
+  # Labels, titulo, subtitulo, titulo dos eixos
+    
+  labs(title = "Vacinação em países da América Latina",
+     subtitle = "Sarampo, MCV1, Dose 1, entre 2000 e 2023",
+     y = "",
+     x = "Mediana (Cobertura %)",
+     colour = "Cobertura vacinal",
+     caption = "Fonte: Feito pela UPVacina") +
+  
+  # Aparência especifica
+  theme(
+    
+    #Texto geral
+    text = element_text(family = "sans",  #sans, mono, serif
+                        color = "black"), 
+    
+    #Título, subtítulo e tag
+    plot.title = element_text(size = 12, 
+                              face = "bold", 
+                              hjust = 0,
+                              vjust = 0.5),
+    plot.subtitle = element_text(size = 10),
+    plot.tag.position = "topleft",
+    plot.tag = element_text(vjust = 5,
+                            size = 12, 
+                            face = "bold"),
+    
+    #Legenda
+    legend.title = element_text(face = "bold"),
+    legend.text = element_text(size = 10),
+    
+    #Eixos
+    axis.title.x = element_text(size = 10,
+                                angle = 0,
+                                color = "black"),
+    axis.text.x = element_text(color = "black",
+                               size = 8,
+                               angle = 0),
+    axis.text.y = element_text(size = 8,
+                               color = "black"),
+    
+    #Margens do gráfico
+    plot.margin = unit(c(0.5, #Top
+                         1, #Right
+                         0.5, #Bottom
+                         0), #Left 
+                       "cm") #Unidade) 
+  ) 
+
+#Visualizar
+plot
+
+#Salvar
+ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
+```
+
+## Unindo gráficos
+
+```{r}
+#Unindo gráficos -----
+vaccination = cobertura_vacinal %>% 
+  filter(name == "Brazil",
+         vaccine == "MCV1",
+         year >= 1980, 
+         year <= 2020) %>% 
+    ggplot() +
+  geom_line(mapping = aes(
+    x = year,
+    y = coverage),
+    colour = "#4DBBD5B2",
+    linewidth = 2) +
+    geom_text(aes(x = year, 
+                  y = coverage, 
+                  label = coverage),
+            vjust = -0.5,
+            size = 2) +
+    theme_few() +
+  labs(title = "Cobertura vacinal contra o sarampo, Brasil",
+       x = "Ano",
+       y = "Cobertura vacinal (%)") +
+   ylim(0, 110)
+
+vaccination
+```
+
+```{r}
+
+#Mortes
+deaths = mortes_doencas %>% 
+  filter(name == "Brazil",
+         death_disease == "Measles",
+         year >= 1980, year <= 2020) %>% 
+    ggplot() +
+  aes(x = year, y = total_deaths) +
+  geom_col(fill = "#DC0000B2") +
+  geom_text(aes(label = total_deaths),
+            vjust = 0.5,
+            hjust = -0.2,
+            angle = 90,
+            size = 2) +
+  theme_few() +
+  theme(text = element_text(size = 10),
+        plot.title = element_text(hjust= 0.5)) +
+    labs(title = "Mortes por sarampo, Brasil",
+       x = "Ano",
+       y = "Mortes") +
+   ylim(0, 3700)
+
+deaths
+```
+
+### Unindo gráficos em uma imagem
+
+```{r}
+#Unir gráficos
+(vaccination / deaths) 
+
+#Salvar
+(vaccination / deaths) %>% 
+  ggsave(file = here("Figuras","Sarampo_Brasil_1980_2023.png"), width = 10, height = 5)
+
+```
+
+### Boxplots
+
+```{r}
+#Boxplot simples por ano
+boxplot_years = cobertura_vacinal %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(1990, 2000, 2010, 2019)) %>% 
+  
+  
+ ggplot() +
+  aes(x = "", 
+      y = coverage, 
+      fill = continent) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
+  theme_few() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   vjust = 1,
+                                   hjust = 1),
+        plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        legend.position = "right",
+        plot.title = element_text(hjust= 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(year), ncol = 4) +
+  
+  labs(title = "Cobertura vacinal contra o sarampo",
+       subtitle = "Primeira dose (MCV1)",
+      x = "",
+       y = "Cobertura vacinal (%)",
+       fill = "Continente") +
+    scale_fill_jama()
+
+
+#Visualizar
+boxplot_years 
+```
+
+```{r message=FALSE, warning=FALSE}
+#Boxplot simples de ano
+boxplot_regions = cobertura_vacinal %>% 
+  filter(type == "country",
+         vaccine == "MCV1",
+         year %in% c(1990, 2000, 2010, 2020)) %>% 
+  mutate(year = as.factor(year)) %>% 
+ ggplot() +
+  aes(x = year, y = coverage, fill = year) +
+  theme_few() +
+  theme(plot.title = element_text(hjust= 0.5)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(aes(label = name),
+              alpha = 0.2,
+              na.rm = T) +
+  scale_fill_brewer(palette = "Set2", direction = 1) +
+  scale_color_distiller(palette = "Set2", direction = 1) +
+  facet_wrap(vars(continent)) +
+  scale_fill_jama()
+
+boxplot_regions
+
+```
+
+```{r}
+# Gráfico interativo
+boxplot_regions %>%  
+  ggplotly()
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Boxplot por vacina
+cobertura_vacinal %>% 
+  filter(type == "country",
+         year == 2015) %>% 
+ ggplot() +
+  aes(x = "", y = coverage, fill = continent) +
+  geom_boxplot() +
+  theme_few() +
+  theme(plot.title = element_text(hjust= 0.5)) +
+  facet_wrap(vars(vaccine)) +
+  labs(x = "",
+       y = "Cobertura",
+       title = "Cobertura vacinal por região, em 2000",
+       fill = "Continente") +
+  scale_fill_jama()  
+
+```
+
+## Múltiplos gráficos
+
+### Isolando linhas com filter()
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Highlight linhas específicas
+
+#Método 1
+br_cov = cobertura_vacinal %>%
+ filter(year >= 2012 & year <= 2022,
+        name %in% c("Brazil", "Colombia")) %>%
+ ggplot() +
+  aes(x = year, 
+      y = coverage,
+      colour = name) +
+  
+  geom_line(linewidth = 2) +
+
+  theme_few() +
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)",
+       color = "País")  +
+  
+  scale_color_jama() 
+
+br_cov 
+```
+
+### Isolando linhas com gghighlight()
+
+A `gghighlight()` é uma função do pacote com o mesmo nome que permite destacar linhas, pontos e colunas de interesse, **sem precisar filtrar antes**, como fizemos acima. O interessante é que, ao chamarmos a função aqui, podemos ainda ver as linhas dos outros países, embora transparentes, para comparação.
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Método 2
+br_cov = cobertura_vacinal %>%
+ filter(year >= 2012 & year <= 2022,
+        region %in% c("LACR")) %>%
+ ggplot() +
+  
+  geom_line(aes(x = year, 
+      y = coverage,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few() +
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(vaccine)) + 
+  
+  labs(title = "Cobertura vacinal, por vacina",
+       x = "Ano",
+       y = "Cobertura (%)") +
+  
+  gghighlight(name %in% c("Brazil", "Colombia"), 
+              calculate_per_facet = T, #Add quando tiver facets. Caso seja um gráfico somente, use calculate_per_facet = F
+              unhighlighted_params = list(linewidth = 1, #Parametros para as outras linhas
+                                          colour = "gray90", #Cor cinza
+                                          alpha = 0.3)) + #Transparencia de 30%
+  scale_color_jama()
+
+br_cov
+```
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2022,
+        region_complete == "Latin America and Caribbean") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few()  + 
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5)) +
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_jama()
+
+br_mortes 
+
+```
+
+Estes dados são interessantes, porque n**ão há casos e mortes registradas por polio no Brasil e nas Américas desde 1989**, quando a doença foi eliminada no continente. Além disso, não há registro algum nos sites da OMS e da UNICEF que citem esses números, além da base de dados original ([WHO Mortality database](https://platform.who.int/mortality/themes/theme-details/mdb/communicable-maternal-perinatal-and-nutritional-conditions)). Provavelmente, é um erro de registro. Essa observação é interessante para ficarmos **atentos** à **qualidade** e **coerência** dos dados. Por isso, vamos retirar os dados de mortes por polio.
+
+```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
+#Mortes
+br_mortes = mortes_doencas %>%
+ filter(year >= 2012 & year <= 2022,
+        region_complete == "Latin America and Caribbean",
+        death_disease != "Poliomyelitis") %>% 
+  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
+  distinct() %>%
+  drop_na(total_deaths) %>% 
+ ggplot() +
+  geom_line(aes(x = round(year, 0), 
+      y = total_deaths,
+      colour = name),
+      linewidth = 2) +
+
+  theme_few()  + 
+  
+  theme(axis.text.x = element_text(angle = 90),
+        plot.title = element_text(hjust = 0.5))+
+  
+  facet_wrap(vars(death_disease), 
+             scales = "free", 
+             nrow = 3) + 
+  
+  labs(title = "Mortes por doença imunoprevenível",
+       x = "Ano",
+       y = "Mortes") +
+  
+  #highlight
+  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
+              
+              calculate_per_facet = T, #Add quando tiver facets
+              
+              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
+                                          colour = "gray90", 
+                                          alpha = 0.5)) + 
+  scale_color_jama()
+
+br_mortes 
+```
+
+E vamos unir esses gráficos
+
+```{r message=FALSE, warning=FALSE, fig.width = 15, fig.height = 10}
+
+# Unir gráficos
+patch = br_cov + br_mortes + plot_layout(guides = "collect")
+patch
+```
+
+```{r}
+#Salvar
+ggsave(patch, 
+       file = here("Figuras","br_cov_mortes.png"),
+       width = 15, #Largura
+       height = 10) #Altura
+```
+
+

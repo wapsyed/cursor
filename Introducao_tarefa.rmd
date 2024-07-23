@@ -130,6 +130,47 @@ Os participantes terão 1 mês para desenvolver o projeto, e poderão tirar dúv
 
 -   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
 
+## Pacotes
+
+```{r}
+options(repos = c(CRAN = "https://cran.r-project.org"))
+
+#Instalação (se for necessário) --------
+# Baixar pacotes do CRAN para a biblioteca 
+# install.packages("tidyverse")
+# install.packages("skimr")
+# install.packages("janitor")
+# install.packages("esquisse")
+# install.packages("ggthemes")
+# install.packages("plotly")
+# install.packages("gghighlight")
+# install.packages("patchwork")
+# install.packages("ggsci")
+# install.packages("gapminder")
+# install.packages("here")
+# install.packages("gganimate")
+# install.packages("scales")
+# install.packages("GGally")
+# install.packages("ggpmisc")
+
+# Biblioteca --------
+library(tidyverse) #Metapacote 
+library(skimr) #Diagnóstico de tabela
+library(janitor) #Limpeza de tabelas
+library(esquisse) #Plotagem de gráficos prática
+library(ggthemes) #Temas de ggplot
+library(plotly) #Gráficos interativos
+library(patchwork) #Unir gráficos
+library(gghighlight) #Marcar pontos e linhas 
+library(ggsci) #Paleta de cores 
+library(gapminder) #Dataset sobre população, PIB e expectativa de vida dos países
+library(ggpmisc) 
+library(scales)
+library(here)
+library(gganimate)
+library(GGally)
+```
+
 ## Importando tabelas
 
 Podemos importar tabelas de forma manual, clicando no nome do arquivo no quadrante onde encontramos a aba "Files" e selecionando "Import dataset", que é realizado pelo pacote `readr`.

@@ -542,7 +542,7 @@ continente_barras_vac = continentes_vac %>% #Dataframe
        y = "",
        fill = "Continente")  +
   
-  #Limites
+  #Aumentar limites caso esteja muito apertado
   xlim(0, 105) +
   
   scale_fill_jama()
@@ -555,7 +555,7 @@ continente_barras_vac
 
 ```{r, fig.width = 10, fig.height = 10}
 #Gráfico de barras simples
-pais_barras_vac = latin_2000_2023 %>% #Dataframe
+pais_barras_vac = meu_continente %>% #Dataframe
   filter(vaccine %in% "MCV1") %>%
   mutate(name = fct_reorder(name, median)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
@@ -586,6 +586,7 @@ pais_barras_vac = latin_2000_2023 %>% #Dataframe
        y = "",
        fill = "Mediana") +
   
+  #Aumentar limites do eixo
   xlim(0, 105)
 
 pais_barras_vac
@@ -610,7 +611,8 @@ barras_mortes = continentes_mortes %>% #Dataframe
   #Geometrias
   geom_col() +
   
-  geom_label(aes(x = cumulativo, 
+  #Labels
+  geom_text(aes(x = cumulativo, 
                 y = cobertura_vacinal, 
                 label = cumulativo),
             hjust = -0.2) +
@@ -651,7 +653,7 @@ paises_barras_mortes = paises_mortes %>% #Dataframe
   #Geometrias
   geom_col() +
   
-  geom_label(aes(x = cumulativo, 
+  geom_text(aes(x = cumulativo, 
                 y = name, 
                 label = cumulativo),
             hjust = -0.2) +
@@ -672,8 +674,6 @@ paises_barras_mortes = paises_mortes %>% #Dataframe
 paises_barras_mortes
 ```
 
-As Filipinas foi o país que mais contribuiu para 80% das mortes no mundo todo. Na Ásia, o Japão, Mongólia e Tailândia também registraram muitas mortes pela doença, o que poderia indicar que a doença se espalhou entre esses países ou isso ocorreu em tempos diferentes. Interessante, não? Para explorar mais, considere os gráficos que faremos a seguir com outros exemplos.
-
 ## Melhorando o gráfico
 
 Chegamos a um gráfico interessante. Por isso, copiamos e colamos o código aqui, para permitir que façamos outras modificações no gráfico.
@@ -686,7 +686,7 @@ Nele, queremos filtrar a cobertura vacinal contra o sarampo nos países da amér
 plot = 
   
   # Manipular tabela
-  latin_2000_2023 %>%
+  meu_continente %>%
   filter(vaccine %in% "MCV1") %>%
   mutate(name = fct_reorder(name, median)) %>% 
  
@@ -697,6 +697,7 @@ plot =
   #Geometria
   geom_point(shape = "circle", 
              size = 1) +
+  
   #Highlight (add sempre após geom_)
   gghighlight(median >= 95, #Filtragem
               label_key = name, #Nome do label
@@ -711,7 +712,7 @@ plot =
              linetype = 2) +
   
   #Tema, aparência
-  theme_light() + 
+  theme_few() + 
   
   # Labels, titulo, subtitulo, titulo dos eixos
     
@@ -765,8 +766,10 @@ plot =
 #Visualizar
 plot
 
-#Salvar
-ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
+
+
+#Salvar (Trocar nome do arquivo)
+ggsave(plot, file = here("Figuras", "MinhaDoenca_MeuContinente_2000_2023.png"), width = 10, height = 5)
 ```
 
 ## Unindo gráficos
@@ -784,16 +787,18 @@ vaccination = cobertura_vacinal %>%
     y = coverage),
     colour = "#4DBBD5B2",
     linewidth = 2) +
-    geom_text(aes(x = year, 
+    geom_label(aes(x = year, 
                   y = coverage, 
                   label = coverage),
             vjust = -0.5,
             size = 2) +
     theme_few() +
+  #Aumentar limites do eixo y para deixar espaço para os labels
+  ylim(0, 110) +
+  
   labs(title = "Cobertura vacinal contra o sarampo, Brasil",
        x = "Ano",
-       y = "Cobertura vacinal (%)") +
-   ylim(0, 110)
+       y = "Cobertura vacinal (%)")
 
 vaccination
 ```
@@ -836,94 +841,6 @@ deaths
 
 ```
 
-### Boxplots
-
-```{r}
-#Boxplot simples por ano
-boxplot_years = cobertura_vacinal %>% 
-  filter(type == "country",
-         vaccine == "MCV1",
-         year %in% c(1990, 2000, 2010, 2019)) %>% 
-  
-  
- ggplot() +
-  aes(x = "", 
-      y = coverage, 
-      fill = continent) +
-  geom_boxplot() +
-  scale_fill_brewer(palette = "Set2", direction = 1) +
-  theme_few() +
-  theme(axis.text.x = element_text(angle = 45,
-                                   vjust = 1,
-                                   hjust = 1),
-        plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        legend.position = "right",
-        plot.title = element_text(hjust= 0.5),
-        plot.subtitle = element_text(hjust = 0.5)) +
-  
-  facet_wrap(vars(year), ncol = 4) +
-  
-  labs(title = "Cobertura vacinal contra o sarampo",
-       subtitle = "Primeira dose (MCV1)",
-      x = "",
-       y = "Cobertura vacinal (%)",
-       fill = "Continente") +
-    scale_fill_jama()
-
-
-#Visualizar
-boxplot_years 
-```
-
-```{r message=FALSE, warning=FALSE}
-#Boxplot simples de ano
-boxplot_regions = cobertura_vacinal %>% 
-  filter(type == "country",
-         vaccine == "MCV1",
-         year %in% c(1990, 2000, 2010, 2020)) %>% 
-  mutate(year = as.factor(year)) %>% 
- ggplot() +
-  aes(x = year, y = coverage, fill = year) +
-  theme_few() +
-  theme(plot.title = element_text(hjust= 0.5)) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_jitter(aes(label = name),
-              alpha = 0.2,
-              na.rm = T) +
-  scale_fill_brewer(palette = "Set2", direction = 1) +
-  scale_color_distiller(palette = "Set2", direction = 1) +
-  facet_wrap(vars(continent)) +
-  scale_fill_jama()
-
-boxplot_regions
-
-```
-
-```{r}
-# Gráfico interativo
-boxplot_regions %>%  
-  ggplotly()
-```
-
-```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
-#Boxplot por vacina
-cobertura_vacinal %>% 
-  filter(type == "country",
-         year == 2015) %>% 
- ggplot() +
-  aes(x = "", y = coverage, fill = continent) +
-  geom_boxplot() +
-  theme_few() +
-  theme(plot.title = element_text(hjust= 0.5)) +
-  facet_wrap(vars(vaccine)) +
-  labs(x = "",
-       y = "Cobertura",
-       title = "Cobertura vacinal por região, em 2000",
-       fill = "Continente") +
-  scale_fill_jama()  
-
-```
-
 ## Múltiplos gráficos
 
 ### Isolando linhas com filter()
@@ -961,7 +878,7 @@ br_cov
 
 ### Isolando linhas com gghighlight()
 
-A `gghighlight()` é uma função do pacote com o mesmo nome que permite destacar linhas, pontos e colunas de interesse, **sem precisar filtrar antes**, como fizemos acima. O interessante é que, ao chamarmos a função aqui, podemos ainda ver as linhas dos outros países, embora transparentes, para comparação.
+A `gghighlight()` é uma função do pacote com o mesmo nome que permite destacar linhas, pontos e colunas de interesse, **sem precisar filtrar antes**, como fizemos acima. O interessante é que, ao chamarmos a função aqui, podemos ainda ver as linhas dos outros países, embora transparentes, para comparação. Isso é interessante para colocar o contexto em perspectiva.
 
 ```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
 #Método 2
@@ -1037,48 +954,7 @@ br_mortes
 
 ```
 
-Estes dados são interessantes, porque n**ão há casos e mortes registradas por polio no Brasil e nas Américas desde 1989**, quando a doença foi eliminada no continente. Além disso, não há registro algum nos sites da OMS e da UNICEF que citem esses números, além da base de dados original ([WHO Mortality database](https://platform.who.int/mortality/themes/theme-details/mdb/communicable-maternal-perinatal-and-nutritional-conditions)). Provavelmente, é um erro de registro. Essa observação é interessante para ficarmos **atentos** à **qualidade** e **coerência** dos dados. Por isso, vamos retirar os dados de mortes por polio.
-
-```{r message=FALSE, warning=FALSE, fig.width = 10, fig.height = 10}
-#Mortes
-br_mortes = mortes_doencas %>%
- filter(year >= 2012 & year <= 2022,
-        region_complete == "Latin America and Caribbean",
-        death_disease != "Poliomyelitis") %>% 
-  select(name, year, total_deaths, death_rate_100thousand, death_disease) %>% 
-  distinct() %>%
-  drop_na(total_deaths) %>% 
- ggplot() +
-  geom_line(aes(x = round(year, 0), 
-      y = total_deaths,
-      colour = name),
-      linewidth = 2) +
-
-  theme_few()  + 
-  
-  theme(axis.text.x = element_text(angle = 90),
-        plot.title = element_text(hjust = 0.5))+
-  
-  facet_wrap(vars(death_disease), 
-             scales = "free", 
-             nrow = 3) + 
-  
-  labs(title = "Mortes por doença imunoprevenível",
-       x = "Ano",
-       y = "Mortes") +
-  
-  #highlight
-  gghighlight(name %in% c("Brazil", "Colombia"), #Linhas somente com name == "Brazil'
-              
-              calculate_per_facet = T, #Add quando tiver facets
-              
-              unhighlighted_params = list(linewidth = 1, #Opções para linhas não marcadas
-                                          colour = "gray90", 
-                                          alpha = 0.5)) + 
-  scale_color_jama()
-
-br_mortes 
-```
+Estes dados são interessantes, porque **não há casos e mortes registradas por polio no Brasil e nas Américas desde 1989**, quando a doença foi eliminada no continente. Além disso, não há registro algum nos sites da OMS e da UNICEF que citem esses números, além da base de dados original ([WHO Mortality database](https://platform.who.int/mortality/themes/theme-details/mdb/communicable-maternal-perinatal-and-nutritional-conditions)). De acordo com os responsáveis, depois de contactados via e-mail, descobrimos que essas são mortes de pessoas que contraíram pólio antes da sua eliminação nas Américas. Não são mortes por infecção aguda. Afinal, nem todo caso de polio leva à morte, mas pode levar a complicações durante a vida, e esses casos foram registrados até o final da vida dessas pessoas.
 
 E vamos unir esses gráficos
 

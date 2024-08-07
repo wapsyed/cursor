@@ -12,7 +12,8 @@ df-print: paged
 
 # Sobre o curso
 
-**Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
+**\
+Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
 
 **Descrição do curso:**
 
@@ -364,7 +365,8 @@ Mas, se quisermos deixá-la mais fácil de ser interpretada por humanos, podemos
 # Wide table
 data_wide = pivot_wider(data_long, #Tabela
             names_from = variavel, #Dividir níveis de uma coluna em novas colunas
-            values_from = valor)   #Estocar valores relacionados à coluna nome e novas variáveis) 
+            values_from = valor)   #Estocar valores relacionados à coluna nome 
+                                   #e novas variáveis) 
 data_wide
 ```
 
@@ -615,7 +617,9 @@ A função `mutate()` permite **criar ou modificar colunas** e imputar valores u
 ```{r paged.print=TRUE}
 # Criando novas variáveis
 data_2 = data_2 %>%
-  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
+  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, 
+                                  #pegaremos o valor do peso e dividiremos 
+                                  #pela altura ao quadrado.
 
 ```
 
@@ -623,7 +627,9 @@ Além disso, podemos criar uma coluna com o sexo daquele indivíduo. Como sabemo
 
 ```{r paged.print=TRUE}
 data_2 %>% 
-  mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
+  mutate(sexo = "feminino") #Como todas as linhas contêm nomes 
+                            #femininos, criaremos a coluna sexo 
+                            #com o valor "feminino"
 ```
 
 ## `if_else` e `case_when()`: Condições
@@ -1609,19 +1615,19 @@ pais_barras_vac
 #Gráfico de pontos simples
 barras_mortes = continentes_mortes %>% #Dataframe
   filter(death_disease == "Measles") %>% 
-  mutate(cobertura_vacinal = fct_reorder(continent, cumulativo)) %>% 
+  mutate(continent = fct_reorder(continent, cumulativo)) %>% 
   ggplot() + #Chamando a função. Aqui se usa "+" em vez de "%>%" 
   
   #Mapeando os eixos
   aes(x = cumulativo,
-      y = cobertura_vacinal,
-      fill = cobertura_vacinal) +
+      y = continent,
+      fill = continent) +
   
   #Geometrias
   geom_col() +
   
   geom_label(aes(x = cumulativo, 
-                y = cobertura_vacinal, 
+                y = continent, 
                 label = cumulativo),
             hjust = -0.2) +
   
@@ -1776,7 +1782,8 @@ plot =
 plot
 
 #Salvar
-ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
+ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), 
+       width = 10, height = 5)
 ```
 
 ## Unindo gráficos
@@ -1997,7 +2004,9 @@ br_cov = cobertura_vacinal %>%
        y = "Cobertura (%)") +
   
   gghighlight(name %in% c("Brazil", "Colombia"), 
-              calculate_per_facet = T, #Add quando tiver facets. Caso seja um gráfico somente, use calculate_per_facet = F
+              calculate_per_facet = T, #Add quando tiver facets. 
+                                       #Caso seja um gráfico somente, 
+                                       #use calculate_per_facet = F
               unhighlighted_params = list(linewidth = 1, #Parametros para as outras linhas
                                           colour = "gray90", #Cor cinza
                                           alpha = 0.3)) + #Transparencia de 30%
@@ -2171,7 +2180,7 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
     -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
 
-    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)\[<https://r-graph-gallery.com/>\].
+    -   Caso queira gerar outros tipos de gráficos, use diferentes geometrias e consulte o (R graph gallery)[<https://r-graph-gallery.com/>].
 
 -   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
 
@@ -2562,3 +2571,4 @@ ggplot() +
   transition_time(year) +
   ease_aes('linear')
 ```
+

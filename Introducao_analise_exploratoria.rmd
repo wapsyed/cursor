@@ -367,7 +367,8 @@ Mas, se quisermos deixá-la mais fácil de ser interpretada por humanos, podemos
 # Wide table
 data_wide = pivot_wider(data_long, #Tabela
             names_from = variavel, #Dividir níveis de uma coluna em novas colunas
-            values_from = valor)   #Estocar valores relacionados à coluna nome e novas variáveis) 
+            values_from = valor)   #Estocar valores relacionados à coluna nome 
+                                   #e novas variáveis) 
 data_wide
 ```
 
@@ -618,7 +619,9 @@ A função `mutate()` permite **criar ou modificar colunas** e imputar valores u
 ```{r paged.print=TRUE}
 # Criando novas variáveis
 data_2 = data_2 %>%
-  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, pegaremos o valor do peso e dividiremos pela altura ao quadrado.
+  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, 
+                                  #pegaremos o valor do peso e dividiremos 
+                                  #pela altura ao quadrado.
 
 ```
 
@@ -626,7 +629,9 @@ Além disso, podemos criar uma coluna com o sexo daquele indivíduo. Como sabemo
 
 ```{r paged.print=TRUE}
 data_2 %>% 
-  mutate(sexo = "feminino") #Como todas as linhas contêm nomes femininos, criaremos a coluna sexo com o valor "feminino"
+  mutate(sexo = "feminino") #Como todas as linhas contêm nomes 
+                            #femininos, criaremos a coluna sexo 
+                            #com o valor "feminino"
 ```
 
 ## `if_else` e `case_when()`: Condições
@@ -1779,7 +1784,8 @@ plot =
 plot
 
 #Salvar
-ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), width = 10, height = 5)
+ggsave(plot, file = here("Figuras", "Sarampo_LatinAmerica_2000_2023.png"), 
+       width = 10, height = 5)
 ```
 
 ## Unindo gráficos
@@ -2000,7 +2006,9 @@ br_cov = cobertura_vacinal %>%
        y = "Cobertura (%)") +
   
   gghighlight(name %in% c("Brazil", "Colombia"), 
-              calculate_per_facet = T, #Add quando tiver facets. Caso seja um gráfico somente, use calculate_per_facet = F
+              calculate_per_facet = T, #Add quando tiver facets. 
+                                       #Caso seja um gráfico somente, 
+                                       #use calculate_per_facet = F
               unhighlighted_params = list(linewidth = 1, #Parametros para as outras linhas
                                           colour = "gray90", #Cor cinza
                                           alpha = 0.3)) + #Transparencia de 30%

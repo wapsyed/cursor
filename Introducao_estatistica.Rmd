@@ -12,18 +12,44 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(esquisse)
 library(patchwork)
+library(here)
+library(ggsci)
 ```
 
-
-```{r fig.height=5, fig.width=5, dpi = 72}
+#Um grupo
+```{r fig.height=8, fig.width=5, dpi = 72}
 set.seed = 123
 
-normal_dist = rnorm(100, mean = 0, sd = 1) %>% 
+normal_dist = rnorm(200, mean = 0, sd = 1) %>% 
   as.data.frame() %>% 
   rename(distribution = ".") %>% 
-  mutate(group = "Grupo 1")
+  mutate(group = "G1")
 
+normal_dist_params = normal_dist %>% 
+  summarize(mean = mean(distribution),
+            median = median(distribution))
 
+right_skew = rchisq(100, df = 3) %>% 
+  as.data.frame() %>% 
+  rename(distribution = ".") %>% 
+  mutate(group = "G1")
+
+right_skew_params = right_skew %>% 
+  summarize(mean = mean(distribution),
+            median = median(distribution))
+
+left_skew = -sqrt(right_skew$distribution) %>% 
+  as.data.frame() %>% 
+  rename(distribution = ".") %>% 
+  mutate(group = "G1")
+
+left_skew_params = left_skew %>% 
+  summarize(mean = mean(distribution),
+            median = median(distribution))
+```
+
+Normal
+```{r fig.height=5, fig.width=5, dpi = 72}
 normal_points = normal_dist %>% 
   ggplot() +
   aes(x = distribution, 
@@ -31,9 +57,14 @@ normal_points = normal_dist %>%
   geom_point(size = 2.5,
              color = "black") +
   geom_point(size = 2,
-             color = "#1942CDFF") +
+             color = "white") +
+  geom_vline(xintercept = normal_dist_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = normal_dist_params$median, color = "#05C7F2FF",
+             size = 1) +
   theme_minimal() +
       scale_x_continuous(expand = c(0.01,0.01))+
+
   theme(axis.line.x = element_line(size = 1),
         text = element_text(color = "black",
                             size = 12)) +
@@ -45,7 +76,11 @@ normal_jitter = normal_dist %>%
   ggplot() +
   aes(x = distribution, 
       y = group) +
-  geom_jitter(shape = 21, size = 2, stroke = 1, color = "black", fill = "#1942CDFF") +
+  geom_jitter(shape = 21, size = 2.5, stroke = 0.5, color = "black", fill = "white") +
+    geom_vline(xintercept = normal_dist_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = normal_dist_params$median, color = "#05C7F2FF",
+             size = 1) +
     scale_x_continuous(expand = c(0.01,0.01))+
   theme_minimal() +
   theme(axis.line.x = element_line(size = 1),
@@ -54,14 +89,20 @@ normal_jitter = normal_dist %>%
   labs(y = "",
        x = "")
 
+
+
 normal_hist = normal_dist %>% 
   ggplot() +
   aes(x = distribution) +
-  geom_histogram(color = "black",
-                 fill = "#1942CDFF",
+  geom_histogram(color = "white",
+                 fill = "#1D373AFF",
                  size = 0.5,
                  alpha = 1,
                  bins = 10) +
+    geom_vline(xintercept = normal_dist_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = normal_dist_params$median, color = "#05C7F2FF",
+             size = 1) +
   scale_x_continuous(expand = c(0.01, 0.01))+
   theme_minimal() +
   theme(axis.line.x = element_line(size = 1),
@@ -71,12 +112,371 @@ normal_hist = normal_dist %>%
   labs(y = "",
        x = "")
 
+normal_boxplot = normal_dist %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_boxplot() +
+    geom_vline(xintercept = normal_dist_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = normal_dist_params$median, color = "#05C7F2FF",
+             size = 1) +
+    scale_x_continuous(expand = c(0.01,0.01))+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
 
-normal_points /
+normal_violin = normal_dist %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_violin(fill = "black", alpha = 0.1) +
+  geom_jitter(shape = 21, size = 2.5, stroke = 0.5, color = "black", fill = "white",
+              width = 0.0005) +
+  geom_boxplot(width = 0.3) +
+    geom_vline(xintercept = normal_dist_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = normal_dist_params$median, color = "#05C7F2FF",
+             size = 1) +
+    scale_x_continuous(expand = c(0.01,0.01))+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
+
+
+patch_normal_dist = normal_points /
   normal_jitter/
-  normal_hist +
-  plot_layout(axes = "collect")
+  normal_hist /
+  normal_boxplot +
+  normal_violin + 
+  plot_layout(axes = "collect",
+              heights = c(0.2, 0.5, 1, 1, 1))
+
+patch_normal_dist
+
+patch_normal_dist %>% 
+  ggsave(filename = here("Figuras", "Distribuicao_normal.png"),
+         width = 5,
+         height = 8)
 ```
 
 
+Deslocado para a direita
+```{r fig.height=5, fig.width=5, dpi = 72}
+right_skew_points = right_skew %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_point(size = 2.5,
+             color = "black") +
+  geom_point(size = 2,
+             color = "white") +
+  geom_vline(xintercept = right_skew_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = right_skew_params$median, color = "#05C7F2FF",
+             size = 1) +
+  theme_minimal() +
+      scale_x_continuous(expand = c(0.01,0.01), n.breaks = 20)+
+
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
+
+
+right_skew_jitter = right_skew %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_jitter(shape = 21, size = 2.5, stroke = 0.5, color = "black", fill = "white") +
+    geom_vline(xintercept = right_skew_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = right_skew_params$median, color = "#05C7F2FF",
+             size = 1) +
+      scale_x_continuous(expand = c(0.01,0.01), n.breaks = 20)+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
+
+
+
+right_skew_hist = right_skew %>% 
+  ggplot() +
+  aes(x = distribution) +
+  geom_histogram(color = "white",
+                 fill = "#1D373AFF",
+                 size = 0.5,
+                 alpha = 1,
+                 bins = 10) +
+    geom_vline(xintercept = right_skew_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = right_skew_params$median, color = "#05C7F2FF",
+             size = 1) +
+      scale_x_continuous(expand = c(0.01,0.01), n.breaks = 20)+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        panel.grid.minor.y = element_blank()) +
+  labs(y = "",
+       x = "")
+
+right_skew_boxplot = right_skew %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_boxplot() +
+    geom_vline(xintercept = right_skew_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = right_skew_params$median, color = "#05C7F2FF",
+             size = 1) +
+      scale_x_continuous(expand = c(0.01,0.01), n.breaks = 20)+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
+
+right_skew_violin = right_skew %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_violin(fill = "black", alpha = 0.1) +
+  geom_jitter(shape = 21, size = 2.5, stroke = 0.5, color = "black", fill = "white",
+              width = 0.0005) +
+  geom_boxplot(width = 0.3) +
+    geom_vline(xintercept = right_skew_params$mean, color = "black",
+             size = 1,) +
+  geom_vline(xintercept = right_skew_params$median, color = "#05C7F2FF",
+             size = 1) +
+      scale_x_continuous(expand = c(0.01,0.01), n.breaks = 20)+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
+
+
+patch_right_skew_dist = right_skew_points /
+  right_skew_jitter/
+  right_skew_hist /
+  right_skew_boxplot +
+  right_skew_violin + 
+  plot_layout(axes = "collect",
+              heights = c(0.2, 0.5, 1, 1, 1))
+
+patch_right_skew_dist
+
+patch_right_skew_dist %>% 
+  ggsave(filename = here("Figuras", "Distribuicao_right_skewed.png"),
+         width = 5,
+         height = 8)
+```
+
+
+
+# Dois grups
+
+Dois grupos, pvalue < 0.00000005
+```{r fig.height=5, fig.width=5, dpi = 72}
+
+set.seed = 123
+
+normal_dist_1 = rnorm(100, mean = 30, sd = 2) %>% 
+  as.data.frame() %>% 
+  rename(distribution = ".") %>% 
+  mutate(group = "G1")
+
+normal_dist_2 = rnorm(100, mean = 50, sd = 2) %>% 
+  as.data.frame() %>% 
+  rename(distribution = ".") %>% 
+  mutate(group = "G2")
+
+normal_dist_2groups = bind_rows(normal_dist_1, 
+                                normal_dist_2)
+
+normal_dist_2groups_params = normal_dist_2groups %>% 
+  group_by(group) %>% 
+  summarize(mean = mean(distribution),
+            median = median(distribution)) %>% 
+  ungroup()
+
+normal_points = normal_dist_2groups %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group,
+      color = group) +
+  geom_point(size = 2.5,
+             color = "black") +
+  geom_point(size = 2) +
+  theme_minimal() +
+  scale_fill_manual(values = c("black", "#05C7F2FF")) +
+  scale_color_manual(values = c("black", "#05C7F2FF")) +
+  scale_x_continuous(expand = c(0.1,0.1), n.breaks = 10)+
+
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        legend.position = "none") +
+  labs(y = "",
+       x = "")
+
+normal_violin = normal_dist_2groups %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_violin(aes(fill = group),
+              alpha = 0.1) +
+  geom_boxplot(aes(fill = group),width = 0.3) +
+  scale_x_continuous(expand = c(0.1,0.1), n.breaks = 10)+
+  scale_fill_manual(values = c("black", "#05C7F2FF")) +
+  scale_color_manual(values = c("black", "#05C7F2FF")) +
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        legend.position = "none") +
+  labs(y = "",
+       x = "")
+
+
+normal_hist = normal_dist_2groups %>% 
+  ggplot() +
+  aes(x = distribution, 
+      fill = group) +
+   geom_histogram(bins = 20L, alpha = 0.5) +
+  scale_x_continuous(expand = c(0.1,0.1), n.breaks = 10)+
+  scale_fill_manual(values = c("black", "#05C7F2FF")) +
+  scale_color_manual(values = c("black", "#05C7F2FF")) +
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        legend.position = "none") +
+  labs(y = "",
+       x = "")
+
+
+patch_normal_dist_2groups = normal_points /
+  normal_violin/
+  normal_hist + 
+  plot_layout(axes = "collect",
+              guides = "collect",
+              heights = c(0.5, 1, 1))
+
+patch_normal_dist_2groups
+
+patch_normal_dist_2groups %>% 
+  ggsave(filename = here("Figuras", "Distribuicao_2grupos.png"),
+         width = 5,
+         height = 3)
+```
+
+2 grupos, pouco separados
+```{r fig.height=5, fig.width=5, dpi = 72}
+
+set.seed = 123
+
+normal_dist_1 = rnorm(100, mean = 45, sd = 1) %>% 
+  as.data.frame() %>% 
+  rename(distribution = ".") %>% 
+  mutate(group = "G1")
+
+normal_dist_2 = rnorm(100, mean = 47, sd = 1) %>% 
+  as.data.frame() %>% 
+  rename(distribution = ".") %>% 
+  mutate(group = "G2")
+
+normal_dist_2groups = bind_rows(normal_dist_1, 
+                                normal_dist_2)
+
+normal_dist_2groups_params = normal_dist_2groups %>% 
+  group_by(group) %>% 
+  summarize(mean = mean(distribution),
+            median = median(distribution)) %>% 
+  ungroup()
+
+normal_points = normal_dist_2groups %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group,
+      color = group) +
+  geom_point(size = 2.5,
+             color = "black") +
+  geom_point(size = 2) +
+  theme_minimal() +
+  scale_fill_manual(values = c("black", "#05C7F2FF")) +
+  scale_color_manual(values = c("black", "#05C7F2FF")) +
+  scale_x_continuous(expand = c(0.1,0.1), n.breaks = 10)+
+
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        legend.position = "none") +
+  labs(y = "",
+       x = "")
+
+normal_violin = normal_dist_2groups %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_violin(aes(fill = group),
+              alpha = 0.1) +
+  geom_boxplot(aes(fill = group),width = 0.3) +
+  scale_x_continuous(expand = c(0.1,0.1), n.breaks = 10)+
+  scale_fill_manual(values = c("black", "#05C7F2FF")) +
+  scale_color_manual(values = c("black", "#05C7F2FF")) +
+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        legend.position = "none") +
+  labs(y = "",
+       x = "")
+
+
+normal_hist = normal_dist_2groups %>% 
+  ggplot() +
+  aes(x = distribution, 
+      fill = group) +
+   geom_histogram(bins = 20L, alpha = 0.5) +
+  scale_x_continuous(expand = c(0.1,0.1), n.breaks = 10)+
+  scale_fill_manual(values = c("black", "#05C7F2FF")) +
+  scale_color_manual(values = c("black", "#05C7F2FF")) +
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        legend.position = "none") +
+  labs(y = "",
+       x = "")
+
+
+patch_normal_dist_2groups = normal_points /
+  normal_violin/
+  normal_hist + 
+  plot_layout(axes = "collect",
+              guides = "collect",
+              heights = c(0.5, 1, 1))
+
+patch_normal_dist_2groups
+
+patch_normal_dist_2groups %>% 
+  ggsave(filename = here("Figuras", "Distribuicao_2grupos_poucosep.png"),
+         width = 5,
+         height = 3)
+```
 

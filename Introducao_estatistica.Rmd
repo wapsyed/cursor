@@ -1,0 +1,82 @@
+---
+title: "Introdução à estatística"
+output: html_document
+date: "2024-11-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r fig.height=2, fig.width=5, dpi = 72}
+library(tidyverse)
+library(esquisse)
+library(patchwork)
+```
+
+
+```{r fig.height=5, fig.width=5, dpi = 72}
+set.seed = 123
+
+normal_dist = rnorm(100, mean = 0, sd = 1) %>% 
+  as.data.frame() %>% 
+  rename(distribution = ".") %>% 
+  mutate(group = "Grupo 1")
+
+
+normal_points = normal_dist %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_point(size = 2.5,
+             color = "black") +
+  geom_point(size = 2,
+             color = "#1942CDFF") +
+  theme_minimal() +
+      scale_x_continuous(expand = c(0.01,0.01))+
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
+
+
+normal_jitter = normal_dist %>% 
+  ggplot() +
+  aes(x = distribution, 
+      y = group) +
+  geom_jitter(shape = 21, size = 2, stroke = 1, color = "black", fill = "#1942CDFF") +
+    scale_x_continuous(expand = c(0.01,0.01))+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12)) +
+  labs(y = "",
+       x = "")
+
+normal_hist = normal_dist %>% 
+  ggplot() +
+  aes(x = distribution) +
+  geom_histogram(color = "black",
+                 fill = "#1942CDFF",
+                 size = 0.5,
+                 alpha = 1,
+                 bins = 10) +
+  scale_x_continuous(expand = c(0.01, 0.01))+
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1),
+        text = element_text(color = "black",
+                            size = 12),
+        panel.grid.minor.y = element_blank()) +
+  labs(y = "",
+       x = "")
+
+
+normal_points /
+  normal_jitter/
+  normal_hist +
+  plot_layout(axes = "collect")
+```
+
+
+

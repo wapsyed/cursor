@@ -507,7 +507,7 @@ paises_mortes = mortes_doencas %>%
 paises_mortes
 ```
 
-# 6. Visualização
+# Visualização
 
 ## Vacinação
 
@@ -760,7 +760,7 @@ plot =
                          1, #Right
                          0.5, #Bottom
                          0), #Left 
-                       "cm") #Unidade) 
+                       "cm") #Unidade
   ) 
 
 #Visualizar

@@ -1181,8 +1181,207 @@ ggsave(linha_barra, file = here("Figuras","linha_barra.png"), width = 10, height
 
 # 5. Trabalhando com dados de bioinformática
 
+Importando dados
 ```{r}
+metadata <- read_csv("Bioinformática/metadata.csv")
+expression_data <- read_csv("Bioinformática/expression_data.csv")
+```
+Limpando dados
+```{r}
+library(janitor)
+metadata = metadata %>% 
+  clean_names()
+```
 
+Transformando dados
+
+Em matriz
+```{r}
+#Transformar em matriz
+expression_data_matriz = expression_data %>% 
+  column_to_rownames("gene") %>% 
+  as.matrix()
+```
+
+Em tabela longa
+```{r}
+#Transformar em tabela longa
+expression_data_long = expression_data %>%
+  pivot_longer(cols = -gene,
+               names_to = "sample",
+               values_to = "value")
+```
+
+Anotando dados
+```{r}
+#Unir duas tabelas com anotações
+expression_data_long_metadata = expression_data_long %>% 
+  inner_join(metadata, by = "sample")
+```
+
+Visualizando dados
+```{r eval=FALSE, include=FALSE}
+expression_data_long_metadata %>% 
+  filter(gene == "Gene_1") %>% 
+  esquisser()
+```
+
+Histograma
+```{r}
+library(ggsci)
+expression_data_long_metadata %>% 
+  filter(gene == "Gene_1") %>%
+  ggplot()+
+  aes(x = value, fill = condition) +
+  geom_point(aes(x = value, color = condition),
+             y = -0.1) +
+  geom_histogram(bins = 6L) +
+  scale_fill_npg() +
+  scale_color_npg() +
+  theme_classic()
+  
+```
+Gráfico de densidade
+```{r}
+expression_data_long_metadata %>% 
+  filter(gene == "Gene_1") %>%
+  ggplot()+
+  aes(x = value, fill = condition) +
+  geom_density(alpha = 0.8) +
+  theme_classic() +
+  scale_fill_npg()
+```
+
+Boxplot simples
+```{r}
+expression_data_long_metadata %>% 
+  filter(gene == "Gene_1") %>%
+  ggplot()+
+  aes(x = condition,
+      y = value, 
+      fill = condition) +
+  geom_boxplot() + 
+  theme_classic() +
+  scale_fill_npg()
+```
+Boxplot com violing plot e pontos
+```{r}
+p = expression_data_long_metadata %>% 
+  filter(gene == "Gene_1") %>%
+  ggplot()+
+  aes(x = condition, 
+      y = value, 
+      fill = condition) +
+  geom_violin(alpha = 0.5) +
+  geom_boxplot(width = 0.4) +
+  geom_point() +
+  theme_classic() +
+  scale_fill_npg() +
+  labs(x = "Condition",
+       y = "Expression",
+       fill = "Condition",
+       title = "Gene 1",
+       subtitle = "Gene expression by condition")
+
+p
+
+```
+Gráfico de barras com intervalo de confiança 95%
+```{r}
+table_genes_1_2 = expression_data_long_metadata %>% 
+  group_by(condition, gene) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value),
+            n = n(),
+            std_error = sd / sqrt(n),
+            lower_bound = mean - 1.96 * std_error,
+            upper_bound = mean + 1.96 * std_error)
+
+table_genes_1_2 %>% 
+  ungroup() %>% 
+  filter(gene == "Gene_1") %>%
+  ggplot()+
+  aes(x = condition, 
+      y = mean, 
+      fill = condition) +
+  geom_col() +
+  geom_errorbar(aes(ymin = lower_bound, ymax = upper_bound), 
+                width = 0.1) +
+  theme_classic() +
+  scale_fill_npg()+
+  labs(x = "Condition",
+       y = "Expression",
+       fill = "Condition",
+       title = "Gene 1",
+       subtitle = "Mean gene expression by condition")
+
+```
+Teste t com ggpubr
+```{r}
+library(ggpubr)
+my_comparisons <- list( c("Condition_A", "Condition_B"))
+p + 
+  stat_compare_means(comparisons = my_comparisons, 
+                     method = "t.test")
+```
+
+Gráfico de dispersão
+```{r}
+expression_data_long_metadata %>% 
+  filter(gene %in% c("Gene_1", "Gene_2")) %>%
+  pivot_wider(names_from = "gene",
+              values_from = "value") %>% 
+  ggplot()+
+  aes(x = Gene_1, 
+      y = Gene_2, 
+      color = condition) +
+  geom_point(size = 3) +
+  theme_classic() +
+  scale_color_npg() +
+  labs(x = "Gene 1",
+       y = "Gene 2",
+       color = "Condition",
+       title = "Gene 1 vs Gene 2",
+       subtitle = "Gene expression by condition") +
+  theme(legend.position = "top")
+```
+
+Heatmap
+```{r fig.height=10, fig.width=10}
+library(ggheatmap)
+library(circlize)
+library(ComplexHeatmap)
+library(scales)
+
+heatmap_table = expression_data %>% 
+  column_to_rownames("gene") %>% 
+  as.matrix()
+
+
+annotation_col = metadata %>% 
+  column_to_rownames("sample") %>% 
+  mutate(condition = as.factor(condition))
+
+col = colorRamp2(c(0, 10, 20), c("white", "red", "black"))
+
+
+colors_annotations = list(condition = c("Condition_A" = "gray90",
+                                                "Condition_B" = "steelblue"))
+
+col_ha = HeatmapAnnotation(df = annotation_col, 
+                       col = colors_annotations, 
+                       annotation_name_side = "left")
+
+Heatmap(heatmap_table, 
+        top_annotation = col_ha,
+        cluster_rows = T,
+        cluster_columns = T, 
+        cluster_row_slices = T,
+        cluster_column_slices = T,
+        col = col,
+        column_split = 2,
+        row_split = 3
+        ) 
 ```
 
 

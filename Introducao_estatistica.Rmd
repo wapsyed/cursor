@@ -951,8 +951,8 @@ patch_normal_dist_2groups %>%
 
 
 # Comparando muitas e poucas amostras (desvio padrão pequeno)
-## Um grupo
-```{r fig.height=8, fig.width=5, dpi = 72}
+## Desvio padrão baixo
+```{r fig.height=3, fig.width=5, dpi = 72}
 set.seed = 123
 
 normal_dist_few = rnorm(5, mean = 30, sd = 1) %>% 
@@ -973,19 +973,6 @@ normal_dist_params_many = normal_dist_many %>%
   summarize(mean = mean(distribution),
             median = median(distribution))
 
-normal_dist_thousand = rnorm(1000, mean = 30, sd = 1) %>% 
-  as.data.frame() %>% 
-  rename(distribution = ".") %>% 
-  mutate(group = "G1")
-
-normal_dist_params_thousand = normal_dist_thousand %>% 
-  summarize(mean = mean(distribution),
-            median = median(distribution))
-
-```
-
-Normal
-```{r fig.height=5, fig.width=5, dpi = 72}
 normal_points = normal_dist_few %>% 
   ggplot() +
   aes(x = distribution, 
@@ -1006,7 +993,7 @@ normal_points = normal_dist_few %>%
                             size = 12)) +
   labs(y = "",
        x = "",
-       title = "n = 5")
+       title = "n = 5, sd = 1")
 
 normal_hist = normal_dist_few %>% 
   ggplot() +
@@ -1056,10 +1043,6 @@ patch_normal_dist_few = normal_points /
   plot_layout(axes = "collect",
               heights = c(0.5, 1))
 
-patch_normal_dist_few
-```
-100 samples
-```{r fig.height=5, fig.width=7}
 normal_points = normal_dist_many %>% 
   ggplot() +
   aes(x = distribution, 
@@ -1080,7 +1063,7 @@ normal_points = normal_dist_many %>%
                             size = 12)) +
   labs(y = "",
        x = "",
-       title = "n = 100")
+       title = "n = 100, sd = 1")
 
 
 
@@ -1132,12 +1115,10 @@ patch_normal_dist_many = normal_points /
   plot_layout(axes = "collect",
               heights = c(0.5, 1))
 
-patch_normal_dist_many
 
 patch_normal_dist_few | patch_normal_dist_many 
 ```
-# Comparando muitas e poucas amostras (desvio padrão grande)
-## Um grupo
+## Desvio padrão grande
 ```{r fig.height=3, fig.width=5, dpi = 72}
 set.seed = 123
 

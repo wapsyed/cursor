@@ -1,4 +1,12 @@
-```{r}
+
+
+
+
+
+
+
+ELISA OD50
+```{r fig.height=5, fig.width=10}
 ELISA_OD50 <- read_excel("ELISA_OD50.xlsx")
 
 
@@ -7,25 +15,60 @@ table = ELISA_OD50 %>%
                values_to = "value",
                names_to = "group") %>% 
   separate(group, into = c("group", "id"), "\\...") %>% 
-  mutate(dia = as.factor(dia))
-  
-table %>% 
+  mutate(dia = as.factor(dia)) %>% 
+  mutate(group = str_replace(group, pattern = "Vacina ", ""),
+         group = str_replace(group, pattern = "Proteína ",  ""),
+         group = fct_relevel(group, 
+                             "PBS",
+                             "ED-III",
+                             "10 μg",
+                             "25 μg",
+                             "50 μg",
+                             "Alum 10 μg",
+                             "Alum 25 μg"
+                             )) 
+
+library(rstatix)  # https://github.com/kassambara/rstatix
+stat.test <- table %>%
+  group_by(dia) %>%
+  t_test(value ~ group) %>%
+  adjust_pvalue(method = "none") %>%
+  add_significance(cutpoints = c(0, 0.01, 0.05, 0.10,  1),
+  symbols = c("***", "**", "*", "ns")) %>%
+  filter(p.adj.signif != "ns")
+stat.test
+```
+
+## Todos vs. Controle
+https://github.com/kassambara/ggpubr/issues/40
+```{r fig.height=5, fig.width=10}
+plot = table %>% 
   ggplot() +
   aes(x = group,
       y = value,
       fill = group) +
-  geom_boxplot(outlier.size = 0) +
-  geom_jitter(color = "black",
-             size = 2,
+  geom_violin(color = "gray70",
+              alpha = 0.1) +
+  geom_boxplot(outlier.shape = NA,
+               alpha = 0.5, width = 0.5) +
+  geom_point(color = "black",
+             size = 1,
              stroke = 1,
              alpha = 0.5,
              set.seed = 1,
-             shape=21, stroke=1) +
+             shape=21, stroke=1,
+             show.legend = F) +
+    stat_summary(fun.y= mean, geom="point", shape=18, size=3, color="red", fill="red", show.legend = F) +
+stat_summary(fun.y= mean, geom="point", shape=18, size=3, color="red", fill="red", show.legend = F) +
   theme_minimal() +
-  scale_y_continuous(transform = "log10") +
-  facet_wrap(~dia) +
+  scale_y_continuous(transform = "log10",
+                     # expand = c(0,0.1),
+                     n.breaks = 10,
+                     ) +
+  facet_wrap(~paste0("Day ", dia)) +
   theme(text = element_text(size = 10,
                             color = "black"),
+        legend.position = "none",
         axis.text.x = element_text(angle = 45,
                                    size = 10,
                                    hjust = 1,
@@ -34,8 +77,140 @@ table %>%
         axis.text.y = element_text(size = 10,
                                    color = "black"),
         strip.text = element_text(size = 12,
-                                  color = "black")) +
+                                  color = "black"),
+        axis.line.x = element_line(color = "black",
+                                   size = 1),
+        axis.ticks.x = element_line(color = "black",
+                                  size = 1),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
   scale_fill_npg() +
-  scale_color_npg()
+  scale_color_npg() +
+  labs(fill = "Group",
+       color = "Group",
+       x = "",
+       y = "OD50",
+       title = "ELISA OD50% - Boxplot")
+
+plot + stat_compare_means(
+  ref.group = "PBS", #Para comparar tudo contra um grupo controle
+  # comparisons = my_comparisons, #Para definir as comparações de interesse. Aqui, mostra-se a linha de comparação.
+  method = "t.test", 
+  aes(label = after_stat(p.signif)),
+  symnum.args = list(cutpoints = c(0, 0.01,  0.05, 0.10, Inf), symbols = c("***", "**", "*", "ns")),
+  p.adjust.method = "BH",
+  tip.length = 0, vjust = 0.5,
+  hide.ns = T)
+
+
+
+
 ```
+
+## Comparações definidas
+```{r fig.height=5, fig.width=10}
+#Definir comparações
+
+#Mostrar todas as comparações no gráfico
+my_comparisons_all <- list( 
+  c("PBS", "10 μg"),
+  c("PBS", "25 μg"),
+  c("PBS", "50 μg"),
+  c("PBS", "Alum 10 μg"),
+  c("PBS", "Alum 25 μg"),
+  c("ED-III", "10 μg"),
+  c("ED-III", "25 μg"),
+  c("ED-III", "50 μg"),
+  c("ED-III", "Alum 10 μg"),
+  c("ED-III", "Alum 25 μg"))
+
+#Mostrar somente as comparações significantes
+my_comparisons <- stat.test %>%
+  select(group1, group2) %>% 
+  arrange(group1) %>% 
+  distinct() %>% 
+  rowwise() %>%
+  mutate(comparison = list(c(group1, group2))) %>%
+  pull(comparison)
+  
+```
+
+## Todos vs. todos
+```{r fig.height=10, fig.width=10}
+plot = table %>% 
+  ggplot() +
+  aes(x = group,
+      y = value,
+      fill = group) +
+  geom_violin(color = "gray70",
+              fill = "gray70",
+              alpha = 0.1, 
+              width = 1) +
+  geom_boxplot(outlier.shape = NA,
+               alpha = 0.5, width = 0.5) +
+  geom_point(color = "black",
+             size = 1,
+             stroke = 1,
+             alpha = 0.5,
+             shape=21, 
+             stroke=1,
+             show.legend = F) +
+  stat_summary(fun.y= mean, geom="point", shape=18, size=3, color="red", fill="red", show.legend = F) +
+  theme_minimal() +
+  facet_wrap(~paste0("Day ", dia)) +
+  theme(text = element_text(size = 10,
+                            color = "black"),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45,
+                                   size = 10,
+                                   hjust = 1,
+                                   vjust = 1,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        strip.text = element_text(size = 12,
+                                  color = "black"),
+        axis.line.x = element_line(color = "black",
+                                   size = 1),
+        axis.ticks.x = element_line(color = "black",
+                                  size = 1),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  scale_fill_npg() +
+  scale_color_npg() +
+  labs(fill = "Group",
+       color = "Group",
+       x = "",
+       y = "OD50",
+       title = "ELISA OD50% - Boxplot",
+       subtitle = "All vs. All. Significance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01") +
+  stat_compare_means(comparisons = my_comparisons,
+                     method = "t.test",
+                     aes(label = after_stat(p.signif)),
+                     symnum.args = list(cutpoints = c(0, 0.01,  0.05, 0.10, Inf),
+                                        symbols = c("***", "**", "*", "ns")),
+                     p.adjust.method = "BH",
+                     vjust = 0.7,
+                     tip.length = c(0.0, 0.0),
+                     bracket.size = 0.3,
+                     size = 4,
+                     hide.ns = T)  +
+  scale_y_continuous(transform = "log10", 
+                     labels = scales::label_log(),
+                     breaks = c(0, 10, 100, 1000, 10000))
+plot
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 

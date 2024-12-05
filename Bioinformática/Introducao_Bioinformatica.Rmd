@@ -225,7 +225,7 @@ Os vetores são uma **sequência unidimensional** que podem ser números, string
 i = c(7, 5, 9, 10)
 i
 
-j = c("Olá", "Caneta", "Qualificacao")
+j = c("Gene", "Vacinado", "COVID-19")
 j
 
 ```
@@ -262,9 +262,9 @@ Além disso, a criação do dataframe e da tibble são diferentes visualmente. E
 
 #Dataframe
 data = data.frame(
-  nome = c("Gabriela", "Júlia", "Beatriz", "Luiza"),
-  altura = c(1.59, 1.60, 1.78, 1.73),
-  idade = c(30, 25, 31, 32)
+  gene = c("Gene1", "Gene2", "Gene3", "Gene4"),
+  variavel1 = c(1.59, 1.60, 1.78, 1.73),
+  variavel2 = c(30, 25, 31, 32)
 )
 data
 ```
@@ -274,11 +274,11 @@ E para criar uma tibble, usamos a função `tribble()`**.**
 ```{r}
 #Tibble
 tibble = tribble(
-  ~nome, ~altura, ~idade,
-  "Gabriela", 1.59,   30,
-  "Júlia",   1.60,   25,
-  "Beatriz", 1.65,  31,
-  "Luiza",   1.73,   32 
+  ~gene, ~variavel1, ~variavel2,
+  "Gene1", 1.59,   30,
+  "Gene2",   1.60,   25,
+  "Gene3", 1.65,  31,
+  "Gene4",   1.73,   32 
   )
 
 tibble
@@ -349,7 +349,7 @@ Para pivotar, utilizamos `pivot_longer()` e `pivot_wider()`. A pivotagem deve se
 
 Por exemplo, se tivermos uma tabela larga com 10 colunas com anos (de 1990 a 2000), podemos reduzi-las em uma só coluna chamada "anos", que facilitará a manipulação de dados. Isso alongará a tabela.
 
-No exemplo abaixo, simplificamos todas as variáveis (`idade` e `altura`) em uma coluna (`variavel`), e jogamos os valores para uma única coluna (`valor`).
+No exemplo abaixo, simplificamos todas as variáveis (`variavel1` e `variavel2`) em uma coluna (`variavel`), e jogamos os valores para uma única coluna (`valor`).
 
 ```{r}
 # Trabalhando com dataframes -----
@@ -357,7 +357,7 @@ No exemplo abaixo, simplificamos todas as variáveis (`idade` e `altura`) em uma
 
 # Long table
 data_long = pivot_longer(data, #Tabela 
-             cols = c(altura, idade), #Colunas para alongar 
+             cols = c(variavel1, variavel2), #Colunas para alongar 
              values_to = "valor", # Estocar valores em uma nova coluna
              names_to = "variavel" # Estocar variáveis em uma nova coluna
              ) 
@@ -391,7 +391,7 @@ A diferença aqui é a apresentação da tabela. Enquanto dataframes e tibbles s
 matrix = as.matrix(data) #Transformar tabela em matriz
 matrix #Os valores numéricos são strings
 
-data_matrix = column_to_rownames(data, "nome") #Converte coluna em rownames
+data_matrix = column_to_rownames(data, "gene") #Converte coluna em rownames
 matrix = as.matrix(data_matrix)
 matrix #Agora, os valores são numéricos
 
@@ -405,7 +405,7 @@ matrix_dr = as.data.frame(matrix)
 
 matrix_dr # Coluna "nome" continua como rownames e dificulta a manipulação.
 
-matrix_dr = rownames_to_column(matrix_dr, "nome") #Converter rownames em nova coluna
+matrix_dr = rownames_to_column(matrix_dr, "gene") #Converter rownames em nova coluna
 matrix_dr
 ```
 
@@ -439,8 +439,8 @@ Para acessar uma coluna no dataframe, digite o nome do dataframe seguido por `$`
 
 ```{r}
 # Acessando colunas do data frame
-data$nome
-data$idade
+data$gene
+data$variavel1
 
 ```
 
@@ -452,7 +452,7 @@ Para adicionar uma nova coluna e preencher seus valores, crie um vetor com os va
 data_2 = data
 
 # Adicionando uma nova coluna ao data frame
-data_2$peso = c(70, 
+data_2$variavel3 = c(70, 
                 65, 
                 80, 
                 20)
@@ -464,18 +464,18 @@ data_2
 
 ```{r}
 # Removendo uma coluna do data frame
-data_2 = data_2[ , -4]
+data_3 = data_2[ , -4]
 ```
 
 Para filtrar e reordenar os dados, é ainda pior.
 
 ```{r}
 # Filtrando linhas do data frame. df[linha, coluna]
-data_jovens = data_2[data_2$idade < 30, ]
+data_jovens = data_2[data_2$variavel3 < 30, ]
 data_jovens
 
 # Ordenando o data frame por uma coluna
-data_ordenados <- data_2[order(data_2$idade), ]
+data_ordenados <- data_2[order(data_2$variavel3), ]
 data_ordenados
 ```
 
@@ -483,47 +483,7 @@ data_ordenados
 
 O tidyverse é um **metapacote**, um pacote com diversos pacotes dentro, que facilita muito o trabalho no R. As funções conversam entre si, são padronizadas e, mais importante, são muito **intuitivas**.
 
-## `add_row()` e `add_column()`: Adicionando linhas e colunas
 
-Para adicionar uma linha com valores, usamos o `add_row()`, e para adicionar uma nova coluna com valores, usamos o `add_column()`. Bem intuitivo, né?
-
-Para não alterarmos as tabelas originais, criamos uma nova variável chamada `data_2` e `tibble_2`. Entretanto, não é necessário sempre criar uma variável para cada operação que fizermos.
-
-```{r paged.print=TRUE}
-#Adicionar linha
-data_2 = add_row(data, 
-               nome = "Rafaela", 
-               idade = 50,
-               altura = 1.85)
-
-data_2
-
-tibble_2 = add_row(tibble, 
-                   nome = "Rafaela", 
-                   idade = 50,
-                   altura = 1.85)
-
-tibble_2
-```
-
-```{r paged.print=TRUE}
-#Adicionar coluna
-data_2 = add_column(data_2,
-                    peso = c(50,
-                             80,
-                             40,
-                             100,
-                             70))
-data_2
-
-tibble_2 = add_column(tibble_2,
-                      peso = c(50,
-                               80,
-                               40,
-                               100,
-                               70))
-tibble_2
-```
 
 ## `filter():` Filtrando linhas e usando o pipe
 
@@ -531,12 +491,12 @@ Sempre que estivermos manipulando linhas, utilizamos o **verbo "filtrar"**. No t
 
 ```{r paged.print=TRUE}
 # Filtrando linhas ----
-idade = filter(data, idade <= 30)
+variavel2 = filter(data, variavel2 <= 30)
 
-idade_nome = filter(idade,
-                    nome == "Júlia")
+gene_variavel2 = filter(variavel2,
+                    gene == "Gene1")
 
-idade_nome
+gene_variavel2
 ```
 
 Mas, e se eu quiser filtrar usando mais operações?
@@ -547,11 +507,11 @@ A primeira é usando "OU" (`|`) e `%in% c()`. Veja que os resultados são iguais
 
 ```{r paged.print=TRUE}
 #Usando OU (|)
-filter(data, nome == "Júlia" | 
-           nome == "Gabriela")
+filter(data, gene == "Gene1" | 
+           gene == "Gene3")
 
 #Usando %in% c()
-filter(data, nome %in% c("Júlia", "Gabriela")) 
+filter(data, gene %in% c("Gene1", "Gene2")) 
 
 ```
 
@@ -562,8 +522,8 @@ Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente lin
 ```{r paged.print=TRUE}
 # Usando o pipe "%>%" (lê-se "e então")
 data %>%                   # Tenho este objeto 
-  filter(idade >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
-  filter(nome == "Gabriela")   # E então vou filtrar os indivíduos chamados "Gabriela"
+  filter(variavel2 >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
+  filter(gene == "Gene1")   # E então vou filtrar os indivíduos chamados "Gabriela"
 ```
 
 ## `select():` Selecionando colunas
@@ -582,37 +542,31 @@ Para **reordenar**, use `select(coluna, everything())`. Aqui, você coloca a col
 # Selecionando colunas ----
 # Selecionar colunas específicas
 data_2 %>%
-  select(nome, altura) 
+  select(gene, variavel1) 
 
-# Selecionar da coluna nome (1) à coluna peso (4)
+# Selecionar da coluna gene (1) à coluna variavel2 (3)
 data_2 %>% 
-  select(nome:idade) 
+  select(gene:variavel2) 
 
 #Retirando coluna
 data_2 %>% 
-  select(-idade) 
+  select(-variavel2) 
 
 data_2 %>%   
-  select(!idade)
+  select(!variavel2)
 
 #Reordenando coluna
 data_2 %>%   
-  select(idade, everything())
+  select(variavel2, everything())
 
 ```
 
-Para **renomear** uma coluna, é possível também usar o `select().`Mas, **cuidado**, pois ao renomeá-las, se esquecermos do "**`everything()`**", ficamos somente com a coluna renomeada.
-
-Por isso, temos a função **`rename()`**`,` que evita que isso aconteça.
+Para **renomear** uma coluna, é possível também usar o `rename().
 
 ```{r paged.print=TRUE}
-#Renomeando coluna
-data_2 %>%   
-  select(age = idade, everything())
-
 #Renomeando coluna com rename
 data_2 %>%   
-  rename(age = idade) #Retirando coluna
+  rename(expression = variavel1) #Retirando coluna
 
 ```
 
@@ -623,19 +577,19 @@ A função `mutate()` permite **criar ou modificar colunas** e imputar valores u
 ```{r paged.print=TRUE}
 # Criando novas variáveis
 data_2 = data_2 %>%
-  mutate(imc = peso / (altura^2)) #Para cada linha da tabela, 
-                                  #pegaremos o valor do peso e dividiremos 
-                                  #pela altura ao quadrado.
+  mutate(factor = variavel2 / (variavel1^2)) #Para cada linha da tabela, 
+                                  #pegaremos o valor da variavel2 e dividiremos 
+                                  #pela variavel1 ao quadrado.
 
 ```
 
-Além disso, podemos criar uma coluna com o sexo daquele indivíduo. Como sabemos que todos são "feminino", podemos fazer dessa forma.
+Além disso, podemos criar uma coluna com a espécie do indivíduo. Como sabemos que todos humanos, podemos fazer dessa forma.
 
 ```{r paged.print=TRUE}
 data_2 %>% 
-  mutate(sexo = "feminino") #Como todas as linhas contêm nomes 
-                            #femininos, criaremos a coluna sexo 
-                            #com o valor "feminino"
+  mutate(species = "human") #Como todas as linhas contêm nomes 
+                            #femininos, criaremos a coluna species 
+                            #com o valor "human"
 ```
 
 ## `if_else` e `case_when()`: Condições
@@ -648,27 +602,16 @@ Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso
 
 ```{r paged.print=TRUE}
 data_2 %>% 
-  mutate(classificacao = if_else(imc > 25, "sobrepeso", "normal"))
+  mutate(classification = if_else(factor > 10, "super", "normal"))
 ```
 
-Mas, sabemos que o IMC pode ser classificado com outras categorias. Para isso, temos duas formas de classificar. A primeira é usando o `if_else()` imputando os valores manualmente e deixando os valores que ainda não foram categorizados como NA, e depois, de criar a primeira categoria, criamos a segunda categoria e deixamos os que já estavam na coluna.
-
-```{r paged.print=TRUE}
-data_2 %>% 
-  mutate(classificacao = if_else(imc >= 25 & imc <= 30 , "sobrepeso", NA),
-         classificacao = if_else(imc > 30, "obesidade 1", classificacao),
-         classificacao = if_else(imc >= 18.5 & imc <25, "normal",classificacao),
-         classificacao = if_else(imc < 18.5, "magreza",classificacao))
-```
-
-Veja que, depois da segunda linha de if_else, isso fica confuso de entender. Por isso, usamos o `case_when()`, que é um if_else mais versátil e deixa o código mais limpo e fácil de ler.
+Mas, sabemos que o IMC pode ser classificado com outras categorias. Para isso, temos o `case_when()`, que é um if_else mais versátil e deixa o código mais limpo e fácil de ler.
 
 ```{r paged.print=TRUE}
 data_2 = data_2 %>% 
-  mutate(classificacao = case_when(imc >= 25 & imc <= 30 ~ "sobrepeso",
-                                   imc > 30 ~ "obesidade 1",
-                                   imc >= 18.5 & imc < 25 ~ "normal",
-                                   imc < 18.5 ~ "magreza"))
+  mutate(classification = case_when(factor >= 11 ~ "super",
+                                   factor > 10 & factor < 11 ~ "normal",
+                                   factor < 10 ~ "under"))
 ```
 
 ## summarize(): resumindo estatísticas
@@ -678,10 +621,10 @@ A função `summarize()` (ou `summarise()`) aplica a mesma lógica, mas a tabela
 ```{r paged.print=TRUE}
 # Resumindo dados
 data_2 %>% 
-  summarize(Media_idade = mean(idade))
+  summarize(mean = mean(variavel1))
 
 data_2 %>% 
-  summarize(Soma_idade = sum(idade))
+  summarize(sum = sum(variavel1))
 ```
 
 ## `group_by`: Agrupando dados
@@ -691,13 +634,13 @@ Em muitos casos, nós queremos realizar cálculos com categorias ou grupos difer
 ```{r paged.print=TRUE}
 #Média dos grupos
 data_2 %>% 
-  group_by(classificacao) %>% 
-  summarize(Media_idade = mean(idade))
+  group_by(classification) %>% 
+  summarize(mean = mean(variavel2))
 
 #Contagem
 data_2 %>% 
-  group_by(classificacao) %>% 
-  summarize(individuos = n())
+  group_by(classification) %>% 
+  summarize(n = n())
 ```
 
 ## `arrange():` Ordenando dados
@@ -707,16 +650,16 @@ Podemos ordenar os dados de forma crescente e decrescente usando o `arrange().`
 ```{r paged.print=TRUE}
 # Ordenando dados de forma crescente
 data_2 %>% 
-  arrange(idade)
+  arrange(variavel1)
 
 # Ordenando de forma decrescente
 #Método 1
 data_2 %>% 
-  arrange(desc(idade))
+  arrange(desc(variavel1))
 
 #Método 2
 data_2 %>% 
-  arrange(-idade)
+  arrange(-variavel1)
 ```
 
 ## Joins: merging/unindo tabelas
@@ -730,13 +673,13 @@ Dessa forma, é importante construir e dividir tabelas para facilitar nossa mani
 Para ilustrar isso, vamos criar uma tabela chamada `endereco`, que contem o nome, cidade e bairro de cada indivíduo.
 
 ```{r paged.print=TRUE}
-endereco = tribble(~nome, ~cidade, ~bairro,
-          "Gabriela", "São Paulo", "Consolação",
-          "Júlia", "Ribeirão Preto", "Cidade Universitária",
-          "Beatriz", "Cuiabá", "Centro",
-          "Luiza", "São Paulo", "Centro",
-          "Thaís", "São Paulo", "Butantã")
-endereco
+gene_info = tribble(~gene, ~type, ~process,
+          "Gene1", "Pseudogene", "Immune",
+          "Gene2", "Protein-coding", "Metabolism",
+          "Gene3", "miRNA", "Immune",
+          "Gene4", "Protein-coding", "Cellular",
+          "Gene5", "Protein-coding", "Regulation")
+gene_info
 ```
 
 Uma forma de unir a tabela `data_2` com a tabela `endereco` é pelas linhas de uma coluna em comum, no caso a coluna `nome`. Essa operação é chamada de **merging**. Para isso, temos as funções `*_join()`. O `*_` seguido por `join()` significa que existem nomes diferentes de funções que terminam com "join" e fazem algo parecido.
@@ -747,8 +690,8 @@ Uma dessas funções é a `inner_join()`, que somente une as linhas corresponden
 
 ```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
-  inner_join(endereco, #Tabela para unir (tabela 2)
-             by = "nome") #Coluna correspondente
+  inner_join(gene_info, #Tabela para unir (tabela 2)
+             by = "gene") #Coluna correspondente
 ```
 
 Veja que a "Rafaela" não foi incluída, porque não havia dados sobre ela na tabela de endereços.
@@ -759,8 +702,8 @@ Mas, suponhamos que seria interessante saber quem da tabela 1 **não** tem ender
 
 ```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
-  left_join(endereco, #Tabela para unir (tabela 2)
-             by = "nome") #Coluna correspondente
+  left_join(gene_info, #Tabela para unir (tabela 2)
+             by = "gene") #Coluna correspondente
 ```
 
 ### anti_join()
@@ -769,8 +712,12 @@ Da mesma forma, podemos obter somente as linhas que estão na tabela 1, mas não
 
 ```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
-  anti_join(endereco, #Tabela para unir (tabela 2)
-             by = "nome") #Coluna correspondente
+  anti_join(gene_info, #Tabela para unir (tabela 2)
+             by = "gene") #Coluna correspondente
+
+gene_info %>% #Tabela original (tabela 2)
+  anti_join(data_2, #Tabela para unir (tabela 1)
+             by = "gene") #Coluna correspondente
 ```
 
 ### right_join()
@@ -779,8 +726,8 @@ Observe que a tabela `endereco` também tem uma linha que não está na tabela 1
 
 ```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
-  right_join(endereco, #Tabela para unir (tabela 2)
-             by = "nome") #Coluna correspondente
+  right_join(gene_info, #Tabela para unir (tabela 2)
+             by = "gene") #Coluna correspondente
 ```
 
 ### full_join()
@@ -789,8 +736,8 @@ Agora, se quisermos ter uma tabela completa, com todas as linhas das tabelas 1 e
 
 ```{r paged.print=TRUE}
 data_2 %>% #Tabela original (tabela 1)
-  full_join(endereco, #Tabela para unir (tabela 2)
-             by = "nome") #Coluna correspondente
+  full_join(gene_info, #Tabela para unir (tabela 2)
+             by = "gene") #Coluna correspondente
 ```
 
 ## Usando o `pipe` para fazer múltiplas operações de uma vez
@@ -807,15 +754,15 @@ Por exemplo, abaixo:
 ```{r}
 # Múltiplas operações em uma caixa
 mega_pipe = data_2 %>% 
-  arrange(altura) %>% 
-  filter(idade >= 30,
-         peso >= 50) %>% 
-  select(-nome) %>% 
-  mutate(imc = round(imc, 1),
-         peso_x_idade = peso * idade) %>%
-  summarise(mean_peso = mean(peso),
-            mean_peso = round(mean_peso, 1),
-            mean_imc = mean(imc) %>% round(1))
+  arrange(variavel2) %>% 
+  filter(variavel2 >= 30,
+         variavel3 >= 50) %>% 
+  select(-gene) %>% 
+  mutate(factor = round(factor, 1),
+         var1_x_var2 = variavel1 * variavel2) %>%
+  summarise(mean = mean(variavel2),
+            mean = round(mean, 1),
+            mean_factor = mean(factor) %>% round(1))
 mega_pipe
 ```
 
@@ -828,8 +775,8 @@ A visualização com o `ggplot2` é feito em **camadas**. Primeiro, temos um dat
 ```{r}
 data_2 %>% 
   ggplot() +
-  aes(x = nome,
-      y = imc) +
+  aes(x = gene,
+      y = factor) +
   geom_col()
 ```
 
@@ -838,13 +785,13 @@ Para melhorar, podemos adicionar mais funções, como labels para os pontos do g
 ```{r}
 data_2 %>% 
   ggplot() +
-  aes(x = fct_reorder(nome, -imc), #Mapeando variáveis
-      y = imc) +
+  aes(x = fct_reorder(gene, -factor), #Mapeando variáveis
+      y = factor) +
   geom_col() + #Geometria
-  theme_few() + #Tema 
-  labs(x = "Nome", #Títulos
-       y = "IMC",
-       title = "Índice de massa corporal por pessoa")
+  theme_minimal() + #Tema 
+  labs(x = "Gene", #Títulos
+       y = "Factor",
+       title = "Factor")
 ```
 
 Observe que a fonte dos eixos x e y estão muito pequenas e difíceis de visualizar. Conseguimos mudar facilmente esses atributos usando a função `theme()` e os argumentos `axis.text.x` e `axis.text.y`. Além disso, podemos melhorar o título do gráfico, deixando-o em negrito (`face = "bold"`) e centralizado ou justificado ao meio (`hjust`). Para isso, devemos usar a função `element_text(),` que aceita como parâmetros `size`, `color`, `face`, `angle`, etc. Não confunda com `theme_few()` ou qualquer outro tema pronto. Veja também que, quando adicionamos modificações no `theme()`, o `theme_few()` permanece como estava.
@@ -854,14 +801,14 @@ data_2 %>%
   ggplot() +
   
   #Mapeando variáveis
-  aes(x = fct_reorder(nome, -imc), 
-      y = imc) +
+  aes(x = fct_reorder(gene, -factor), 
+      y = factor) +
   
   #Geometria
   geom_col() + 
   
   #Tema pré-estabelecido
-  theme_few() + 
+  theme_minimal() + 
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -873,9 +820,9 @@ data_2 %>%
                                   hjust = 0.5,
                                   face = "bold")) +
   #Títulos
-  labs(x = "Nome", 
-       y = "IMC",
-       title = "Índice de massa corporal por pessoa")
+  labs(x = "Gene", 
+       y = "Factor",
+       title = "Factor by gene")
 ```
 
 ## Cores
@@ -887,9 +834,9 @@ data_2 %>%
   ggplot() +
   
   #Mapeando variáveis
-  aes(x = fct_reorder(nome, -imc), 
-      y = imc,
-      fill = classificacao) +
+  aes(x = fct_reorder(gene, -factor), 
+      y = factor,
+      fill = classification) +
   
   #Geometria
   geom_col() + 
@@ -907,14 +854,14 @@ data_2 %>%
                                   hjust = 0.5,
                                   face = "bold")) +
   #Títulos
-  labs(x = "Nome", 
-       y = "IMC",
-       title = "Índice de massa corporal por pessoa") +
+  labs(x = "Gene", 
+       y = "Factor",
+       title = "Factor") +
   
   #Renomeando levels
-  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+  scale_fill_discrete(labels = c("under" = "Under", 
                                "normal" = "Normal",
-                               "obesidade 1" = "Obesidade I")) 
+                               "super" = "Super")) 
 ```
 
 Por padrão, o ggplot2 utiliza uma paleta de cores nativa, mas podemos especificar a de nosso interesse. Existem diversos pacotes com paletas pré-definidas. Um dos pacotes é o `ggsci`, que apresenta as paletas dos principais journals acadêmicos, como a Nature, Science, e a The Lancet, além de filmes e séries de ficção, como jama, Tron e Futurama. Para acessar as paletas, use `vignette("ggsci"),` e para visualizar os códigos das cores, especifique a paleta usando `pal_` e depois `show_col()`. Aqui, usaremos a paleta dos **jama**. Definir as paletas é uma etapa importante para garantir a padronização dos gráficos no seu trabalho.
@@ -1089,7 +1036,7 @@ linha = data_2 %>%
       y = imc,
       color = imc) +
   
-  #Geometrias
+  #Geometriasw
   geom_line(size = 2) +
   geom_point(size = 4) +
   

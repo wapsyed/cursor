@@ -47,7 +47,10 @@ table = table  %>%
                as.data.frame() %>% 
                select(dia, p), by = "dia") %>% 
   mutate(p = as.character(p))
+```
 
+
+```{r fig.height=5, fig.width=10}
 stat.test.summary <- table %>%
   group_by(dia) %>%
   tukey_hsd(formula = value ~ group) %>% 
@@ -61,13 +64,13 @@ stat.test.summary <- table %>%
       p.adj <= 0.10 ~ "*",         # 0.05 < p <= 0.10
       TRUE ~ "ns"                        # p > 0.10
     )
-  ) %>%
-  filter(!p.adj.signif %in% c("ns", "*")) 
+  )
 
 stat.test = stat.test.summary %>% 
   group_by(dia) %>% 
   mutate(y.position = min(y.position) + (row_number() - 1) * 0.1) %>% #Ajustar posição
-  ungroup()
+  ungroup() %>% 
+    filter(!p.adj.signif %in% c("ns")) 
 
 
 stat.test
@@ -160,7 +163,7 @@ plot = table %>%
                      label = "p.adj.signif", 
                      hide.ns = T, 
                      bracket.size = 0.3, 
-                     tip.length = 0, 
+                     tip.length = 0.01, 
                      vjust = 0.7
                      ) +
   scale_y_continuous(transform = "log10", 
@@ -174,13 +177,160 @@ plot = table %>%
        x = "",
        y = "OD50",
        title = "ELISA OD50% - All vs. All",
-       subtitle =  "Significance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01",
+       subtitle =  "Significance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.",
        caption = get_pwc_label(stat.test.summary)) 
 
 plot
 
 plot %>%
 ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Tukey.png"),
+       width = 10,
+       height = 5,
+       bg = "white")
+```
+
+
+## Non parametric e posthoc
+```{r fig.height=5, fig.width=10}
+library(rstatix)  # https://github.com/kassambara/rstatix
+wilcox.res.summary <- table %>%
+  group_by(dia) %>%
+  wilcox_test(value ~ group) %>% 
+  adjust_pvalue(method = "BH") %>%
+  add_significance("p.adj") %>% 
+  add_xy_position(x = "group", 
+                  dodge = 1) %>% 
+  mutate(
+    y.position = log10(y.position),
+    p.adj.signif = case_when(
+      p.adj <= 0.01 ~ "***",       # p <= 0.01
+      p.adj <= 0.05 ~ "**",        # 0.01 < p <= 0.05
+      p.adj <= 0.10 ~ "*",         # 0.05 < p <= 0.10
+      TRUE ~ "ns"                        # p > 0.10
+    )
+  )
+  
+
+wilcox.res.summary
+
+stat.test = wilcox.res.summary %>% 
+  group_by(dia) %>% 
+  mutate(y.position = min(y.position) + (row_number() - 1) * 0.1) %>% #Ajustar posição
+  ungroup() %>% 
+    filter(!p.adj.signif %in% c("ns")) 
+
+
+stat.test
+```
+
+
+## Todos vs. todos
+Definir comparacoes
+```{r fig.height=5, fig.width=10}
+#Definir comparações
+
+#Mostrar todas as comparações no gráfico
+my_comparisons_all <- list( 
+  c("PBS", "10 μg"),
+  c("PBS", "25 μg"),
+  c("PBS", "50 μg"),
+  c("PBS", "Alum 10 μg"),
+  c("PBS", "Alum 25 μg"),
+  c("ED-III", "10 μg"),
+  c("ED-III", "25 μg"),
+  c("ED-III", "50 μg"),
+  c("ED-III", "Alum 10 μg"),
+  c("ED-III", "Alum 25 μg"))
+
+#Mostrar somente as comparações significantes
+my_comparisons <- stat.test %>%
+  select(group1, group2) %>% 
+  arrange(group1) %>% 
+  distinct() %>% 
+  rowwise() %>%
+  mutate(comparison = list(c(group1, group2))) %>%
+  pull(comparison)
+  
+```
+
+
+
+```{r fig.height=7, fig.width=10}
+plot = table %>% 
+  ggboxplot(x = "group",
+      y = "value",
+      fill = "group", outlier.shape = NA) +
+  geom_violin(color = "gray10",
+              fill = NA,
+              alpha = 1, 
+              width = 1) +
+  # geom_boxplot(outlier.shape = NA,
+  #              alpha = 1, 
+  #              width = 0.5) +
+
+  stat_summary(fun.y= mean, 
+               geom="point", 
+               shape=95, 
+               size=3, 
+               color="red",
+               stroke = 5,
+               # fill="red", 
+               alpha = 1,
+               show.legend = F) +
+    geom_point(fill = NA,
+               color = "black",
+             size = 1,
+             stroke = 1,
+             alpha = 1,
+             shape=21, 
+             show.legend = F) +
+  theme_minimal() +
+  theme(text = element_text(size = 10,
+                            color = "black"),
+        plot.caption = element_text(size = 10, 
+                                    color = "black",
+                                    hjust = 0.5),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45,
+                                   size = 10,
+                                   hjust = 1,
+                                   vjust = 1,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        strip.text = element_text(size = 12,
+                                  color = "black"),
+        axis.line.x = element_line(color = "black",
+                                   size = 1),
+        axis.ticks.x = element_line(color = "black",
+                                  size = 1),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray75")) +
+  stat_pvalue_manual(stat.test,
+                     label = "p.adj.signif", 
+                     hide.ns = T, 
+                     bracket.size = 0.3, 
+                     tip.length = 0.01, 
+                     vjust = 0.7
+                     ) +
+  scale_y_continuous(transform = "log10", 
+                     labels = scales::label_log(base = 10),
+                     breaks = c(0, 1, 10, 100, 1000, 10000)) +
+  facet_wrap(~paste("Day ", dia)) +
+  scale_colour_paletteer_d("rcartocolor::Antique") +
+  scale_fill_paletteer_d("rcartocolor::Antique") +
+    labs(fill = "Group",
+       color = "Group",
+       x = "",
+       y = "OD50",
+       title = "ELISA OD50% - All vs. All",
+       subtitle =  "Significance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.",
+       caption = get_pwc_label(wilcox.res.summary)) 
+
+plot
+
+plot %>%
+ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Wilcoxon.png"),
        width = 10,
        height = 5,
        bg = "white")

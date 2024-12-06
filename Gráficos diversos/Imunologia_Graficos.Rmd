@@ -396,7 +396,7 @@ plot_group = table %>%
                      vjust = -2, label = "p = {p.format}",
                      hjust = 0.5, na.rm = T,
                      label.y.npc = "top",
-                     label.x.npc = "center", ) +
+                     label.x.npc = "center", size = 3) +
   # stat_pvalue_manual(stat.test,
   #                    label = "p.adj.signif",
   #                    hide.ns = T,
@@ -429,10 +429,17 @@ ggsave(filename = here("Gráficos diversos", "ELISA_OD50_ByGroup_Kruskal.png"),
 
 Unir plots
 ```{r fig.height=10, fig.width=10}
-plot / plot_group + plot_layout(axes = "collect",
+plot_united = plot / plot_group + plot_layout(axes = "collect",
                                 axis_titles = "collect",
                                 heights = c(1, 0.5)) +
   plot_annotation(title = "collect")
+
+
+plot_united %>%
+ggsave(filename = here("Gráficos diversos", "ELISA_OD50_ByGroup_ByDay_Kruskal.png"),
+       width = 10,
+       height = 10,
+       bg = "white")
 ```
 
 

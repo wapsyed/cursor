@@ -1347,11 +1347,9 @@ Heatmap(heatmap_table,
 
 # Agora é a sua vez!
 
-Faça gráficos analisando continentes, países, doenças e vacinas diferentes. Para isso, é só trocar os nomes nas funções dos gráficos. Por exemplo, onde estiver "`Brazil`", coloque "`Canada`" ou "`India`", etc. Da mesma forma, onde estiver o nome de uma vacina ou doença, troque pelos temas do seu interesse. Para selecionar os países, não há critério definido, então você poderá ir pela sua curiosidade ou por meio dos gráficos já apresentados, como o boxplot interativo.
-
 **Recomendações**
 
-1.  **Ao fazer a parte prática com suas análises, faça no mesmo documento**. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+1.  **Ao fazer a parte prática com suas análises, faça no mesmo documento**. A prática deve ser fácil e descomplicada.
 
 2.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
 
@@ -1373,23 +1371,15 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
 -   **Quem**:
 
-    -   Quais são os **países** que **menos** vacinaram em cada **continente**?
+    -   Quais são os **genes** **menos** expressos em cada **grupo**?
 
-    -   Quais são os **países** que **mais** vacinaram em cada **continente**?
+    -   Quais são os **genes** **mais** expressos em cada **grupo**?
 
     -   Quais são os **países** que **mais** tiveram **mortes** por uma **doença X**? A **difteria** aparentemente teve um surto em algum país **latinoamericano** a partir de **2016**. Qual é este país e por que isso ocorreu? Será que é a baixa **cobertura vacinal**?
 
--   **Quando**:
-
-    -   Será que a cobertura vacinal ou o número de mortes **sempre** foi assim (alto ou baixo) ou é algo **recente** dos últimos 5 a 10 anos?
-
-    -   Será que a **pandemia** afetou a vacinação contra outras doenças?
-
-    -   Ou a cobertura vacinal já estava caindo **antes mesmo da pandemia**?
-
 -   **Comparações**:
 
-    -   Qual seria a média de vacinação contra uma doença x para o continente y e onde seus países de escolha estão? (Dica: use `group_by()` e `summarize()`).
+    -   Qual seria a média de expressão de um gene x para o grupo y e em comparação ao gene z? (Dica: use `group_by()` e `summarize()`).
 
 **Alguns conselhos:**
 
@@ -1399,13 +1389,7 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
 
     -   É uma variável **numérica** ou **categórica**?
 
-    -   O gráfico que você quer analisar combina **duas variáveis numéricas** (anos e cobertura vacinal) ou **uma variável categórica** (países) e outra **numérica** (cobertura vacinal)?
-
-    -   A variável numérica é **temporal**? Por exemplo, você vai usar uma **série temporal** (2010, 2011, 2012...) ou somente a **média** de um período (2010 a 2020)?
-
-        -   Caso use todos os anos em uma **série temporal**, recomendo usar um gráfico de **linhas**, onde o eixo x representa os anos e o eixo y, a cobertura vacinal ou numero de mortes.
-
-        -   Agora, caso analise as **médias ou medianas de um período**, um gráfico de **colunas** é recomendado, onde o **eixo x é um ano e o y, o número de mortes ou cobertura vacinal.**
+    -   O gráfico que você quer analisar combina **duas variáveis numéricas** ou **uma variável categórica** e outra **numérica**?
 
     -   **Para entender melhor os tipos de gráficos que você pode utilizar**, entre no [Data to viz](https://www.data-to-viz.com/). Ele te guiará como seguir a partir das variáveis que você está trabalhando.
 

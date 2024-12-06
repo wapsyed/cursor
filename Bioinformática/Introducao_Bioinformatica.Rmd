@@ -15,10 +15,7 @@ output:
 # Sobre o curso
 
 **\
-Ministrantes:** 
-- Wasim Aluísio Prates Syed: Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
-- Dennyson Leandro Mathias da Fonseca: Biomédico e doutorando no programa de Interunidades em Bioinformática da Universidade de São Paulo (USP). Atuou como pesquisador convidado no Berlin Institute of Health (BIH), Universitätsmedizin Charité, Alemanha.
-
+Ministrantes:** - Wasim Aluísio Prates Syed: Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU). - Dennyson Leandro Mathias da Fonseca: Biomédico e doutorando no programa de Interunidades em Bioinformática da Universidade de São Paulo (USP). Atuou como pesquisador convidado no Berlin Institute of Health (BIH), Universitätsmedizin Charité, Alemanha.
 
 **Descrição do curso:**
 
@@ -34,7 +31,7 @@ Os participantes terão uma aula introdutória à ciência de dados e fundamento
 
 -   **Manipulação e Visualização de Dados:** Exploraremos técnicas para importar, limpar, filtrar e visualizar dados usando pacotes do Tidyverse, como dplyr e ggplot2.
 
--   **Análise Exploratória de Dados:** Realizaremos análises exploratórias de dados, incluindo estatísticas descritivas, gráficos e interpretação de resultados. Aplicaremos os conhecimentos adquiridos em um projeto prático com dados reais de saúde, incluindo análise de vacinação e indicadores de saúde pública.
+-   **Análise Exploratória de Dados:** Realizaremos análises exploratórias de dados, incluindo estatísticas descritivas, gráficos e interpretação de resultados. Aplicaremos os conhecimentos adquiridos em um projeto prático com dados reais.
 
 **Como será o projeto**:
 
@@ -52,8 +49,7 @@ Os participantes terão 1 mês para desenvolver o projeto, e poderão tirar dúv
 
 **O R e o RStudio baixado para o desktop pode não ser a melhor opção para todos**. Por isso, uma opção viável que encontramos seria usar o R na versão da nuvem, disponível no navegador. Para testar, entre em [posit.cloud](posit.cloud), crie uma conta, acesse seu login, clique em "New Project" e em "New Project from Git Repository" e cole o link: <https://github.com/wapsyed/cursor.git.> Isso abrirá o R studio no próprio navegador.
 
-**Para rodar este tutorial no R Studio Desktop:** 
-Embora seja importante usar a versão no Desktop, não recomendamos se preocupar com esta etapa no início do seu aprendizado, porque podem surgir diferentes problemas relacionados à instalação e ao seu computador. Caso complete este tutorial e se sinta à vontade em utilizar a versão baixada do RStudio, saiba que esses problemas são comuns e já foram resolvidos, muito provavelmente, e estão disponíveis na internet. Mesmo assim, se for necessário, nos contacte!
+**Para rodar este tutorial no R Studio Desktop:** Embora seja importante usar a versão no Desktop, não recomendamos se preocupar com esta etapa no início do seu aprendizado, porque podem surgir diferentes problemas relacionados à instalação e ao seu computador. Caso complete este tutorial e se sinta à vontade em utilizar a versão baixada do RStudio, saiba que esses problemas são comuns e já foram resolvidos, muito provavelmente, e estão disponíveis na internet. Mesmo assim, se for necessário, nos contacte!
 
 **Passo 1: Acesse o GitHub**
 
@@ -433,7 +429,7 @@ df_list
 
 ## Manipulação de tabelas com o R base
 
-O R possui funções e formas nativas de acessar e manipular tabelas. Essas operações, como as descritas abaixo, não são mais a melhor forma de trabalhar, pois são pouco intuitivas, e vamos usar outras muito melhores a seguir. Mas, **é importante conhecê-las**, pois, são utilizadas em alguns casos.
+O R possui funções e formas nativas de acessar e manipular tabelas. Essas operações, como as descritas abaixo, não são mais a melhor forma de trabalhar, pois são pouco intuitivas, e vamos usar outras muito melhores a seguir. Mas, **é importante conhecê-las**, pois são utilizadas em alguns casos.
 
 Para acessar uma coluna no dataframe, digite o nome do dataframe seguido por `$` e o nome da coluna (`data$coluna`). Se você não lembra o nome da coluna, você pode digitar `data$` e apertar Tab.
 
@@ -452,10 +448,10 @@ Para adicionar uma nova coluna e preencher seus valores, crie um vetor com os va
 data_2 = data
 
 # Adicionando uma nova coluna ao data frame
-data_2$variavel3 = c(70, 
-                65, 
-                80, 
-                20)
+data_2$variavel3 = c(70,
+                     65,
+                     80,
+                     20)
 data_2
 
 ```
@@ -482,8 +478,6 @@ data_ordenados
 # 3. Tidyverse
 
 O tidyverse é um **metapacote**, um pacote com diversos pacotes dentro, que facilita muito o trabalho no R. As funções conversam entre si, são padronizadas e, mais importante, são muito **intuitivas**.
-
-
 
 ## `filter():` Filtrando linhas e usando o pipe
 
@@ -561,7 +555,7 @@ data_2 %>%
 
 ```
 
-Para **renomear** uma coluna, é possível também usar o `rename().
+Para **renomear** uma coluna, é possível também usar o \`rename().
 
 ```{r paged.print=TRUE}
 #Renomeando coluna com rename
@@ -572,7 +566,7 @@ data_2 %>%
 
 ## `mutate():` Criando e realizando operações com novas variáveis
 
-A função `mutate()` permite **criar ou modificar colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna. Por exemplo, podemos criar a coluna imc com o IMC todos os indivíduos, que é calculado com a razão do peso e a altura ao quadrado.
+A função `mutate()` permite **criar ou modificar colunas** e imputar valores usando funções que se aplicarão a todas as linhas daquela coluna. Por exemplo, podemos criar a coluna factor com um fator arbitrário de todos os indivíduos, que é calculado com a razão da variável 2 e a variável 2 ao quadrado.
 
 ```{r paged.print=TRUE}
 # Criando novas variáveis
@@ -596,16 +590,16 @@ data_2 %>%
 
 Mas, podemos também usar um argumento lógico também.
 
-Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima ou abaixo de um IMC específico, a partir dos valores da coluna `imc`.
+Por exemplo, podemos criar uma coluna que classificará se a pessoa está acima ou abaixo de um fator específico, a partir dos valores da coluna `imc`.
 
-Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um IMC acima de 25, ela será considerada com sobrepeso, e se for abaixo, será classificada como normal.
+Isso é feito com a função `if_else(),` que é lida da seguinte forma: se isso for verdadeiro, dê o valor "A", do contrário, "B". No caso aqui, se a pessoa tiver um fator acima de 10, ela será considerada com super, e se for abaixo, será classificada como normal.
 
 ```{r paged.print=TRUE}
 data_2 %>% 
   mutate(classification = if_else(factor > 10, "super", "normal"))
 ```
 
-Mas, sabemos que o IMC pode ser classificado com outras categorias. Para isso, temos o `case_when()`, que é um if_else mais versátil e deixa o código mais limpo e fácil de ler.
+Mas, podemos classificar com outras categorias. Para isso, temos o `case_when()`, que é um if_else mais versátil e deixa o código mais limpo e fácil de ler.
 
 ```{r paged.print=TRUE}
 data_2 = data_2 %>% 
@@ -882,9 +876,9 @@ data_2 %>%
   ggplot() +
   
   #Mapeando variáveis
-  aes(x = fct_reorder(nome, -imc),
-      y = imc,
-      fill = classificacao) +
+  aes(x = fct_reorder(gene, -factor),
+      y = gene,
+      fill = classification) +
   
   #Adicionando geometrias
   geom_col() +
@@ -893,10 +887,10 @@ data_2 %>%
   theme_light() + 
   
   #Adicionando títulos
-  labs(x = "Nome", 
-       y = "IMC",
-       title = "Índice de massa corporal por pessoa",
-       fill = "Classificação") +
+  labs(x = "Gene", 
+       y = "Factor",
+       title = "Factor",
+       fill = "Classification") +
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -908,10 +902,10 @@ data_2 %>%
                                   hjust = 0.5,
                                   face = "bold")) +
   
-  #Renomeando levels
-  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+   #Renomeando levels
+  scale_fill_discrete(labels = c("under" = "Under", 
                                "normal" = "Normal",
-                               "obesidade 1" = "Obesidade I")) +
+                               "super" = "Super"))  +
   scale_fill_jama()
 ```
 
@@ -920,9 +914,9 @@ E se quisermos definir uma paleta manualmente, podemos usar a função `scale_fi
 ```{r}
 barras = data_2 %>% 
   ggplot() +
-  aes(x = fct_reorder(nome, -imc),
-      y = imc,
-      fill = classificacao) +
+  aes(x = fct_reorder(gene, -factor),
+      y = factor,
+      fill = classification) +
   geom_col() +
   labs(x = "Nome", #Títulos
        y = "IMC",
@@ -942,12 +936,13 @@ barras = data_2 %>%
                                   hjust = 0.5,
                                   face = "bold")) +
   
-  scale_fill_discrete(labels = c("magreza" = "Magreza", 
+  #Renomeando levels
+  scale_fill_discrete(labels = c("under" = "Under", 
                                "normal" = "Normal",
-                               "obesidade 1" = "Obesidade I")) +
-  scale_fill_manual(values = c("magreza" = "red", 
+                               "super" = "Super")) +
+  scale_fill_manual(values = c("under" = "red", 
                                "normal" = "blue",
-                               "obesidade 1" = "#ffb703"))
+                               "super" = "#ffb703"))
 
 barras
 ```
@@ -960,16 +955,16 @@ Um gráfico com pontos que relaciona duas variáveis numéricas é interessante 
 
 data_2 %>% 
   ggplot() +
-  aes(x = peso,
-      y = imc,
-      color = classificacao) +
+  aes(x = variavel3,
+      y = factor,
+      color = classification) +
   geom_point() +
   
   #Títulos
-    labs(x = "Peso (kg)", 
-       y = "IMC",
-       title = "Índice de massa corporal versus peso",
-       color = "IMC") +
+    labs(x = "Variável 3", 
+       y = "Factor",
+       title = "Factor versus Var 3",
+       color = "Factor") +
   
   #Tema pré-estabelecido
   theme_light() + 
@@ -1032,9 +1027,9 @@ linha = data_2 %>%
   ggplot() +
   
   #Mapping
-  aes(x = peso,
-      y = imc,
-      color = imc) +
+  aes(x = variavel3,
+      y = factor,
+      color = factor) +
   
   #Geometriasw
   geom_line(size = 2) +
@@ -1075,7 +1070,7 @@ Há diferentes tipos de arquivos, como jpeg e tiff, mas usaremos o png por ser m
 
 ```{r}
 linha %>% 
-  ggsave(file = here("Figuras","linha_imc.png"), width = 5, height = 5)
+  ggsave(file = here("Bioinformática","linha_factor.png"), width = 5, height = 5)
 ```
 
 Uma outra forma de salvar a imagem é colar `linha` no console, printá-la (apertar `Enter`) e salvar diretamente da aba "Plots". Você poderá salvá-la como .png ou como pdf também!
@@ -1121,7 +1116,7 @@ Para salvar, usaremos a mesma função `ggsave()`.
 ```{r}
 linha_barra = linha / barras + plot_layout(guides = "collect")
 
-ggsave(linha_barra, file = here("Figuras","linha_barra.png"), width = 10, height = 5)
+ggsave(linha_barra, file = here("Bioinformática","linha_barra.png"), width = 10, height = 5)
 ```
 
 # Dia 2
@@ -1129,11 +1124,14 @@ ggsave(linha_barra, file = here("Figuras","linha_barra.png"), width = 10, height
 # 5. Trabalhando com dados de bioinformática
 
 Importando dados
+
 ```{r}
 metadata <- read_csv("Bioinformática/metadata.csv")
 expression_data <- read_csv("Bioinformática/expression_data.csv")
 ```
+
 Limpando dados
+
 ```{r}
 library(janitor)
 metadata = metadata %>% 
@@ -1143,6 +1141,7 @@ metadata = metadata %>%
 Transformando dados
 
 Em matriz
+
 ```{r}
 #Transformar em matriz
 expression_data_matriz = expression_data %>% 
@@ -1151,6 +1150,7 @@ expression_data_matriz = expression_data %>%
 ```
 
 Em tabela longa
+
 ```{r}
 #Transformar em tabela longa
 expression_data_long = expression_data %>%
@@ -1160,6 +1160,7 @@ expression_data_long = expression_data %>%
 ```
 
 Anotando dados
+
 ```{r}
 #Unir duas tabelas com anotações
 expression_data_long_metadata = expression_data_long %>% 
@@ -1167,6 +1168,7 @@ expression_data_long_metadata = expression_data_long %>%
 ```
 
 Visualizando dados
+
 ```{r eval=FALSE, include=FALSE}
 expression_data_long_metadata %>% 
   filter(gene == "Gene_1") %>% 
@@ -1174,6 +1176,7 @@ expression_data_long_metadata %>%
 ```
 
 Histograma
+
 ```{r}
 library(ggsci)
 expression_data_long_metadata %>% 
@@ -1188,7 +1191,9 @@ expression_data_long_metadata %>%
   theme_classic()
   
 ```
+
 Gráfico de densidade
+
 ```{r}
 expression_data_long_metadata %>% 
   filter(gene == "Gene_1") %>%
@@ -1200,6 +1205,7 @@ expression_data_long_metadata %>%
 ```
 
 Boxplot simples
+
 ```{r}
 expression_data_long_metadata %>% 
   filter(gene == "Gene_1") %>%
@@ -1211,7 +1217,9 @@ expression_data_long_metadata %>%
   theme_classic() +
   scale_fill_npg()
 ```
+
 Boxplot com violing plot e pontos
+
 ```{r}
 p = expression_data_long_metadata %>% 
   filter(gene == "Gene_1") %>%
@@ -1233,7 +1241,9 @@ p = expression_data_long_metadata %>%
 p
 
 ```
+
 Gráfico de barras com intervalo de confiança 95%
+
 ```{r}
 table_genes_1_2 = expression_data_long_metadata %>% 
   group_by(condition, gene) %>% 
@@ -1263,7 +1273,9 @@ table_genes_1_2 %>%
        subtitle = "Mean gene expression by condition")
 
 ```
+
 Teste t com ggpubr
+
 ```{r}
 library(ggpubr)
 my_comparisons <- list( c("Condition_A", "Condition_B"))
@@ -1273,6 +1285,7 @@ p +
 ```
 
 Gráfico de dispersão
+
 ```{r}
 expression_data_long_metadata %>% 
   filter(gene %in% c("Gene_1", "Gene_2")) %>%
@@ -1294,6 +1307,7 @@ expression_data_long_metadata %>%
 ```
 
 Heatmap
+
 ```{r fig.height=10, fig.width=10}
 library(ggheatmap)
 library(circlize)
@@ -1330,12 +1344,6 @@ Heatmap(heatmap_table,
         row_split = 3
         ) 
 ```
-
-
-
-
-
-
 
 # Agora é a sua vez!
 
@@ -1414,4 +1422,3 @@ Faça gráficos analisando continentes, países, doenças e vacinas diferentes. 
     -   Quer fazer algo **específico** e pontual no código? Manda pro ChatGPT!
 
 -   **Envie suas dúvidas no grupo de Whatsapp**. Caso seja necessário, marque uma monitoria gratuita comigo.
-

@@ -169,7 +169,7 @@ ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Tukey.png"),
 
 
 ## Não paramétrico (Kruskal Wallis) e posthoc
-
+### Por dia
 ```{r fig.height=7, fig.width=10}
 library(rstatix) 
 kruskal_wallis.summary <- table %>%
@@ -299,7 +299,141 @@ ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Kruskal.png"),
        bg = "white")
 ```
 
+### Por grupo
+```{r fig.height=4, fig.width=10}
+library(rstatix) 
+kruskal_wallis.summary <- table %>%
+  group_by(group) %>%
+  kruskal_test(value ~ dia)
+  
+kruskal_wallis.summary
 
+# stat.test = table %>% 
+#   group_by(group) %>%
+#   dunn_test(value ~ dia, 
+#             p.adjust.method = "BH", 
+#             detailed = T) %>% 
+#   add_xy_position(x = "dia", 
+#                   dodge = 1) %>% 
+#   mutate(
+#     y.position = log10(y.position),
+#     p.adj.signif = case_when(
+#       p.adj <= 0.01 ~ "***",       # p <= 0.01
+#       p.adj <= 0.05 ~ "**",        # 0.01 < p <= 0.05
+#       p.adj <= 0.10 ~ "*",         # 0.05 < p <= 0.10
+#       TRUE ~ "ns"                        # p > 0.10
+#     )
+#   ) %>% 
+#   group_by(group) %>% 
+#   ungroup() %>% 
+#     filter(!p.adj.signif %in% c("ns")) %>% 
+#     mutate(y.position = min(y.position) + (row_number() - 1) * 0.1) 
+
+
+stat.test
+
+
+#Definir comparações
+
+
+#Mostrar somente as comparações significantes
+my_comparisons <- stat.test %>%
+  select(group1, group2) %>% 
+  arrange(group1) %>% 
+  distinct() %>% 
+  rowwise() %>%
+  mutate(comparison = list(c(group1, group2))) %>%
+  pull(comparison)
+
+plot_group = table %>% 
+  # group_by(group, dia) %>% 
+  # mutate(n = n()) %>% 
+  # ungroup() %>% 
+  # mutate(dia = paste0(dia, " (n=", n, ")")) %>% 
+  ggboxplot(x = "dia",
+      y = "value",
+      fill = "group", outlier.shape = NA,
+      alpha= 0.5) +
+  stat_summary(fun.y= mean, 
+               geom="point", 
+               shape=95, 
+               size=3, 
+               color="red",
+               stroke = 5,
+               # fill="red", 
+               alpha = 1,
+               show.legend = F) +
+    geom_point(fill = NA,
+               color = "black",
+             size = 1,
+             stroke = 1,
+             alpha = 1,
+             shape=21, 
+             show.legend = F) +
+  theme_minimal() +
+  theme(text = element_text(size = 10,
+                            color = "black"),
+        plot.caption = element_text(size = 10, 
+                                    color = "black",
+                                    hjust = 0.5),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45,
+                                   size = 10,
+                                   hjust = 1,
+                                   vjust = 1,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        strip.text = element_text(size = 12,
+                                  color = "black"),
+        axis.line.x = element_line(color = "black",
+                                   size = 1),
+        axis.ticks.x = element_line(color = "black",
+                                  size = 1),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  stat_kruskal_test(p.adjust.method = "BH", 
+                     vjust = -2, label = "p = {p.format}",
+                     hjust = 0.5, na.rm = T,
+                     label.y.npc = "top",
+                     label.x.npc = "center", ) +
+  # stat_pvalue_manual(stat.test,
+  #                    label = "p.adj.signif",
+  #                    hide.ns = T,
+  #                    bracket.size = 0.3,
+  #                    tip.length = 0.00,
+  #                    vjust = 0.7
+  #                    ) +
+  scale_y_continuous(transform = "log10",
+                     expand = c(0, 0.5),
+                     labels = scales::label_log(base = 10),
+                     breaks = c(0, 1, 10, 100, 1000, 10000)) +
+  facet_wrap(~group, scales = "free_x", nrow = 1) +
+  scale_colour_paletteer_d("palettetown::metagross") +
+  scale_fill_paletteer_d("palettetown::metagross") +
+    labs(fill = "Group",
+       color = "Group",
+       x = "",
+       y = "OD50",
+       title = "ELISA OD50% - By group ",
+       subtitle =  "Kruskal-Wallis test (Benjamini-Hochberg correction). \nSignificance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.") 
+
+plot_group
+
+plot_group %>%
+ggsave(filename = here("Gráficos diversos", "ELISA_OD50_ByGroup_Kruskal.png"),
+       width = 10,
+       height = 4,
+       bg = "white")
+```
+
+Unir plots
+```{r fig.height=10, fig.width=10}
+plot / plot_group + plot_layout(axes = "collect",
+                                axis_titles = "collect",
+                                heights = c(1, 0.5)) +
+  plot_annotation(title = "collect")
+```
 
 
 

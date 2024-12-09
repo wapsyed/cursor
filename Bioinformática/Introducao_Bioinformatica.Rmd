@@ -14,8 +14,11 @@ output:
 
 # Sobre o curso
 
-**\
-Ministrantes:** - Wasim Aluísio Prates Syed: Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU). - Dennyson Leandro Mathias da Fonseca: Biomédico e doutorando no programa de Interunidades em Bioinformática da Universidade de São Paulo (USP). Atuou como pesquisador convidado no Berlin Institute of Health (BIH), Universitätsmedizin Charité, Alemanha.
+**Ministrantes:**
+
+-   Wasim Aluísio Prates Syed: Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
+
+-   Dennyson Leandro Mathias da Fonseca: Biomédico e doutorando no programa de Interunidades em Bioinformática da Universidade de São Paulo (USP). Atuou como pesquisador convidado no Berlin Institute of Health (BIH), Universitätsmedizin Charité, Alemanha.
 
 **Descrição do curso:**
 
@@ -36,8 +39,6 @@ Os participantes terão uma aula introdutória à ciência de dados e fundamento
 **Como será o projeto**:
 
 O projeto consistirá na geração de pelo menos 5 gráficos acompanhados de discussões pertinentes, e terão direito a um certificado à parte. Para isso, durante o curso, serão apresentadas perguntas que poderão ser utilizadas para desenvolver o projeto. O objetivo principal é explorar os diversos tipos de gráficos disponíveis, formular perguntas pertinentes e explicar os padrões e comportamentos observados nos dados analisados.
-
-Os participantes terão 1 mês para desenvolver o projeto, e poderão tirar dúvidas no grupo de WhatsApp e marcar uma mentoria individual, se necessário.
 
 > **Quer saber mais sobre o curso e outros materiais que estamos desenvolvendo?**
 >
@@ -988,16 +989,16 @@ Além disso, podemos criar um gradiente usando `scale_color_gradient()` e defini
 ```{r}
 data_2 %>% 
   ggplot() +
-  aes(x = peso,
-      y = imc,
-      color = imc) +
+  aes(x = variable3,
+      y = factor,
+      color = factor) +
   geom_point() +
   
   #Títulos
-    labs(x = "Peso (kg)", 
-       y = "IMC",
-       title = "Índice de massa corporal versus peso",
-       color = "IMC") +
+    labs(x = "Variable 3", 
+       y = "Factor",
+       title = "Factor versus Variable",
+       color = "Factor") +
   
   #Tema pré-estabelecido
   theme_light() + 
@@ -1036,10 +1037,10 @@ linha = data_2 %>%
   geom_point(size = 4) +
   
   #Títulos
-    labs(x = "Peso (kg)", 
-       y = "IMC",
-       title = "Índice de massa corporal versus peso",
-       color = "IMC") +
+    labs(x = "Variable 3", 
+       y = "Factor",
+       title = "Factor versus Variable 3",
+       color = "Factor") +
 
   #Tema pré-estabelecido
   theme_light() + 

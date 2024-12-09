@@ -1347,6 +1347,11 @@ Heatmap(heatmap_table,
 ```
 
 # Agora é a sua vez!
+Para esta prática, utilizaremos dados reais de vacinação com a vacina ChAdOx-1 da Astrazeneca.
+
+- Importe as counts e metadados da vacina astrazeneca (GSE199750), na pasta "Bioinformática". 
+- Tente fazer as mesmas análises acima, agora adaptando o nome da variável etc.
+
 
 **Recomendações**
 
@@ -1375,8 +1380,6 @@ Heatmap(heatmap_table,
     -   Quais são os **genes** **menos** expressos em cada **grupo**?
 
     -   Quais são os **genes** **mais** expressos em cada **grupo**?
-
-    -   Quais são os **países** que **mais** tiveram **mortes** por uma **doença X**? A **difteria** aparentemente teve um surto em algum país **latinoamericano** a partir de **2016**. Qual é este país e por que isso ocorreu? Será que é a baixa **cobertura vacinal**?
 
 -   **Comparações**:
 

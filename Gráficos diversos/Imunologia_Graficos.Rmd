@@ -148,8 +148,7 @@ plot = table %>%
                      labels = scales::label_log(base = 10),
                      breaks = c(0, 1, 10, 100, 1000, 10000)) +
   facet_wrap(~paste("Day ", dia)) +
-  scale_colour_paletteer_d("palettetown::metagross") +
-  scale_fill_paletteer_d("palettetown::metagross") +
+   scale_fill_jama() +
     labs(fill = "Group",
        color = "Group",
        x = "",
@@ -281,8 +280,7 @@ plot = table %>%
                      labels = scales::label_log(base = 10),
                      breaks = c(0, 1, 10, 100, 1000, 10000)) +
   facet_wrap(~paste("Day ", dia)) +
-  scale_colour_paletteer_d("palettetown::metagross") +
-  scale_fill_paletteer_d("palettetown::metagross") +
+  scale_fill_jama() +
     labs(fill = "Group",
        color = "Group",
        x = "",
@@ -409,8 +407,7 @@ plot_group = table %>%
                      labels = scales::label_log(base = 10),
                      breaks = c(0, 1, 10, 100, 1000, 10000)) +
   facet_wrap(~group, scales = "free_x", nrow = 1) +
-  scale_colour_paletteer_d("palettetown::metagross") +
-  scale_fill_paletteer_d("palettetown::metagross") +
+  scale_fill_jama() +
     labs(fill = "Group",
        color = "Group",
        x = "",
@@ -446,7 +443,7 @@ ggsave(filename = here("Gráficos diversos", "ELISA_OD50_ByGroup_ByDay_Kruskal.p
 
 # IgG Subclasses
 ```{r fig.height=5, fig.width=10}
-igg_subclasses <- read_excel("Gráficos diversos/igg_subclasses.xlsx")
+igg_subclasses <- read_excel(here("Gráficos diversos", "igg_subclasses.xlsx"))
 
 
 table = igg_subclasses %>% 
@@ -470,7 +467,7 @@ table = igg_subclasses %>%
 table
 ```
 
-## ANOVA e posthoc
+## ANOVA e Tukey post-hoc
 ```{r fig.height=5, fig.width=10}
 library(rstatix)  # https://github.com/kassambara/rstatix
 anova.res <- table %>%
@@ -583,8 +580,7 @@ plot = table %>%
                      labels = scales::label_log(base = 10),
                      breaks = c(0, 1, 10, 100, 1000, 10000)) +
   facet_wrap(~teste) +
-  scale_colour_paletteer_d("palettetown::metagross") +
-  scale_fill_paletteer_d("palettetown::metagross") +
+  scale_fill_jama() +
     labs(fill = "Group",
        color = "Group",
        x = "",
@@ -715,8 +711,7 @@ plot = table %>%
                      labels = scales::label_log(base = 10),
                      breaks = c(0, 1, 10, 100, 1000, 10000)) +
   facet_wrap(~teste) +
-  scale_colour_paletteer_d("palettetown::metagross") +
-  scale_fill_paletteer_d("palettetown::metagross") +
+  scale_fill_jama() +
     labs(fill = "Group",
        color = "Group",
        x = "",

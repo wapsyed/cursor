@@ -1315,20 +1315,23 @@ library(circlize)
 library(ComplexHeatmap)
 library(scales)
 
+#Tabela com os nossos dados expressão
 heatmap_table = expression_data %>% 
   column_to_rownames("gene") %>% 
   as.matrix()
 
-
+#Tabela com anotações
 annotation_col = metadata %>% 
   column_to_rownames("sample") %>% 
   mutate(condition = as.factor(condition))
+annotation_col
 
+```
+
+```{r fig.height=10, fig.width=10}
 col = colorRamp2(c(0, 10, 20), c("white", "red", "black"))
-
-
 colors_annotations = list(condition = c("Condition_A" = "gray90",
-                                                "Condition_B" = "steelblue"))
+                                        "Condition_B" = "steelblue"))
 
 col_ha = HeatmapAnnotation(df = annotation_col, 
                        col = colors_annotations, 
@@ -1336,7 +1339,7 @@ col_ha = HeatmapAnnotation(df = annotation_col,
 
 Heatmap(heatmap_table, 
         top_annotation = col_ha,
-        cluster_rows = T,
+        cluster_rows = T, name = "Expression",
         cluster_columns = T, 
         cluster_row_slices = T,
         cluster_column_slices = T,
@@ -1346,12 +1349,12 @@ Heatmap(heatmap_table,
         ) 
 ```
 
-# Agora é a sua vez!
+# Hands-on: Transcriptoma da vacina ChAdOx-1-S
+
 Para esta prática, utilizaremos dados reais de vacinação com a vacina ChAdOx-1 da Astrazeneca.
 
-- Importe as counts e metadados da vacina astrazeneca (GSE199750), na pasta "Bioinformática". 
-- Tente fazer as mesmas análises acima, agora adaptando o nome da variável etc.
-
+-   Importe as counts e metadados da vacina astrazeneca (GSE199750), na pasta "Bioinformática".
+-   Tente fazer as mesmas análises acima, agora adaptando o nome da variável etc.
 
 **Recomendações**
 
@@ -1366,7 +1369,7 @@ Para esta prática, utilizaremos dados reais de vacinação com a vacina ChAdOx-
 #...
 ```
 
-> "Meu código... Gráfico do tipo A dos países XYZ."
+> "Meu código... Gráfico do tipo A dos genes X, Y, Z."
 
 ```{r}
 #Seu código
@@ -1383,7 +1386,7 @@ Para esta prática, utilizaremos dados reais de vacinação com a vacina ChAdOx-
 
 -   **Comparações**:
 
-    -   Qual seria a média de expressão de um gene x para o grupo y e em comparação ao gene z? (Dica: use `group_by()` e `summarize()`).
+    -   Qual seria a média de expressão de um gene x para o grupo y e em comparação ao gene z? E a mediana? Calcule também o desvio padrão. (Dica: use `group_by()` e `summarize()`)
 
 **Alguns conselhos:**
 

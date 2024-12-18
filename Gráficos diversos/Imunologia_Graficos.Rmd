@@ -6,6 +6,7 @@ library(ggsci)
 library(here)
 library(paletteer)
 library(ggpubr)
+library(readxl)
 # install.packages("paletteer")
 ```
 
@@ -599,7 +600,7 @@ ggsave(filename = here("Gráficos diversos", "ELISA_IgG_Subclasses_OD50_AllvsAll
 ```
 
 
-## Não paramétrico (Kruskal Wallis) e posthoc
+## Kruskal Wallis e posthoc
 
 ```{r fig.height=7, fig.width=10}
 library(rstatix) 
@@ -727,6 +728,206 @@ ggsave(filename = here("Gráficos diversos", "ELISA_IgG_Subclasses_OD50_AllvsAll
        height = 7,
        bg = "white")
 ```
+
+# Statistical power calculation
+
+Cohen's d Tamanho de efeito:
+0.2: Pequeno (diferença sutil, mas observável).
+0.5: Médio (diferença moderada, perceptível a olho nu).
+0.8 ou maior: Grande (diferença significativa).
+Exemplo prático:
+d=0.2: Diferença de peso entre pessoas de 150 cm e 152 cm de altura.
+d=0.8: Diferença de peso entre pessoas de 150 cm e 165 cm.
+
+
+```{r}
+# install.packages("pwr")
+library(pwr)
+
+
+# TESTE T ------
+
+# Calcular poder estatístico
+pwr.t.test(
+  d = 0.5,           # Effect size
+  n = 20,          
+  sig.level = 0.05, 
+  type = "two.sample", 
+  alternative = "two.sided" # Teste bilateral
+)
+
+
+# Calcular tamanho da amostra
+pwr.t.test(
+  d = 0.5,           # Effect size
+  power = 0.5,       # Poder desejado
+  sig.level = 0.10,  # Nível de significância
+  type = "two.sample" # Teste de duas amostras
+)
+
+
+# ANOVA -----
+# Calcular o poder
+pwr.anova.test(
+  k = 3,           # Grupos
+  n = 10,          # Tamanho da amostra por grupo
+  f = 0.25,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
+  sig.level = 0.05 # Nível de significância
+)
+
+# Calcular tamanho de amostra
+pwr.anova.test(
+  k = 3,            # Grupos 
+  power = 0.5,      # Poder
+  f = 0.25,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
+  sig.level = 0.05 # Nível de significância
+)
+
+```
+
+
+# Bootstrapping
+
+## Reamostragem por grupo
+```{r fig.height=5, fig.width=10}
+library(rsample)
+table
+
+# Dados ELISA OD50 (Tabela larga)
+
+# Gerar bootstrap para cada grupo separadamente
+bootstrap_means <-  table %>% 
+  unite(group_dia, c(group, dia), sep = "_") %>% 
+  group_split(group_dia) %>%                       # Dividir os dados por grupo
+  map_dfr(~ {
+    group_name <- unique(.x$group_dia)             # Pegar o nome do grupo
+    boot_data <- bootstraps(.x, times = 10000)  # Gerar bootstraps para o grupo
+    
+    # Calcular a média de cada amostra bootstrap
+    boot_data %>%
+      mutate(
+        group_dia = group_name,                               # Adicionar o nome do grupo
+        mean_value = map_dbl(splits, ~ mean(analysis(.x)$value))
+      )
+  })
+```
+
+Visualizando
+```{r fig.height=5, fig.width=10}
+library(ggridges)
+bootstrap_means %>% 
+         separate(group_dia, into = c("group", "dia"), sep = "_", remove = F) %>%  
+       mutate(group = fct_relevel(group, table$group %>% unique() %>% as.character())) %>% 
+ggplot(
+       aes(x = mean_value,
+           y = group,
+           group = group_dia,
+           fill = group)) +
+  geom_density_ridges(jittered_points = TRUE,
+                      stat = "binline",
+    position = position_points_jitter(width = 0.05, height = 0), 
+    point_shape = '.', point_size = 3, point_alpha = 1, alpha = 1,
+    scale = 1) +
+  
+  labs(title = "Médias de reamostragens por Bootstrap, IC 95%",
+       x = "Frequency",
+       y = "Mean") +
+  facet_wrap(~dia, 
+             scales = "free") +
+  theme_minimal() +
+  theme(axis.line.x = element_line(size = 1)) +
+  coord_flip()
+```
+
+## IC
+```{r}
+# Intervalos de confiança
+# Calcular IC 95% por grupo
+ci_results <- bootstrap_means %>%
+  group_by(group_dia) %>%
+  summarise(
+    lower_ci = quantile(mean_value, 0.025),  # Percentil 2.5%
+    upper_ci = quantile(mean_value, 0.975),  # Percentil 97.5%
+    mean_bootstrap = mean(mean_value)        # Média das reamostras
+  ) %>% 
+  separate(group_dia, into = c("group", "dia"), sep = "_") %>% 
+         mutate(group = fct_relevel(group, table$group %>% unique() %>% as.character()))
+bootstrap_means
+ci_results
+
+
+ggplot(ci_results, aes(x = group, y = mean_bootstrap)) +
+  geom_point(size = 3, color = "red") +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci), width = 0) +
+  labs(title = "Médias de reamostragens por Bootstrap, IC 95%",
+       x = "Grupo",
+       y = "Média") +
+  facet_wrap(~dia, scales = "free", nrow = 1) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1),
+        axis.line.x = element_line(size = 1))
+
+```
+
+## Bootstrap de diferenças
+```{r}
+trt_10 = bootstrap_means %>% 
+    separate(group_dia, into = c("group", "dia"), sep = "_") %>% 
+    mutate(group = fct_relevel(group, table$group %>% unique() %>% as.character())) %>% 
+  filter(group == "Alum 10 μg",
+         dia == "35") %>% 
+  pull(mean_value)
+
+ctrl = bootstrap_means %>% 
+    separate(group_dia, into = c("group", "dia"), sep = "_") %>% 
+    mutate(group = fct_relevel(group, table$group %>% unique() %>% as.character())) %>% 
+  filter(group == "PBS",
+         dia == "35") %>% 
+  pull(mean_value)
+
+# p-valor baseado na hipótese nula
+p_value_null <- mean(abs(bootstrap_diff_null) >= 0)
+
+
+obs_diff = mean(trt_10) - mean(ctrl)
+bootstrap_diff = trt_10 - ctrl
+bootstrap_diff_null <- bootstrap_diff - obs_diff
+ci <- quantile(bootstrap_diff, probs = c(0.025, 0.975))
+mean_diff <- mean(bootstrap_diff)
+diff_observed <- mean(trt_10) - mean(ctrl)
+bootstrap_null <- bootstrap_diff - mean(bootstrap_diff) # Recentrar a distribuição bootstrapada para a hipotese nula
+p_value_null <- mean(abs(bootstrap_null) >= abs(diff_observed)) #O valor p é a proporção de valores do bootstrap maiores ou menores que a diferença observada
+
+diff_bootstrap_results <- tibble(
+  mean_diff = mean_diff,
+  lower_ci = ci[1],
+  upper_ci = ci[2],
+  p_value = p_value_null
+)
+
+ggplot(diff_bootstrap_results, aes(x = "", y = mean_diff)) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci), width = 0) +
+  geom_point(size = 3, color = "red") +
+  labs(title = "Bootstrap of mean differences (n = 1000), IC 95%",
+       subtitle = paste0("pvalue = ", diff_bootstrap_results$p_value), 
+       x = "Group",
+       y = "Mean differences") +
+  # scale_y_continuous(limits = c(0, 700), breaks = seq(0, 700, 100))+
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1),
+        axis.line.x = element_line(size = 1),
+        panel.grid = element_line(color = "gray75",
+                                  linetype = 2)) +
+  geom_hline(yintercept = 0, color = "black",
+             linetype = 2) 
+
+
+
+```
+
+
 
 
 

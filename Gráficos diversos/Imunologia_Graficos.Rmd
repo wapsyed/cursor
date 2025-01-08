@@ -1,3 +1,13 @@
+---
+output: 
+  html_document: 
+    toc: yes
+---
+
+
+
+
+
 # Biblioteca
 ```{r}
 library(tidyverse)
@@ -7,6 +17,8 @@ library(here)
 library(paletteer)
 library(ggpubr)
 library(readxl)
+library(janitor)
+library(patchwork)
 # install.packages("paletteer")
 ```
 
@@ -41,13 +53,13 @@ table = ELISA_OD50 %>%
 library(rstatix)  # https://github.com/kassambara/rstatix
 anova.res <- table %>%
   group_by(dia) %>%
-  anova_test(value ~ group)
+  welch_anova_test(value ~ group)
 
 anova.res
 
 stat.test.summary <- table %>%
   group_by(dia) %>%
-  tukey_hsd(formula = value ~ group, detailed = T) %>% 
+  games_howell_test(formula = value ~ group, detailed = T) %>% 
   add_xy_position(x = "group", 
                   dodge = 1) %>% 
   mutate(
@@ -155,13 +167,13 @@ plot = table %>%
        x = "",
        y = "OD50",
        title = "ELISA OD50% - All vs. All",
-       subtitle =  "ANOVA, Tukey HSD. \nSignificance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.",
+       subtitle =  "Welch's ANOVA, Games-Howell post-hoc test. \nSignificance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.",
        caption = get_pwc_label(stat.test.summary)) 
 
 plot
 
 plot %>%
-ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Tukey.png"),
+ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Welch_GamesHowell.png"),
        width = 10,
        height = 7,
        bg = "white")
@@ -442,6 +454,8 @@ ggsave(filename = here("Gráficos diversos", "ELISA_OD50_ByGroup_ByDay_Kruskal.p
 
 
 
+
+
 # IgG Subclasses
 ```{r fig.height=5, fig.width=10}
 igg_subclasses <- read_excel(here("Gráficos diversos", "igg_subclasses.xlsx"))
@@ -473,13 +487,13 @@ table
 library(rstatix)  # https://github.com/kassambara/rstatix
 anova.res <- table %>%
   group_by(teste) %>%
-  anova_test(value ~ group)
+  welch_anova_test(value ~ group)
 
 anova.res
 
 stat.test.summary <- table %>%
   group_by(teste) %>%
-  tukey_hsd(formula = value ~ group, detailed = T) %>% 
+  games_howell_test(formula = value ~ group, detailed = T, conf.level = 0.95) %>% 
   add_xy_position(x = "group", 
                   dodge = 1) %>% 
   mutate(
@@ -526,7 +540,7 @@ plot = table %>%
       alpha = 0.5) +
   # geom_violin(color = "gray10",
   #             fill = NA,
-  #             alpha = 1, 
+  #             alpha = 1,
   #             width = 1) +
   # geom_boxplot(outlier.shape = NA,
   #              alpha = 1, 
@@ -579,7 +593,7 @@ plot = table %>%
                      ) +
   scale_y_continuous(transform = "log10", 
                      labels = scales::label_log(base = 10),
-                     breaks = c(0, 1, 10, 100, 1000, 10000)) +
+                     breaks = c(0, 1, 10, 100, 1000, 10000, 100000)) +
   facet_wrap(~teste) +
   scale_fill_jama() +
     labs(fill = "Group",
@@ -587,13 +601,13 @@ plot = table %>%
        x = "",
        y = "OD50",
        title = "ELISA IgG subclasses OD50% - All vs. All",
-       subtitle =  "ANOVA, Tukey HSD. \nSignificance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.",
+       subtitle =  "Welch's ANOVA, Games-Howell. \nSignificance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.",
        caption = get_pwc_label(stat.test.summary)) 
 
 plot
 
 plot %>%
-ggsave(filename = here("Gráficos diversos", "ELISA_IgG_Subclasses_OD50_AllvsAll_Tukey.png"),
+ggsave(filename = here("Gráficos diversos", "ELISA_IgG_Subclasses_OD50_AllvsAll_Welch_GamesHowell.png"),
        width = 10,
        height = 7,
        bg = "white")
@@ -739,11 +753,10 @@ Exemplo prático:
 d=0.2: Diferença de peso entre pessoas de 150 cm e 152 cm de altura.
 d=0.8: Diferença de peso entre pessoas de 150 cm e 165 cm.
 
-
+Teste T
 ```{r}
 # install.packages("pwr")
 library(pwr)
-
 
 # TESTE T ------
 
@@ -759,13 +772,15 @@ pwr.t.test(
 
 # Calcular tamanho da amostra
 pwr.t.test(
-  d = 0.5,           # Effect size
+  d = 0.8,           # Effect size
   power = 0.5,       # Poder desejado
-  sig.level = 0.10,  # Nível de significância
-  type = "two.sample" # Teste de duas amostras
+  sig.level = 0.05,  # Nível de significância
+  type = "two.sample"  # Teste de duas amostras
 )
+```
 
-
+ANOVA
+```{r}
 # ANOVA -----
 # Calcular o poder
 pwr.anova.test(
@@ -779,7 +794,7 @@ pwr.anova.test(
 pwr.anova.test(
   k = 3,            # Grupos 
   power = 0.5,      # Poder
-  f = 0.25,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
+  f = 0.4,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
   sig.level = 0.05 # Nível de significância
 )
 
@@ -833,7 +848,8 @@ ggplot(
        x = "Frequency",
        y = "Mean") +
   facet_wrap(~dia, 
-             scales = "free") +
+             scales = "free",
+             ncol = 1) +
   theme_minimal() +
   theme(axis.line.x = element_line(size = 1)) +
   coord_flip()

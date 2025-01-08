@@ -1,0 +1,210 @@
+```{r}
+library(readxl)
+library(tidyverse)
+
+
+#Amplification data
+pcr <- read_excel("pcr.xls", 
+                  col_names = FALSE,
+                  sheet = "Amplification Data")
+
+
+#Metadata
+pcr_metadata = pcr %>% 
+  slice_head(n=39) %>% 
+  select(1:2) %>% 
+  rename(info = "...1",
+         params = "...2")
+
+#Dados
+## Estruturar tabela
+tabela1 = pcr %>% 
+  rename(well = "...1") %>% 
+  filter(!well %in% c(pcr_metadata$info))
+colnames_corretos <- as.character(tabela1[1, ])
+tabela1 <- tabela1[-1, ]
+colnames(tabela1) <- colnames_corretos
+
+tabela_pcr_clean = tabela1 %>% 
+  clean_names() %>% 
+  mutate(cycle = as.numeric(cycle),
+         rn = as.numeric(rn),
+         delta_rn = as.numeric(delta_rn)) %>% 
+  drop_na(target_name)
+
+tabela_pcr_norm 
+
+ctrl = tabela_pcr_clean %>%
+  filter(target_name == "U6") %>% 
+  group_by(cycle) %>% 
+  summarize(mean_ctrl = mean(delta_rn)) 
+
+tabela_pcr_norm = tabela_pcr_clean %>% 
+  filter(target_name != "U6") %>% 
+  inner_join(ctrl, by = "cycle") %>% 
+  mutate(delta_delta_rn = delta_rn - mean_ctrl,
+         rel_exp = 2^(-delta_delta_rn))
+
+```
+
+Plotar dados
+```{r fig.height=5, fig.width=5}
+pcr_raw_plot = tabela_pcr_clean %>% 
+  ggplot() +
+  aes(x = cycle,
+      y = delta_rn,
+      color = target_name,
+      group = well,
+      # group = target_name,
+      # color = target_name,
+      # fill = target_name
+      ) +
+  geom_line(alpha = 0.2, 
+            show.legend = T) +
+    stat_summary(geom="errorbar", 
+               fun.data = mean_cl_boot,
+               width = 0.5, 
+               size = 0.5,
+               alpha = 1,
+               mapping = aes(group = target_name)) +
+    stat_summary(fun.y = mean, 
+                 geom = "point",
+               # color = "black",
+               size = 1,
+               alpha = 1,
+               mapping = aes(group = target_name)) +
+  scale_color_aaas()+
+  scale_y_continuous(expand = c(0,0)) +
+  theme_minimal() +
+  theme(text = element_text(color = "black",
+                            size = 10),
+        axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        axis.ticks = element_line(size = 0.5,
+                                    color = "black"),
+        axis.line = element_line(size = 0.5),
+        legend.position = "top",
+        legend.text = element_text(size = 10),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  labs(x = "Cycle",
+       y = "ΔRn",
+       color = "Target",
+       # title = "PCR Amplification plot",
+       # subtitle = "Target amplification by wells. Bootstrapped CI 95%.",
+       # caption = "Ref: Paula, Geovanna"
+       ) 
+
+pcr_raw_plot
+
+
+pcr_norm_plot_1 = tabela_pcr_norm %>% 
+  ggplot() +
+  aes(x = cycle,
+      y = delta_delta_rn,
+      color = target_name,
+      group = well,
+      # group = target_name,
+      # color = target_name,
+      # fill = target_name
+      ) +
+  geom_line(alpha = 0.2, 
+            show.legend = F) +
+    stat_summary(geom="errorbar", 
+               fun.data = mean_cl_boot,
+               width = 0.5, 
+               size = 0.5,
+               alpha = 1,
+               mapping = aes(group = target_name)) +
+    stat_summary(fun.y = mean, 
+                 geom = "point",
+               # color = "black",
+               size = 1,
+               alpha = 1,
+               mapping = aes(group = target_name)) +
+  scale_color_aaas()+
+  scale_y_continuous(expand = c(0,0)) +
+  theme_minimal() +
+  theme(text = element_text(color = "black",
+                            size = 10),
+        axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        axis.ticks = element_line(size = 0.5,
+                                    color = "black"),
+        axis.line = element_line(size = 0.5),
+        legend.position = "none",
+        legend.text = element_text(size = 10),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  labs(x = "Cycle",
+       y = "ΔΔRn",
+       color = "Target",
+       # title = "PCR Amplification plot",
+       # subtitle = "Target amplification by wells. Bootstrapped CI 95%.",
+       # caption = "Ref: Paula, Geovanna"
+       ) 
+
+
+pcr_norm_plot_2 = tabela_pcr_norm %>% 
+  ggplot() +
+  aes(x = cycle,
+      y = rel_exp,
+      color = target_name,
+      group = well,
+      # group = target_name,
+      # color = target_name,
+      # fill = target_name
+      ) +
+  geom_line(alpha = 0.2, 
+            show.legend = F) +
+    stat_summary(geom="errorbar", 
+               fun.data = mean_cl_boot,
+               width = 0.5, 
+               size = 0.5,
+               alpha = 1,
+               mapping = aes(group = target_name)) +
+    stat_summary(fun.y = mean, 
+                 geom = "point",
+               # color = "black",
+               size = 1,
+               alpha = 1,
+               mapping = aes(group = target_name)) +
+  scale_color_aaas()+
+  scale_y_continuous(expand = c(0,0)) +
+  theme_minimal() +
+  theme(text = element_text(color = "black",
+                            size = 10),
+        axis.text.x = element_text(size = 10,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        axis.ticks = element_line(size = 0.5,
+                                    color = "black"),
+        axis.line = element_line(size = 0.5),
+        legend.position = "none",
+        legend.text = element_text(size = 10),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  labs(x = "Cycle",
+       y = "Relative expression",
+       color = "Target",
+       # title = "PCR Amplification plot",
+       # subtitle = "Target amplification by wells. Bootstrapped CI 95%.",
+       # caption = "Ref: Paula, Geovanna"
+       ) 
+
+
+pcr_raw_plot / pcr_norm_plot_1 / pcr_norm_plot_2 +
+  plot_layout(guides = "collect", 
+              axes = "collect") +
+  plot_annotation(
+       title = "PCR Amplification plot",
+       subtitle = "Target amplification by wells. Bootstrapped CI 95%.",
+       caption = "Ref: Paula, Geovanna", theme = theme(legend.position = "top")
+  )
+```
+

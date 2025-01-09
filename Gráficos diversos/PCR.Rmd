@@ -16,7 +16,7 @@ pcr_metadata = pcr %>%
   rename(info = "...1",
          params = "...2")
 
-#Dados
+#Curva de amplificação
 ## Estruturar tabela
 tabela1 = pcr %>% 
   rename(well = "...1") %>% 
@@ -31,20 +31,6 @@ tabela_pcr_clean = tabela1 %>%
          rn = as.numeric(rn),
          delta_rn = as.numeric(delta_rn)) %>% 
   drop_na(target_name)
-
-tabela_pcr_norm 
-
-ctrl = tabela_pcr_clean %>%
-  filter(target_name == "U6") %>% 
-  group_by(cycle) %>% 
-  summarize(mean_ctrl = mean(delta_rn)) 
-
-tabela_pcr_norm = tabela_pcr_clean %>% 
-  filter(target_name != "U6") %>% 
-  inner_join(ctrl, by = "cycle") %>% 
-  mutate(delta_delta_rn = delta_rn - mean_ctrl,
-         rel_exp = 2^(-delta_delta_rn))
-
 ```
 
 Plotar dados
@@ -98,34 +84,66 @@ pcr_raw_plot = tabela_pcr_clean %>%
        ) 
 
 pcr_raw_plot
+```
+
+Dados normalizados
+
+```{r}
+## Normalizacao
+pcr_ct = read_excel(here("Gráficos diversos", "pcr.xls"), 
+     sheet = "Results") %>% 
+  rename(well = "Block Type") %>% 
+  filter(!well %in% c(pcr_metadata$info))
+
+colnames_corretos <- as.character(pcr_ct[1, ])
+pcr_ct <- pcr_ct[-1, ]
+colnames(pcr_ct) <- colnames_corretos
+
+pcr_ct_clean = pcr_ct %>% 
+  clean_names() %>% 
+  mutate(ct = as.numeric(ct),
+         ct_mean = as.numeric(ct_mean),
+         ct_sd = as.numeric(ct_sd)) %>% 
+  drop_na(target_name)
+
+ctrl = pcr_ct_clean %>%
+  filter(target_name == "U6") %>% 
+  group_by(target_name, sample_name) %>% 
+  summarize(mean_ctrl = mean(ct_mean)) %>% 
+  ungroup()
+
+tabela_pcr_norm_summary = pcr_ct_clean %>% 
+  filter(target_name != "U6") %>%
+  select(sample_name, target_name, ct_mean, ct_sd) %>% 
+  inner_join(ctrl %>% 
+               select(-target_name), 
+             by = "sample_name") %>% 
+  mutate(delta_delta_rn = ct_mean - mean_ctrl,
+         rel_exp = 2^(-delta_delta_rn),
+         lower_ci = ct_mean - 1.96*ct_sd,
+         upper_ci = ct_mean + 1.96*ct_sd) %>%
+  distinct()
 
 
-pcr_norm_plot_1 = tabela_pcr_norm %>% 
+```
+
+
+
+Delta delta
+```{r fig.height=5, fig.width=5}
+#Bar plot
+pcr_norm_plot_deltadelta = tabela_pcr_norm %>% 
+  
   ggplot() +
-  aes(x = cycle,
+  aes(x = fct_reorder(sample_name, -delta_delta_rn),
       y = delta_delta_rn,
-      color = target_name,
-      group = well,
-      # group = target_name,
-      # color = target_name,
-      # fill = target_name
+      # color = sample_name,
+      fill = sample_name
       ) +
-  geom_line(alpha = 0.2, 
-            show.legend = F) +
-    stat_summary(geom="errorbar", 
-               fun.data = mean_cl_boot,
-               width = 0.5, 
-               size = 0.5,
-               alpha = 1,
-               mapping = aes(group = target_name)) +
-    stat_summary(fun.y = mean, 
-                 geom = "point",
-               # color = "black",
-               size = 1,
-               alpha = 1,
-               mapping = aes(group = target_name)) +
-  scale_color_aaas()+
-  scale_y_continuous(expand = c(0,0)) +
+  geom_col() +
+  # geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci), width = 0) +
+  scale_fill_npg()+
+  # scale_y_continuous(expand = c(0,0)) +
   theme_minimal() +
   theme(text = element_text(color = "black",
                             size = 10),
@@ -140,41 +158,32 @@ pcr_norm_plot_1 = tabela_pcr_norm %>%
         legend.text = element_text(size = 10),
         panel.grid = element_line(linetype = 2,
                                   color = "gray90")) +
-  labs(x = "Cycle",
+  labs(x = "Sample",
        y = "ΔΔRn",
        color = "Target",
-       # title = "PCR Amplification plot",
+       title = "Normalization - ΔΔRn",
        # subtitle = "Target amplification by wells. Bootstrapped CI 95%.",
        # caption = "Ref: Paula, Geovanna"
-       ) 
+       )
 
+pcr_norm_plot_deltadelta
 
-pcr_norm_plot_2 = tabela_pcr_norm %>% 
+```
+Delta delta
+```{r fig.height=5, fig.width=5}
+#Bar plot
+pcr_norm_plot_relexp = tabela_pcr_norm %>% 
+  
   ggplot() +
-  aes(x = cycle,
+  aes(x = fct_reorder(sample_name, -rel_exp),
       y = rel_exp,
-      color = target_name,
-      group = well,
-      # group = target_name,
-      # color = target_name,
-      # fill = target_name
+      # color = sample_name,
+      fill = sample_name
       ) +
-  geom_line(alpha = 0.2, 
-            show.legend = F) +
-    stat_summary(geom="errorbar", 
-               fun.data = mean_cl_boot,
-               width = 0.5, 
-               size = 0.5,
-               alpha = 1,
-               mapping = aes(group = target_name)) +
-    stat_summary(fun.y = mean, 
-                 geom = "point",
-               # color = "black",
-               size = 1,
-               alpha = 1,
-               mapping = aes(group = target_name)) +
-  scale_color_aaas()+
-  scale_y_continuous(expand = c(0,0)) +
+  geom_col() +
+  # geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci), width = 0) +
+  scale_fill_npg()+
+  # scale_y_continuous(expand = c(0,0)) +
   theme_minimal() +
   theme(text = element_text(color = "black",
                             size = 10),
@@ -189,15 +198,22 @@ pcr_norm_plot_2 = tabela_pcr_norm %>%
         legend.text = element_text(size = 10),
         panel.grid = element_line(linetype = 2,
                                   color = "gray90")) +
-  labs(x = "Cycle",
+  labs(x = "Sample",
        y = "Relative expression",
        color = "Target",
-       # title = "PCR Amplification plot",
+       title = "Normalization - Relative Expression",
        # subtitle = "Target amplification by wells. Bootstrapped CI 95%.",
        # caption = "Ref: Paula, Geovanna"
-       ) 
+       )
+
+pcr_norm_plot_relexp
+
+```
 
 
+
+
+```{r fig.height=5, fig.width=5}
 pcr_raw_plot / pcr_norm_plot_1 / pcr_norm_plot_2 +
   plot_layout(guides = "collect", 
               axes = "collect") +

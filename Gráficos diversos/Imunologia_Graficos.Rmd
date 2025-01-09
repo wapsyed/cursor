@@ -23,6 +23,64 @@ library(patchwork)
 ```
 
 
+# Design do estudo
+
+Cohen's d Tamanho de efeito:
+0.2: Pequeno (diferença sutil, mas observável).
+0.5: Médio (diferença moderada, perceptível a olho nu).
+0.8 ou maior: Grande (diferença significativa).
+Exemplo prático:
+d=0.2: Diferença de peso entre pessoas de 150 cm e 152 cm de altura.
+d=0.8: Diferença de peso entre pessoas de 150 cm e 165 cm.
+
+Teste T
+```{r}
+# install.packages("pwr")
+library(pwr)
+
+# TESTE T ------
+
+# Calcular poder estatístico
+pwr.t.test(
+  d = 0.5,           # Tamanho do efeito
+  n = 20,          
+  sig.level = 0.05, 
+  type = "two.sample", 
+  alternative = "two.sided" # Teste bilateral
+)
+
+
+# Calcular tamanho da amostra
+pwr.t.test(
+  d = 0.5,           # Tamanho do efeito
+  power = 0.8,       # Poder desejado
+  sig.level = 0.05,  # Nível de significância
+  type = "two.sample"  # Teste de duas amostras
+)
+```
+
+ANOVA
+```{r}
+# ANOVA -----
+# Calcular o poder
+pwr.anova.test(
+  k = 3,           # Grupos
+  n = 10,          # Tamanho da amostra por grupo
+  f = 0.25,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
+  sig.level = 0.05 # Nível de significância
+)
+
+# Calcular tamanho de amostra
+pwr.anova.test(
+  k = 3,            # Grupos 
+  power = 0.5,      # Poder
+  f = 0.4,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
+  sig.level = 0.05 # Nível de significância
+)
+
+```
+
+
 
 # ELISA OD50
 ```{r fig.height=5, fig.width=10}
@@ -481,11 +539,119 @@ table = igg_subclasses %>%
   drop_na(value)
 table
 ```
+## Distribuições
+```{r fig.height=5, fig.width=10}
+library(esquisse)
+#Identificar outliers
+table %>% 
+  mutate(value = log10(value)) %>% 
+  group_by(group, teste) %>% 
+  identify_outliers(value) 
+
+
+#Variancias são iguais (homosquedacidade)?
+table %>% 
+  mutate(value = log10(value)) %>% 
+  group_by(teste) %>% 
+  levene_test(value ~ group) %>% 
+  mutate(homo = ifelse(p > 0.05, "Yes", "No"))
+  
+
+ggplot(table, aes(x = group, y = value)) +
+  geom_boxplot(width = 0.5) +
+  theme_minimal() +
+  labs(title = "Distribuição dos Valores por Grupo") +
+  scale_y_continuous(transform = "log10") +
+  facet_wrap(~teste)
+```
+
+
+```{r fig.height=5, fig.width=10}
+
+
+#Teste de Shapiro-Wilk
+## p<0.05: Não-normal
+## p>0.05: Normal
+table %>% 
+  mutate(value = log10(value)) %>% 
+  filter(group != "PBS") %>% 
+  group_by(group, teste) %>% 
+  shapiro_test(value) %>% 
+  mutate(normal = ifelse(p > 0.05, "Yes", "No"))
+
+
+# Q-Q Plot
+table %>% 
+ggplot(aes(sample = value,
+           color = group)) +
+  scale_x_continuous(expand = c(0.1,0.1), 
+                     n.breaks = 2
+                     )+  stat_qq() +
+  stat_qq_line() +
+  facet_grid(~teste~group, scales = "free") +
+  theme_minimal() +
+  scale_color_jama() +
+    theme(text = element_text(size = 10,
+                            color = "black"),
+        plot.caption = element_text(size = 10, 
+                                    color = "black",
+                                    hjust = 0.5),
+        legend.position = "none",
+        panel.spacing.x = unit(1, "lines"),
+        axis.text.x = element_text(angle = 45,
+                                   size = 10,
+                                   hjust = 1,
+                                   vjust = 1,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        strip.text = element_text(size = 12,
+                                  color = "black"),
+        axis.line = element_line(color = "black",
+                                   size = 0.5),
+        axis.ticks = element_line(color = "black",
+                                  size = 0.5),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  labs(x = "",
+       y = "",
+       title = "Q-Q Plot - Normality test")
+
+
+```
+
+Distribuições
+```{r fig.height=10, fig.width=10}
+table %>%
+  ggplot(.) +
+  aes(x = value,
+      y = "",
+      fill = group) +
+  geom_violin(fill = "black", alpha = 0.1) +
+  geom_boxplot(width = 0.5) +
+  geom_point(shape = 21, size = 2.5, stroke = 0.5, color = "black", fill = "white",
+              width = 0.0005) +
+  scale_x_continuous(expand = c(0.1,0.1), 
+                     # n.breaks = 10
+                     )+
+  theme_minimal() +
+  theme(
+    # axis.line.x = element_line(size = 1),
+        # text = element_text(color = "black",
+                            # size = 12),
+        legend.position = "none") +
+  labs(y = "",
+       x = "") +
+  facet_wrap(~teste~group, scales = "free", nrow = 3) 
+  
+```
+
 
 ## ANOVA e Tukey post-hoc
 ```{r fig.height=5, fig.width=10}
 library(rstatix)  # https://github.com/kassambara/rstatix
 anova.res <- table %>%
+    mutate(value = log10(value)) %>% 
   group_by(teste) %>%
   welch_anova_test(value ~ group)
 
@@ -743,62 +909,6 @@ ggsave(filename = here("Gráficos diversos", "ELISA_IgG_Subclasses_OD50_AllvsAll
        bg = "white")
 ```
 
-# Statistical power calculation
-
-Cohen's d Tamanho de efeito:
-0.2: Pequeno (diferença sutil, mas observável).
-0.5: Médio (diferença moderada, perceptível a olho nu).
-0.8 ou maior: Grande (diferença significativa).
-Exemplo prático:
-d=0.2: Diferença de peso entre pessoas de 150 cm e 152 cm de altura.
-d=0.8: Diferença de peso entre pessoas de 150 cm e 165 cm.
-
-Teste T
-```{r}
-# install.packages("pwr")
-library(pwr)
-
-# TESTE T ------
-
-# Calcular poder estatístico
-pwr.t.test(
-  d = 0.5,           # Effect size
-  n = 20,          
-  sig.level = 0.05, 
-  type = "two.sample", 
-  alternative = "two.sided" # Teste bilateral
-)
-
-
-# Calcular tamanho da amostra
-pwr.t.test(
-  d = 0.8,           # Effect size
-  power = 0.5,       # Poder desejado
-  sig.level = 0.05,  # Nível de significância
-  type = "two.sample"  # Teste de duas amostras
-)
-```
-
-ANOVA
-```{r}
-# ANOVA -----
-# Calcular o poder
-pwr.anova.test(
-  k = 3,           # Grupos
-  n = 10,          # Tamanho da amostra por grupo
-  f = 0.25,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
-  sig.level = 0.05 # Nível de significância
-)
-
-# Calcular tamanho de amostra
-pwr.anova.test(
-  k = 3,            # Grupos 
-  power = 0.5,      # Poder
-  f = 0.4,        # Effect size (pequeno = 0.1, médio = 0.25, grande = 0.4)
-  sig.level = 0.05 # Nível de significância
-)
-
-```
 
 
 # Bootstrapping
@@ -828,7 +938,7 @@ bootstrap_means <-  table %>%
 ```
 
 Visualizando
-```{r fig.height=5, fig.width=10}
+```{r fig.height=10, fig.width=5}
 library(ggridges)
 bootstrap_means %>% 
          separate(group_dia, into = c("group", "dia"), sep = "_", remove = F) %>%  
@@ -838,11 +948,12 @@ ggplot(
            y = group,
            group = group_dia,
            fill = group)) +
-  geom_density_ridges(jittered_points = TRUE,
-                      stat = "binline",
-    position = position_points_jitter(width = 0.05, height = 0), 
-    point_shape = '.', point_size = 3, point_alpha = 1, alpha = 1,
-    scale = 1) +
+  geom_density_ridges()+
+  # geom_density_ridges(jittered_points = TRUE,
+  #                     stat = "binline",
+  #   position = position_points_jitter(width = 0.05, height = 0), 
+  #   point_shape = '.', point_size = 3, point_alpha = 1, alpha = 1,
+  #   scale = 1) +
   
   labs(title = "Médias de reamostragens por Bootstrap, IC 95%",
        x = "Frequency",
@@ -851,8 +962,7 @@ ggplot(
              scales = "free",
              ncol = 1) +
   theme_minimal() +
-  theme(axis.line.x = element_line(size = 1)) +
-  coord_flip()
+  theme(axis.line.x = element_line(size = 1))
 ```
 
 ## IC

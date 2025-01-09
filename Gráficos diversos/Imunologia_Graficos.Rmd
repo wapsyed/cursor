@@ -42,8 +42,8 @@ library(pwr)
 
 # Calcular poder estatístico
 pwr.t.test(
-  d = 0.5,           # Tamanho do efeito
-  n = 20,          
+  d = 0.8,           # Tamanho do efeito
+  n = 12,          
   sig.level = 0.05, 
   type = "two.sample", 
   alternative = "two.sided" # Teste bilateral
@@ -52,11 +52,29 @@ pwr.t.test(
 
 # Calcular tamanho da amostra
 pwr.t.test(
-  d = 0.5,           # Tamanho do efeito
+  d = 1,           # Tamanho do efeito
   power = 0.8,       # Poder desejado
   sig.level = 0.05,  # Nível de significância
   type = "two.sample"  # Teste de duas amostras
 )
+
+install.packages("ssize.fdr")
+library(ssize.fdr)
+
+# Parâmetros
+mean_diff <- 1    # Diferença esperada entre os grupos
+sd1 <- 2          # Desvio padrão do grupo 1
+sd2 <- 1          # Desvio padrão do grupo 2
+power <- 0.8      # Poder desejado
+alpha <- 0.05     # Nível de significância
+
+# Cálculo do tamanho amostral para cada grupo
+size.t.test(delta = 1, 
+                            sigma1 = 2, 
+                            sigma2 = 1, 
+                            alpha = 0.05, 
+                            power = 0.08)
+
 ```
 
 ANOVA

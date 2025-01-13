@@ -125,6 +125,22 @@ table = ELISA_OD50 %>%
 
 ```
 
+
+Distribuições
+```{r}
+table %>%
+  group_by(group, dia) %>% 
+  rstatix::get_summary_stats(type = "full") 
+
+
+table %>%
+  group_by(group, dia) %>% 
+  rstatix::get_summary_stats(type = "mean_ci")  
+
+```
+
+
+
 ## ANOVA e posthoc
 ```{r fig.height=7, fig.width=10}
 library(rstatix)  # https://github.com/kassambara/rstatix

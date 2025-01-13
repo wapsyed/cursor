@@ -19,6 +19,7 @@ library(ggpubr)
 library(readxl)
 library(janitor)
 library(patchwork)
+library(ggforce)
 # install.packages("paletteer")
 ```
 
@@ -1124,11 +1125,10 @@ citometria_clean %>%
       fill = "grupo", 
       outlier.shape = NA,
       alpha = 0.5) +
-  geom_jitter(aes(color = grupo),
-              size = 1.5,
+    geom_sina(size = 1.5,
              stroke = 0.8,
              alpha = 1,
-             shape=21, 
+             shape=21,
              show.legend = F) +
   theme_minimal() +
   labs(title = "Distribuição dos Valores por Grupo, Citometria",
@@ -1141,7 +1141,7 @@ citometria_clean %>%
         plot.caption = element_text(size = 10, 
                                     color = "black",
                                     hjust = 0.5),
-        legend.position = "top",
+        legend.position = "none",
         axis.text.x = element_text(angle = 45,
                                    size = 10,
                                    hjust = 1,
@@ -1160,8 +1160,8 @@ citometria_clean %>%
                                   size = 1),
         panel.grid = element_line(linetype = 2,
                                   color = "gray90")) +
-  scale_fill_npg() +
-  scale_color_npg() +
+  scale_fill_jama() +
+  scale_fill_jama() +
   guides(fill = guide_legend(nrow = 1))
 
 

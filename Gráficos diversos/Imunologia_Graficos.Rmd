@@ -549,14 +549,17 @@ table = igg_subclasses %>%
          group = fct_relevel(group, 
                              "PBS",
                              "ED-III",
-                             "10 μg",
-                             "25 μg",
-                             "50 μg",
+                             "10 ug",
+                             "25 ug",
+                             "50 ug",
                              "Alum 10 μg",
                              "Alum 25 μg"
                              )) %>% 
   drop_na(value)
 table
+
+
+table$group
 ```
 ## Distribuições
 ```{r fig.height=5, fig.width=10}
@@ -670,19 +673,19 @@ table %>%
 ```{r fig.height=5, fig.width=10}
 library(rstatix)  # https://github.com/kassambara/rstatix
 anova.res <- table %>%
-    mutate(value = log10(value)) %>% 
+  mutate(value = log10(value)) %>% 
   group_by(teste) %>%
   welch_anova_test(value ~ group)
 
 anova.res
 
 stat.test.summary <- table %>%
+  mutate(value = log10(value)) %>% 
   group_by(teste) %>%
   games_howell_test(formula = value ~ group, detailed = T, conf.level = 0.95) %>% 
   add_xy_position(x = "group", 
                   dodge = 1) %>% 
   mutate(
-    y.position = log10(y.position),
     p.adj.signif = case_when(
       p.adj <= 0.01 ~ "***",       # p <= 0.01
       p.adj <= 0.05 ~ "**",        # 0.01 < p <= 0.05
@@ -693,15 +696,20 @@ stat.test.summary <- table %>%
 
 stat.test.summary
 
+stat.test.summary %>% filter(group1 == "ED-III")
+
 stat.test = stat.test.summary %>% 
   group_by(teste) %>% 
   ungroup() %>% 
     filter(!p.adj.signif %in% c("ns")) %>% 
-  mutate(y.position = min(y.position) + (row_number() - 1) * 0.1)
+  mutate(y.position = min(y.position) + (row_number() - 1) * 0.2) #Aumentar espacamento
 
 
 stat.test
+```
 
+
+```{r fig.height=5, fig.width=10}
 #Definir comparações
 
 #Mostrar somente as comparações significantes
@@ -714,10 +722,6 @@ my_comparisons <- stat.test %>%
   pull(comparison)
 
 plot = table %>% 
-  group_by(teste, group) %>% 
-  mutate(n = n()) %>% 
-  ungroup() %>% 
-  mutate(group = paste0(group, " (n=", n, ")")) %>% 
   ggboxplot(x = "group",
       y = "value",
       fill = "group", 
@@ -769,7 +773,7 @@ plot = table %>%
                                   size = 1),
         panel.grid = element_line(linetype = 2,
                                   color = "gray90")) +
-  stat_pvalue_manual(stat.test,
+  stat_pvalue_manual(stat.test, 
                      label = "p.adj.signif", 
                      hide.ns = T, 
                      bracket.size = 0.3, 
@@ -1125,7 +1129,7 @@ citometria_clean %>%
       fill = "grupo", 
       outlier.shape = NA,
       alpha = 0.5) +
-    geom_sina(size = 1.5,
+  geom_sina(size = 1.5, #or geom_jitter(position = position_dodge(width = 0.1))
              stroke = 0.8,
              alpha = 1,
              shape=21,
@@ -1352,5 +1356,5 @@ ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Welch_GamesHow
        bg = "white")
 
 
-
+```
 

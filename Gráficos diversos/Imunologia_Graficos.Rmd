@@ -722,6 +722,14 @@ stat.test = stat.test.summary %>%
 
 
 stat.test
+
+
+table %>%
+  mutate(value = log10(value)) %>% 
+  group_by(teste) %>%
+cohens_d(value ~ group, var.equal = F) %>% 
+  mutate(effsize = round(effsize, 1))
+
 ```
 
 
@@ -1140,16 +1148,19 @@ citometria_clean %>%
 
 citometria_clean %>% 
   mutate(grupo = paste0(grupo, " (n=", n, ")")) %>% 
-    ggboxplot(x = "grupo",
-      y = "valor",
-      fill = "grupo", 
-      outlier.shape = NA,
-      alpha = 0.5) +
+  ggplot() +
+  aes(x = grupo,
+      y = valor,
+      fill = grupo) +
+  # geom_boxplot(
+  #     outlier.shape = NA,
+  #     alpha = 0.5) +
   geom_sina(size = 1.5, #or geom_jitter(position = position_dodge(width = 0.1))
              stroke = 0.8,
              alpha = 1,
              shape=21,
              show.legend = F) +
+  stat_summary(geom = "crossbar", fun.data = mean_se, position = "dodge", width=.2)+
   theme_minimal() +
   labs(title = "Distribuição dos Valores por Grupo, Citometria",
        x = "Marcador",
@@ -1182,6 +1193,234 @@ citometria_clean %>%
                                   color = "gray90")) +
   scale_fill_jama() +
   scale_fill_jama() +
+  guides(fill = guide_legend(nrow = 1))
+
+
+```
+
+
+```{r fig.height=7, fig.width=10}
+
+citometria_clean_ic = citometria_clean %>% 
+    ggplot() +
+  aes(x = grupo,
+      y = valor,
+      fill = grupo) +
+  
+    stat_summary(geom = "crossbar",
+               fun.data = mean_cl_boot, #Bootstrapped
+               position = "dodge",
+               width=.5,
+               # size = 1,
+               alpha = 0.5,
+               color = "black") +
+    #Parametrizado
+    # stat_summary(geom = "crossbar", 
+    #            fun.data = mean_se, 
+    #            position = "dodge", 
+    #            # width=.5, 
+    #            # size = 1,
+    #            alpha = 0.5,
+    #            color = "black") +
+    #Média
+    # stat_summary(fun.y = mean,
+    #            geom = "point",
+    #            color = "red") +
+    geom_sina(size = 1, #or geom_jitter(position = position_dodge(width = 0.1))
+             stroke = 0.8,
+             color = "black",
+             alpha = 1,
+             shape=21,
+             show.legend = F) +
+
+  theme_minimal() +
+  labs(title = "Distribuição dos Valores por Grupo, Citometria",
+       subtitle = "IC95%",
+       x = "Marcador",
+       y = "Absorbancia",
+       fill = "Grupos") +
+  facet_grid(~teste~marcador, scales = "free_y") +
+    theme(text = element_text(size = 10,
+                            color = "black"),
+        plot.caption = element_text(size = 10, 
+                                    color = "black",
+                                    hjust = 0.5),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45,
+                                   size = 10,
+                                   hjust = 1,
+                                   vjust = 1,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        strip.background = element_rect(fill = "gray95",
+                                        color = "white"),
+        strip.text = element_text(size = 10,
+                                  color = "black"),
+        strip.text.y = element_text(size = 10,
+                                  color = "black",
+                                  angle = 0),
+        axis.line = element_line(color = "black",
+                                   size = 1),
+        axis.ticks.x = element_line(color = "black",
+                                  size = 1),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  scale_fill_jama() +
+  scale_color_jama() +
+  guides(fill = guide_legend(nrow = 1))
+
+
+citometria_clean_ic
+
+
+```
+
+
+IC brackets
+```{r fig.height=7, fig.width=10}
+
+citometria_clean %>% 
+    ggplot() +
+  aes(x = grupo,
+      y = valor,
+      fill = grupo,
+      color = grupo) +
+  
+    stat_summary(geom = "errorbar",
+               fun.data = mean_cl_boot, #Bootstrapped
+               position = "dodge",
+               width=0.4, #brackets
+               size = 0.8, #grossura
+               # fill = "red",
+               # size = 1,
+               alpha = 1,
+               color = "black"
+               ) +
+    stat_summary(fun.y = mean,
+               geom = "point",
+               mapping = aes(color = grupo),
+               pch = "-",
+               size = 10,
+               color = "black"
+               ) +
+    geom_sina(size = 1.5, #or geom_jitter(position = position_dodge(width = 0.1))
+             stroke = 0.8,
+             # color = "black",
+             alpha = 1,
+             shape=21,
+             show.legend = F) +
+
+  theme_minimal() +
+  labs(title = "Distribuição dos Valores por Grupo, Citometria",
+       subtitle = "IC95%",
+       x = "",
+       y = "Absorbancia",
+       fill = "Grupos") +
+  facet_grid(~teste~marcador, scales = "free_y") +
+    theme(text = element_text(size = 10,
+                            color = "black"),
+        plot.caption = element_text(size = 10, 
+                                    color = "black",
+                                    hjust = 0.5),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45,
+                                   size = 10,
+                                   hjust = 1,
+                                   vjust = 1,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        strip.background = element_rect(fill = "gray95",
+                                        color = "white"),
+        strip.text = element_text(size = 10,
+                                  color = "black"),
+        strip.text.y = element_text(size = 10,
+                                  color = "black",
+                                  angle = 0),
+        axis.line = element_line(color = "black",
+                                   size = 1),
+        axis.ticks.x = element_line(color = "black",
+                                  size = 1),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  scale_fill_jama() +
+  scale_color_jama() +
+  guides(fill = guide_legend(nrow = 1))
+
+
+```
+
+
+IC transparent
+```{r fig.height=7, fig.width=10}
+
+citometria_clean %>% 
+    ggplot() +
+  aes(x = grupo,
+      y = valor,
+      fill = grupo,
+      color = grupo) +
+  
+    stat_summary(geom = "errorbar",
+               fun.data = mean_cl_boot, #Bootstrapped
+               position = "dodge",
+               width=0.4, #brackets
+               size = 0.8, #grossura
+               # fill = "red",
+               # size = 1,
+               alpha = 1,
+               # color = "black"
+               ) +
+    stat_summary(fun.y = mean,
+               geom = "point",
+               mapping = aes(color = grupo),
+               pch = "_",
+               size = 7,
+               # color = "black"
+               ) +
+    geom_sina(size = 1, #or geom_jitter(position = position_dodge(width = 0.1))
+             stroke = 0.8,
+             color = "black",
+             alpha = 0.4,
+             shape=21,
+             show.legend = F) +
+
+  theme_minimal() +
+  labs(title = "Distribuição dos Valores por Grupo, Citometria",
+       subtitle = "IC95%",
+       x = "",
+       y = "Absorbancia",
+       fill = "Grupos") +
+  facet_grid(~teste~marcador, scales = "free_y") +
+    theme(text = element_text(size = 10,
+                            color = "black"),
+        plot.caption = element_text(size = 10, 
+                                    color = "black",
+                                    hjust = 0.5),
+        legend.position = "none",
+        axis.text.x = element_text(angle = 45,
+                                   size = 10,
+                                   hjust = 1,
+                                   vjust = 1,
+                                   color = "black"),
+        axis.text.y = element_text(size = 10,
+                                   color = "black"),
+        strip.background = element_rect(fill = "gray95",
+                                        color = "white"),
+        strip.text = element_text(size = 10,
+                                  color = "black"),
+        strip.text.y = element_text(size = 10,
+                                  color = "black",
+                                  angle = 0),
+        axis.line = element_line(color = "black",
+                                   size = 1),
+        axis.ticks.x = element_line(color = "black",
+                                  size = 1),
+        panel.grid = element_line(linetype = 2,
+                                  color = "gray90")) +
+  scale_fill_jama() +
+  scale_color_jama() +
   guides(fill = guide_legend(nrow = 1))
 
 
@@ -1243,39 +1482,105 @@ facet_grid(~teste~marcador~grupo, scales = "free_y") +
 
 
 ## ANOVA e posthoc
+
+### CD4
 ```{r fig.height=7, fig.width=10}
-library(rstatix)  # https://github.com/kassambara/rstatix
-anova.res <- citometria_clean %>%
+
+#CD4
+anova.res_cd4 <- citometria_clean %>%
+  filter(teste == "CD4") %>% 
   welch_anova_test(valor ~ grupo)
 
-anova.res
+anova.res_cd4
 
-stat.test.summary <- citometria_clean %>%
-  group_by(dia) %>%
-  games_howell_test(formula = value ~ group, detailed = T) %>% 
-  add_xy_position(x = "group", 
+stat.test.summary_cd4 <- citometria_clean %>%
+  filter(teste == "CD4") %>% 
+  group_by(marcador) %>%
+  games_howell_test(formula = valor ~ grupo, detailed = T) %>% 
+  add_xy_position(x = "grupo", 
                   dodge = 1) %>% 
   mutate(
-    y.position = log10(y.position),
     p.adj.signif = case_when(
       p.adj <= 0.01 ~ "***",       # p <= 0.01
       p.adj <= 0.05 ~ "**",        # 0.01 < p <= 0.05
       p.adj <= 0.10 ~ "*",         # 0.05 < p <= 0.10
       TRUE ~ "ns"                        # p > 0.10
-    )
+    ),
+    teste = "CD4"
   )
 
-stat.test.summary
-
-stat.test = stat.test.summary %>% 
-  group_by(dia) %>% 
+stat.test_cd4 = stat.test.summary_cd4 %>% 
+  group_by(marcador) %>% 
   ungroup() %>% 
     filter(!p.adj.signif %in% c("ns")) %>% 
   mutate(y.position = min(y.position) + (row_number() - 1) * 0.1)
 
+# Effect size
+effect_size_cd4 = citometria_clean %>%
+  filter(teste == "CD4") %>% 
+  group_by(marcador) %>%
+  cohens_d(valor ~ grupo, var.equal = F) %>% 
+  mutate(effsize = round(effsize, 1),
+         teste = "CD4") 
 
-stat.test
+stat.test_cd4 = effect_size_cd4 %>% 
+  select(group1:marcador, magnitude, teste) %>% 
+  inner_join(stat.test.summary_cd4, by = join_by(teste, group1, group2, marcador))
 
+stat.test_cd4
+```
+
+
+### CD8
+```{r fig.height=7, fig.width=10}
+
+#CD4
+anova.res_cd8 <- citometria_clean %>%
+  filter(teste == "CD8") %>% 
+  welch_anova_test(valor ~ grupo)
+
+anova.res_cd8
+
+stat.test.summary_cd8 <- citometria_clean %>%
+  filter(teste == "CD8") %>% 
+  group_by(marcador) %>%
+  games_howell_test(formula = valor ~ grupo, detailed = T) %>% 
+  add_xy_position(x = "grupo", 
+                  dodge = 1) %>% 
+  mutate(
+    p.adj.signif = case_when(
+      p.adj <= 0.01 ~ "***",       # p <= 0.01
+      p.adj <= 0.05 ~ "**",        # 0.01 < p <= 0.05
+      p.adj <= 0.10 ~ "*",         # 0.05 < p <= 0.10
+      TRUE ~ "ns"                        # p > 0.10
+    ),
+    teste = "CD8"
+  )
+
+stat.test_cd8 = stat.test.summary_cd8 %>% 
+  group_by(marcador) %>% 
+  ungroup() %>% 
+    filter(!p.adj.signif %in% c("ns")) %>% 
+  mutate(y.position = min(y.position) + (row_number() - 1) * 0.1)
+
+# Effect size
+effect_size_cd8 = citometria_clean %>%
+  filter(teste == "CD8") %>% 
+  group_by(marcador) %>%
+  cohens_d(valor ~ grupo, var.equal = F) %>% 
+  mutate(effsize = round(effsize, 1),
+         teste = "CD8") 
+
+stat.test_cd8 = effect_size_cd8 %>% 
+  select(group1:marcador, magnitude, teste) %>% 
+  inner_join(stat.test.summary_cd8, by = join_by(teste, group1, group2, marcador))
+
+stat.test_cd8
+```
+
+
+
+```{r fig.height=7, fig.width=10}
 #Definir comparações
 
 #Mostrar somente as comparações significantes
@@ -1287,24 +1592,13 @@ my_comparisons <- stat.test %>%
   mutate(comparison = list(c(group1, group2))) %>%
   pull(comparison)
 
-plot = table %>%
-  group_by(dia, group) %>% 
-  mutate(n = n()) %>% 
-  ungroup() %>% 
-  mutate(group = paste0(group, " (n=", n, ")")) %>% 
-  ggboxplot(x = "group",
-      y = "value",
-      fill = "group", 
+plot = citometria_clean %>%
+  filter(teste == "CD4") %>% 
+  ggboxplot(x = "grupo",
+      y = "valor",
+      fill = "grupo", 
       outlier.shape = NA,
       alpha = 0.5) +
-  # geom_violin(color = "gray10",
-  #             fill = NA,
-  #             alpha = 1, 
-  #             width = 1) +
-  # geom_boxplot(outlier.shape = NA,
-  #              alpha = 1, 
-  #              width = 0.5) +
-
   stat_summary(fun.y= mean, 
                geom="point", 
                shape=95, 
@@ -1350,23 +1644,20 @@ plot = table %>%
                      tip.length = 0.00, 
                      vjust = 0.7
                      ) +
-  scale_y_continuous(transform = "log10", 
-                     labels = scales::label_log(base = 10),
-                     breaks = c(0, 1, 10, 100, 1000, 10000)) +
-  facet_wrap(~paste("Day ", dia)) +
+  facet_wrap(~marcador) +
    scale_fill_jama() +
-    labs(fill = "Group",
+    labs(fill = "Grupo",
        color = "Group",
-       x = "",
-       y = "OD50",
-       title = "ELISA OD50% - All vs. All",
+       x = "Grupo",
+       y = "MFI",
+       title = "Citometria - CD4 - All vs. All",
        subtitle =  "Welch's ANOVA, Games-Howell post-hoc test. \nSignificance p-value symbols: * = 0.10, ** = 0.05, *** = < 0.01. Red lines correspond to the mean.",
        caption = get_pwc_label(stat.test.summary)) 
 
 plot
 
 plot %>%
-ggsave(filename = here("Gráficos diversos", "ELISA_OD50_AllvsAll_Welch_GamesHowell.png"),
+ggsave(filename = here("Gráficos diversos", "Citometria_AllvsAll_Welch_GamesHowell_CD4.png"),
        width = 10,
        height = 7,
        bg = "white")

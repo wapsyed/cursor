@@ -69,13 +69,6 @@ sd2 <- 1          # Desvio padrão do grupo 2
 power <- 0.8      # Poder desejado
 alpha <- 0.05     # Nível de significância
 
-# Cálculo do tamanho amostral para cada grupo
-ssizet .t.test(delta = 1, 
-                            sigma1 = 2, 
-                            sigma2 = 1, 
-                            alpha = 0.05, 
-                            power = 0.08)
-
 ```
 
 ANOVA

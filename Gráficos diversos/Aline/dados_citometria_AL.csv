@@ -1,0 +1,376 @@
+Amostra,Porcentagem,Teste,Observacao
+PBS 0,"0,21",TNF CD4,dado subtraido (CD3- CD8)
+PBS 1,"1,35",TNF CD4,dado subtraido (CD3- CD8)
+PBS 2,"0,04",TNF CD4,dado subtraido (CD3- CD8)
+PBS 0 Exp 2 ,"0,04",TNF CD4,
+PBS 1 Exp 2,"0,15",TNF CD4,
+PBS 2 Exp 2,"0,089",TNF CD4,
+PBS 0 Exp 3,"1,15",TNF CD4,
+Qb 0 Exp 3,"1,78",TNF CD4,
+Qb 1 Exp 3,"1,48",TNF CD4,
+Qb 2 Exp 3,"1,12",TNF CD4,
+Qb 3 Exp 3,"0,72",TNF CD4,
+E2 0 ,"0,16",TNF CD4,dado subtraido (CD3- CD8)
+E2 1,"0,3",TNF CD4,dado subtraido (CD3- CD8)
+E2 2,"0,1",TNF CD4,dado subtraido (CD3- CD8)
+E2 0 Exp 2,"0,17",TNF CD4,
+E2 1 Exp 2,"0,027",TNF CD4,
+E2 2 Exp 2,"0,27",TNF CD4,
+E2 0 Exp 3,"0,42",TNF CD4,
+E2 1 Exp 3,"0,51",TNF CD4,
+E2 2 Exp 3,"1,03",TNF CD4,
+V20 0,"1,44",TNF CD4,dado subtraido (CD3- CD8)
+V20 1,"0,25",TNF CD4,dado subtraido (CD3- CD8)
+V20 2,"0,31",TNF CD4,dado subtraido (CD3- CD8)
+V20 3,"0,1",TNF CD4,dado subtraido (CD3- CD8)
+V20 4,"0,31",TNF CD4,dado subtraido (CD3- CD8)
+V20 0 Exp 2,"0,19",TNF CD4,
+V20 1 Exp 2,"0,19",TNF CD4,
+V20 2 Exp 2,"0,16",TNF CD4,
+V20 3 Exp 2,"0,42",TNF CD4,
+V20 4 Exp 2,"0,2",TNF CD4,
+V20 + cpg 0,"0,37",TNF CD4,dado subtraido (CD3- CD8)
+V20 + cpg 1,"0,31",TNF CD4,dado subtraido (CD3- CD8)
+V20 + cpg 2,"0,11",TNF CD4,dado subtraido (CD3- CD8)
+V20 + cpg 3,"0,14",TNF CD4,dado subtraido (CD3- CD8)
+V50 0,"0,09",TNF CD4,
+V50 1,"0,2",TNF CD4,
+V50 2,"0,26",TNF CD4,
+V50 3,"0,27",TNF CD4,
+V50 4,"0,26",TNF CD4,
+V10 0 ,"0,65",TNF CD4,
+V10 1,"2,09",TNF CD4,
+V10 2,"1,51",TNF CD4,
+V10 3,"1,4",TNF CD4,
+V20 0 ,"0,36",TNF CD4,
+V20 1,"1,53",TNF CD4,
+V20 2,"0,92",TNF CD4,
+V20 3,"0,42",TNF CD4,
+V30 0 ,"0,6",TNF CD4,
+V30 1 ,"0,42",TNF CD4,
+V30 2,"0,68",TNF CD4,
+V30 3,"0,77",TNF CD4,
+PBS 0,"0,17",TNF CD4,
+PBS 1,"0,16",TNF CD4,
+V10 0 Alum,"1,05",TNF CD4,
+V10 1 Alum,"0,96",TNF CD4,
+V10 2 Alum,"0,65",TNF CD4,
+V20 0 Alum,"1,45",TNF CD4,
+V20 1 Alum,"1,95",TNF CD4,
+V20 2 Alum,,TNF CD4,Morreu
+V30 0 Alum,"1,15",TNF CD4,
+V30 1 Alum,"1,02",TNF CD4,
+V30 2 Alum,"1,11",TNF CD4,
+V10 0 CpG,"1,04",TNF CD4,
+V10 1 CpG,"1,68",TNF CD4,
+V10 2 CpG,"1,57",TNF CD4,
+V20 0 CpG,"1,32",TNF CD4,
+V20 1 CpG,"1,52",TNF CD4,
+V20 2 CpG,"1,48",TNF CD4,
+V30 0 CpG,"0,76",TNF CD4,
+V30 1 CpG,"1,13",TNF CD4,
+V30 2 CpG,"0,85",TNF CD4,
+PBS 0,"0,84",TNF CD4,
+PBS 1,0,TNF CD4,
+PBS 2,"0,38",TNF CD4,
+PBS 0 Exp 2 ,"0,38",TNF CD4,
+PBS 1 Exp 2,"0,34",TNF CD4,
+PBS 2 Exp 2,"0,33",TNF CD4,
+PBS 0 Exp 3,,TNF CD4,Sem dado (ac não marcou)
+Qb 0 Exp 3,,TNF CD4,Sem dado (ac não marcou)
+Qb 1 Exp 3,,TNF CD4,Sem dado (ac não marcou)
+Qb 2 Exp 3,,TNF CD4,Sem dado (ac não marcou)
+Qb 3 Exp 3,,TNF CD4,Sem dado (ac não marcou)
+E2 0 ,"0,22",TNF CD4,
+E2 1,"0,28",TNF CD4,
+E2 2,"0,37",TNF CD4,
+E2 0 Exp 2,"0,46",TNF CD4,
+E2 1 Exp 2,"0,67",TNF CD4,
+E2 2 Exp 2,"0,82",TNF CD4,
+E2 0 Exp 3,,TNF CD4,Sem dado (ac não marcou)
+E2 1 Exp 3,,TNF CD4,Sem dado (ac não marcou)
+E2 2 Exp 2,,TNF CD4,Sem dado (ac não marcou)
+V20 0,"2,06",TNF CD4,
+V20 1,"0,76",TNF CD4,
+V20 2,"0,52",TNF CD4,
+V20 3,"0,26",TNF CD4,
+V20 4,"0,48",TNF CD4,
+V20 0 Exp 2,"0,51",TNF CD4,
+V20 1 Exp 2,"0,79",TNF CD4,
+V20 2 Exp 2,"0,76",TNF CD4,
+V20 3 Exp 2,"0,98",TNF CD4,
+V20 4 Exp 2,"0,68",TNF CD4,
+V20 + cpg 0,"0,33",TNF CD4,
+V20 + cpg 1,"0,85",TNF CD4,
+V20 + cpg 2,"0,34",TNF CD4,
+V20 + cpg 3,"0,25",TNF CD4,
+V50 0,"0,94",TNF CD4,
+V50 1,"1,02",TNF CD4,
+V50 2,"1,06",TNF CD4,
+V50 3,"0,75",TNF CD4,
+V50 4,"0,8",TNF CD4,
+V10 0,,TNF CD4,Sem dado (ac não marcou)
+V10 1,,TNF CD4,Sem dado (ac não marcou)
+V10 2,,TNF CD4,Sem dado (ac não marcou)
+V10 3,,TNF CD4,Sem dado (ac não marcou)
+V20 0 ,,TNF CD4,Sem dado (ac não marcou)
+V20 1,,TNF CD4,Sem dado (ac não marcou)
+V20 2,,TNF CD4,Sem dado (ac não marcou)
+V20 3,,TNF CD4,Sem dado (ac não marcou)
+V30 0 ,,TNF CD4,Sem dado (ac não marcou)
+V30 1,,TNF CD4,Sem dado (ac não marcou)
+V30 2,,TNF CD4,Sem dado (ac não marcou)
+V30 3,,TNF CD4,Sem dado (ac não marcou)
+PBS 0,"0,4",TNF CD4,
+PBS 1,"0,35",TNF CD4,
+V10 0 Alum,"1,2",TNF CD4,
+V10 1 Alum,"1,14",TNF CD4,
+V10 2 Alum,1,TNF CD4,
+V20 0 Alum,"1,86",TNF CD4,
+V20 1 Alum,"1,72",TNF CD4,
+V20 2 Alum,,TNF CD4,Morreu
+V30 0 Alum,"1,12",TNF CD4,
+V30 1  Alum,"1,84",TNF CD4,
+V30 2 Alum,"1,25",TNF CD4,
+V10 0 CpG,"1,56",TNF CD4,
+V10 1 CpG,"1,33",TNF CD4,
+V10 2 CpG,"1,37",TNF CD4,
+V20 0 CpG,"1,59",TNF CD4,
+V20 1 CpG,"1,42",TNF CD4,
+V20 2 CpG,"1,43",TNF CD4,
+V30 0 CpG,"1,07",TNF CD4,
+V30 1  CpG,"1,26",TNF CD4,
+V30 2 CpG,"1,19",TNF CD4,
+PBS 0,"0,45",IFN CD4,dado subtraido (CD3- CD8)
+PBS 1,"0,68",IFN CD4,dado subtraido (CD3- CD8)
+PBS 2,"0,03",IFN CD4,dado subtraido (CD3- CD8)
+PBS 0 Exp 2 ,"0,04",IFN CD4,
+PBS 1 Exp 2,"0,029",IFN CD4,
+PBS 2 Exp 2,"0,013",IFN CD4,
+PBS 0 Exp 3,"0,93",IFN CD4,
+Qb 0 Exp 3,"1,3",IFN CD4,
+Qb 1 Exp 3,"1,31",IFN CD4,
+Qb 2 Exp 3,"1,21",IFN CD4,
+Qb 3 Exp 3,"0,62",IFN CD4,
+E2 0 ,"0,208",IFN CD4,dado subtraido (CD3- CD8)
+E2 1,"0,03",IFN CD4,dado subtraido (CD3- CD8)
+E2 2,"0,073",IFN CD4,dado subtraido (CD3- CD8)
+E2 0 Exp 2,"0,014",IFN CD4,
+E2 1 Exp 2,"0,013",IFN CD4,
+E2 2 Exp 2,"0,058",IFN CD4,
+E2 0 Exp 3,"0,59",IFN CD4,
+E2 1 Exp 3,"0,83",IFN CD4,
+E2 2 Exp 3,"1,02",IFN CD4,
+V20 0,"0,1",IFN CD4,dado subtraido (CD3- CD8)
+V20 1,"0,07",IFN CD4,dado subtraido (CD3- CD8)
+V20 2,"0,16",IFN CD4,dado subtraido (CD3- CD8)
+V20 3,"0,272",IFN CD4,dado subtraido (CD3- CD8)
+V20 4,"0,11",IFN CD4,dado subtraido (CD3- CD8)
+V20 0 Exp 2,"0,11",IFN CD4,
+V20 1 Exp 2,"0,15",IFN CD4,
+V20 2 Exp 2,"0,13",IFN CD4,
+V20 3 Exp 2,"0,15",IFN CD4,
+V20 4 Exp 2,"0,075",IFN CD4,
+V20 + cpg 0,"0,17",IFN CD4,dado subtraido (CD3- CD8)
+V20 + cpg 1,"0,13",IFN CD4,dado subtraido (CD3- CD8)
+V20 + cpg 2,"0,14",IFN CD4,dado subtraido (CD3- CD8)
+V20 + cpg 3,"0,34",IFN CD4,dado subtraido (CD3- CD8)
+V50 0,"0,09",IFN CD4,
+V50 1,"0,13",IFN CD4,
+V50 2,"0,1",IFN CD4,
+V50 3,"0,15",IFN CD4,
+V50 4,"0,11",IFN CD4,
+V10 0 ,"0,89",IFN CD4,
+V10 1,"1,06",IFN CD4,
+V10 2,"1,06",IFN CD4,
+V10 3,"0,78",IFN CD4,
+V20 0 ,"0,19",IFN CD4,
+V20 1,"1,31",IFN CD4,
+V20 2,"1,53",IFN CD4,
+V20 3,"0,41",IFN CD4,
+V30 0 ,"0,37",IFN CD4,
+V30 1 ,"1,65",IFN CD4,
+V30 2,"0,84",IFN CD4,
+V30 3,"0,51",IFN CD4,
+PBS 0,"0,19",IFN CD4,
+PBS 1,"0,23",IFN CD4,
+V10 0 Alum,"0,67",IFN CD4,
+V10 1 Alum,"0,6",IFN CD4,
+V10 2 Alum,"0,76",IFN CD4,
+V20 0 Alum,"0,64",IFN CD4,
+V20 1 Alum,"0,7",IFN CD4,
+V20 2 Alum,,IFN CD4,Morreu
+V30 0 Alum,"0,79",IFN CD4,
+V30 1  Alum,"0,6",IFN CD4,
+V30 2 Alum,"0,79",IFN CD4,
+V10 0 CpG,"0,65",IFN CD4,
+V10 1 CpG,"0,88",IFN CD4,
+V10 2 CpG,"1,02",IFN CD4,
+V20 0 CpG,"0,82",IFN CD4,
+V20 1 CpG,"0,79",IFN CD4,
+V20 2 CpG,"0,45",IFN CD4,
+V30 0 CpG,"0,68",IFN CD4,
+V30 1  CpG,"0,69",IFN CD4,
+V30 2 CpG,"0,66",IFN CD4,
+PBS 0,0,IFN CD8,
+PBS 1,0,IFN CD8,
+PBS 2,"0,13",IFN CD8,
+PBS 0 Exp 2 ,"0,047",IFN CD8,
+PBS 1 Exp 2,"0,068",IFN CD8,
+PBS 2 Exp 2,"0,11",IFN CD8,
+PBS 0 Exp 3,,IFN CD8,Sem dado (ac não marcou)
+Qb 0 Exp 3,,IFN CD8,Sem dado (ac não marcou)
+Qb 1 Exp 3,,IFN CD8,Sem dado (ac não marcou)
+Qb 2 Exp 3,,IFN CD8,Sem dado (ac não marcou)
+Qb 3 Exp 3,,IFN CD8,Sem dado (ac não marcou)
+E2 0 ,"0,022",IFN CD8,
+E2 1,"0,16",IFN CD8,
+E2 2,0,IFN CD8,
+E2 0 Exp 2,"0,07",IFN CD8,
+E2 1 Exp 2,"0,15",IFN CD8,
+E2 2 Exp 2,"0,24",IFN CD8,
+E2 0 Exp 3,,IFN CD8,Sem dado (ac não marcou)
+E2 1 Exp 3,,IFN CD8,Sem dado (ac não marcou)
+E2 2 Exp 2,,IFN CD8,Sem dado (ac não marcou)
+V20 0,"0,52",IFN CD8,
+V20 1,"0,17",IFN CD8,
+V20 2,"0,17",IFN CD8,
+V20 3,"0,038",IFN CD8,
+V20 4,"0,19",IFN CD8,
+V20 0 Exp 2,"0,12",IFN CD8,
+V20 1 Exp 2,"0,19",IFN CD8,
+V20 2 Exp 2,"0,22",IFN CD8,
+V20 3 Exp 2,"0,18",IFN CD8,
+V20 4 Exp 2,"0,27",IFN CD8,
+V20 + cpg 0,"0,33",IFN CD8,
+V20 + cpg 1,"0,14",IFN CD8,
+V20 + cpg 2,"0,17",IFN CD8,
+V20 + cpg 3,"0,25",IFN CD8,
+V50 0,"0,15",IFN CD8,
+V50 1,"0,15",IFN CD8,
+V50 2,"0,25",IFN CD8,
+V50 3,"0,19",IFN CD8,
+V50 4,"0,27",IFN CD8,
+V10 0 ,,IFN CD8,Sem dado (ac não marcou)
+V10 1,,IFN CD8,Sem dado (ac não marcou)
+V10 2,,IFN CD8,Sem dado (ac não marcou)
+V10 3,,IFN CD8,Sem dado (ac não marcou)
+V20 0 ,,IFN CD8,Sem dado (ac não marcou)
+V20 1,,IFN CD8,Sem dado (ac não marcou)
+V20 2,,IFN CD8,Sem dado (ac não marcou)
+V20 3,,IFN CD8,Sem dado (ac não marcou)
+V30 0 ,,IFN CD8,Sem dado (ac não marcou)
+V30 1 ,,IFN CD8,Sem dado (ac não marcou)
+V30 2,,IFN CD8,Sem dado (ac não marcou)
+V30 3,,IFN CD8,
+PBS 0,"0,16",IFN CD8,
+PBS 1,"0,26",IFN CD8,
+V10 0 Alum,"1,02",IFN CD8,
+V10 1 Alum,"1,04",IFN CD8,
+V10 2 Alum,"1,09",IFN CD8,
+V20 0 Alum,"0,56",IFN CD8,
+V20 1 Alum,"0,57",IFN CD8,
+V20 2 Alum,,IFN CD8,Morreu
+V30 0 Alum,"0,89",IFN CD8,
+V30 1  Alum,"0,74",IFN CD8,
+V30 2 Alum,"0,84",IFN CD8,
+V10 0 CpG,"0,82",IFN CD8,
+V10 1 CpG,"0,92",IFN CD8,
+V10 2 CpG,"0,84",IFN CD8,
+V20 0 CpG,"0,86",IFN CD8,
+V20 1 CpG,"0,6",IFN CD8,
+V20 2 CpG,"0,75",IFN CD8,
+V30 0 CpG,"0,53",IFN CD8,
+V30 1  CpG,"0,82",IFN CD8,
+V30 2 CpG,"0,83",IFN CD8,
+PBS 0,,IL-4 CD4,Sem dado (ac não marcou)
+PBS 1,,IL-4 CD4,Sem dado (ac não marcou)
+PBS 2,,IL-4 CD4,Sem dado (ac não marcou)
+PBS 0 Exp 2 ,,IL-4 CD4,Sem dado (ac não marcou)
+PBS 1 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+PBS 2 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+PBS 0 Exp 3,"0,36",IL-4 CD4,
+Qb 0 Exp 3,"1,63",IL-4 CD4,
+Qb 1 Exp 3,"1,41",IL-4 CD4,
+Qb 2 Exp 3,"0,98",IL-4 CD4,
+Qb 3 Exp 3,"0,84",IL-4 CD4,
+E2 0 ,,IL-4 CD4,Sem dado (ac não marcou)
+E2 1,,IL-4 CD4,Sem dado (ac não marcou)
+E2 2,,IL-4 CD4,Sem dado (ac não marcou)
+E2 0 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+E2 1 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+E2 2 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+E2 0 Exp 3,"0,41",IL-4 CD4,
+E2 1 Exp 3,"0,33",IL-4 CD4,
+E2 2 Exp 2,"0,54",IL-4 CD4,
+V20 0,,IL-4 CD4,Sem dado (ac não marcou)
+V20 1,,IL-4 CD4,Sem dado (ac não marcou)
+V20 2,,IL-4 CD4,Sem dado (ac não marcou)
+V20 3,,IL-4 CD4,Sem dado (ac não marcou)
+V20 4,,IL-4 CD4,Sem dado (ac não marcou)
+V20 0 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+V20 1 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+V20 2 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+V20 3 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+V20 4 Exp 2,,IL-4 CD4,Sem dado (ac não marcou)
+V20 + cpg 0,,IL-4 CD4,Sem dado (ac não marcou)
+V20 + cpg 1,,IL-4 CD4,Sem dado (ac não marcou)
+V20 + cpg 2,,IL-4 CD4,Sem dado (ac não marcou)
+V20 + cpg 3,,IL-4 CD4,Sem dado (ac não marcou)
+V50 0,,IL-4 CD4,Sem dado (ac não marcou)
+V50 1,,IL-4 CD4,Sem dado (ac não marcou)
+V50 2,,IL-4 CD4,Sem dado (ac não marcou)
+V50 3,,IL-4 CD4,Sem dado (ac não marcou)
+V50 4,,IL-4 CD4,Sem dado (ac não marcou)
+V10 0 ,"0,53",IL-4 CD4,
+V10 1,"0,77",IL-4 CD4,
+V10 2,"0,48",IL-4 CD4,
+V10 3,"0,53",IL-4 CD4,
+V20 0 ,"0,32",IL-4 CD4,
+V20 1,"0,95",IL-4 CD4,
+V20 2,"0,52",IL-4 CD4,
+V20 3,"0,37",IL-4 CD4,
+V30 0 ,"0,7",IL-4 CD4,
+V30 1 ,"0,46",IL-4 CD4,
+V30 2,"0,58",IL-4 CD4,
+V30 3,"0,43",IL-4 CD4,
+PBS 0,"0,067",IL-4 CD4,
+PBS 1,"0,19",IL-4 CD4,
+V10 0 Alum,"0,087",IL-4 CD4,
+V10 1 Alum,"0,18",IL-4 CD4,
+V10 2 Alum,"0,099",IL-4 CD4,
+V20 0 Alum,"0,26",IL-4 CD4,
+V20 1 Alum,"0,18",IL-4 CD4,
+V20 2 Alum,,IL-4 CD4,Morreu
+V30 0 Alum,"0,21",IL-4 CD4,
+V30 1  Alum,"0,18",IL-4 CD4,
+V30 2 Alum,"0,17",IL-4 CD4,
+V10 0 CpG,"0,12",IL-4 CD4,
+V10 1 CpG,"0,13",IL-4 CD4,
+V10 2 CpG,"0,46",IL-4 CD4,
+V20 0 CpG,"0,24",IL-4 CD4,
+V20 1 CpG,"0,19",IL-4 CD4,
+V20 2 CpG,"0,14",IL-4 CD4,
+V30 0 CpG,"0,27",IL-4 CD4,
+V30 1  CpG,"0,31",IL-4 CD4,
+V30 2 CpG,"0,25",IL-4 CD4,
+PBS 0,"0,078",IL-4 CD8,
+PBS 1,"0,078",IL-4 CD8,
+V10 0 Alum,"0,62",IL-4 CD8,
+V10 1 Alum,"0,39",IL-4 CD8,
+V10 2 Alum,"0,32",IL-4 CD8,
+V20 0 Alum,"0,48",IL-4 CD8,
+V20 1 Alum,"0,5",IL-4 CD8,
+V20 2 Alum,,IL-4 CD8,Morreu
+V30 0 Alum,"0,57",IL-4 CD8,
+V30 1  Alum,"0,8",IL-4 CD8,
+V30 2 Alum,"0,58",IL-4 CD8,
+V10 0 CpG,"0,35",IL-4 CD8,
+V10 1 CpG,"0,36",IL-4 CD8,
+V10 2 CpG,"0,63",IL-4 CD8,
+V20 0 CpG,"0,46",IL-4 CD8,
+V20 1 CpG,"0,26",IL-4 CD8,
+V20 2 CpG,"0,64",IL-4 CD8,
+V30 0 CpG,"0,38",IL-4 CD8,
+V30 1  CpG,"0,8",IL-4 CD8,
+V30 2 CpG,"0,83",IL-4 CD8,

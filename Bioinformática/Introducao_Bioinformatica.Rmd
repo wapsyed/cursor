@@ -113,21 +113,28 @@ Observe que o código abaixo está com `#` antes da função. Ao rodar pela prim
 options(repos = c(CRAN = "https://cran.r-project.org"))
 
 # Baixar pacotes do CRAN para a biblioteca 
-# install.packages("tidyverse")
-# install.packages("skimr")
-# install.packages("janitor")
-# install.packages("esquisse")
-# install.packages("ggthemes")
-# install.packages("plotly")
-# install.packages("gghighlight")
-# install.packages("patchwork")
-# install.packages("ggsci")
-# install.packages("gapminder")
-# install.packages("here")
-# install.packages("gganimate")
-# install.packages("scales")
-# install.packages("GGally")
-# install.packages("ggpmisc")
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+install.packages("esquisse")
+install.packages("ggthemes")
+install.packages("plotly")
+install.packages("gghighlight")
+install.packages("patchwork")
+install.packages("ggsci")
+install.packages("here")
+install.packages("scales")
+install.packages("GGally")
+install.packages("ggpmisc")
+
+#Pacotes do BioConductor
+install.packages("BiocManager")
+library(BiocManager)
+# BiocManager::install(version = '3.22')
+BiocManager::install("ComplexHeatmap")
+BiocManager::install("circlize")
+
+
 ```
 
 Após a instalação, a cada vez que você fechar o ambiente do R, você deverá chamar os pacotes da biblioteca com a função `library()`.
@@ -153,6 +160,9 @@ library(scales)
 library(here)
 library(gganimate)
 library(GGally)
+library(ComplexHeatmap)
+library(circlize)
+library(readxl)
 ```
 
 # 2. Operações básicas
@@ -1127,14 +1137,13 @@ ggsave(linha_barra, file = here("Bioinformática","linha_barra.png"), width = 10
 Importando dados
 
 ```{r}
-metadata <- read_csv("Bioinformática/metadata.csv")
-expression_data <- read_csv("Bioinformática/expression_data.csv")
+metadata <- read_csv(here("Bioinformática", "metadata.csv"))
+expression_data <- read_csv(here("Bioinformática", "expression_data.csv"))
 ```
 
 Limpando dados
 
 ```{r}
-library(janitor)
 metadata = metadata %>% 
   clean_names()
 ```
@@ -1148,6 +1157,7 @@ Em matriz
 expression_data_matriz = expression_data %>% 
   column_to_rownames("gene") %>% 
   as.matrix()
+
 ```
 
 Em tabela longa
@@ -1179,7 +1189,6 @@ expression_data_long_metadata %>%
 Histograma
 
 ```{r}
-library(ggsci)
 expression_data_long_metadata %>% 
   filter(gene == "Gene_1") %>%
   ggplot()+

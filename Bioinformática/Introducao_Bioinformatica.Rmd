@@ -126,6 +126,7 @@ install.packages("here")
 install.packages("scales")
 install.packages("GGally")
 install.packages("ggpmisc")
+install.packages("ggpubr")
 
 #Pacotes do BioConductor
 install.packages("BiocManager")
@@ -152,15 +153,11 @@ library(esquisse) #Plotagem de gráficos prática
 library(ggthemes) #Temas de ggplot
 library(plotly) #Gráficos interativos
 library(patchwork) #Unir gráficos
-library(gghighlight) #Marcar pontos e linhas 
 library(ggsci) #Paleta de cores 
-library(gapminder) #Dataset sobre população, PIB e expectativa de vida dos países
 library(ggpmisc) 
+library(ggpubr)
 library(scales)
 library(here)
-library(gganimate)
-library(GGally)
-library(ComplexHeatmap)
 library(circlize)
 library(readxl)
 ```
@@ -341,11 +338,6 @@ Um deles é o skimr, cuja função `skim()` gera três outputs, um semelhante ao
 # Estatísticas gerais 
 summary(tibble)
 summary(data)
-
-# Usando skim
-skim(tibble)
-skim(data)
-
 ```
 
 ## Pivotando tabelas: Long e Wide
@@ -527,8 +519,8 @@ Abaixo, pegamos uma tabela, filtramos por idade e, então, filtramos somente lin
 ```{r paged.print=TRUE}
 # Usando o pipe "%>%" (lê-se "e então")
 data %>%                   # Tenho este objeto 
-  filter(variavel2 >= 30) %>%  # E então vou filtrar os indivíduos com mais de 30 anos
-  filter(gene == "Gene1")   # E então vou filtrar os indivíduos chamados "Gabriela"
+  filter(variavel2 >= 30) %>%  # E então vou filtrar os valores maiores de 30
+  filter(gene == "Gene1")   # E então vou filtrar os indivíduos chamados "Gene1"
 ```
 
 ## `select():` Selecionando colunas
@@ -544,6 +536,10 @@ Para **retirar** uma coluna, use o `-` ou o `!`.
 Para **reordenar**, use `select(coluna, everything())`. Aqui, você coloca a coluna de interesse em primeiro lugar e todas as outras restantes em sequência.
 
 ```{r paged.print=TRUE}
+
+#Vamos duplicar o objeto "data" como "data_2", para evitar de sobrescrever a tabela original.
+data_2 = data
+
 # Selecionando colunas ----
 # Selecionar colunas específicas
 data_2 %>%
@@ -1319,44 +1315,73 @@ expression_data_long_metadata %>%
 Heatmap
 
 ```{r fig.height=10, fig.width=10}
-library(ggheatmap)
-library(circlize)
-library(ComplexHeatmap)
-library(scales)
 
 #Tabela com os nossos dados expressão
 heatmap_table = expression_data %>% 
-  column_to_rownames("gene") %>% 
-  as.matrix()
-
+  pivot_longer(cols = -gene,
+               names_to = "sample",
+               values_to = "expression")
 #Tabela com anotações
 annotation_col = metadata %>% 
-  column_to_rownames("sample") %>% 
   mutate(condition = as.factor(condition))
-annotation_col
+
+heatmap_table_annotated = heatmap_table %>% 
+  inner_join(annotation_col,
+             by = "sample")
+
+heatmap_table_annotated
 
 ```
 
 ```{r fig.height=10, fig.width=10}
-col = colorRamp2(c(0, 10, 20), c("white", "red", "black"))
-colors_annotations = list(condition = c("Condition_A" = "gray90",
-                                        "Condition_B" = "steelblue"))
-
-col_ha = HeatmapAnnotation(df = annotation_col, 
-                       col = colors_annotations, 
-                       annotation_name_side = "left")
-
-Heatmap(heatmap_table, 
-        top_annotation = col_ha,
-        cluster_rows = T, name = "Expression",
-        cluster_columns = T, 
-        cluster_row_slices = T,
-        cluster_column_slices = T,
-        col = col,
-        column_split = 2,
-        row_split = 3
-        ) 
+heatmap_table_annotated %>% 
+  ggplot() +
+  aes(x = sample,
+      y = gene,
+      fill = expression) +
+  facet_grid(~condition,
+             space = "free_x",
+             scales = "free") +
+  geom_tile() +
+  theme(axis.text.x = element_text(angle = 90))
 ```
+Como clusterizar?
+```{r fig.height=10, fig.width=10}
+
+#Crie a tabela no formato de matriz (wide)
+matrix_data = heatmap_table_annotated %>%
+  pivot_wider(names_from = sample, values_from = expression) %>%
+  column_to_rownames("gene")
+
+#Calcule a distância e o agrupamento para GENES (linhas)
+gene_dist <- dist(matrix_data)
+gene_hclust <- hclust(gene_dist)
+gene_order <- rownames(matrix_data)[gene_hclust$order]
+
+#Calcule a distância e o agrupamento para SAMPLES (colunas)
+sample_dist <- dist(t(matrix_data)) # t() para transpor e agrupar colunas
+sample_hclust <- hclust(sample_dist)
+sample_order <- colnames(matrix_data)[sample_hclust$order]
+
+#Reordene os genes e amostras
+heatmap_table_annotated_ordered = heatmap_table_annotated %>% 
+  mutate(gene = fct_relevel(gene, gene_order),
+         sample = fct_relevel(sample, sample_order))
+
+#Gere o heatmap
+heatmap_table_annotated_ordered %>% 
+  ggplot() +
+  aes(x = sample,
+      y = gene,
+      fill = expression) +
+  facet_grid(~condition,
+             space = "free_x",
+             scales = "free") +
+  geom_tile() +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+
 
 # Hands-on: Transcriptoma da vacina ChAdOx-1-S
 

@@ -1,10 +1,12 @@
-# Ciência de dados da saúde com o R
+# Ciência de dados de saúde e bioinformática com o R
 
 **Ministrante:** Wasim Aluísio Prates Syed, Farmacêutico pela FCFRP-USP, doutorando em biotecnologia pelo ICB/IPT/Butantan, e divulgador científico pela UPVacina (IEARP-USP) e Projeto Halo (ONU).
 
 **Descrição do curso:**
 
-Desenvolvemos um curso para tornar o aprendizado de uma das linguagens de programação e análise de dados mais populares mais acessível, especialmente para aqueles que não têm formação em áreas de exatas, como TI e ciência da computação. Esta linguagem é amplamente utilizada por cientistas devido à sua variedade de ferramentas para análise de dados em ciências biológicas e da saúde. Com uma abordagem prática e interativa, os participantes explorarão conceitos e ferramentas para realizar análises de dados de forma simples e intuitiva. Além disso, terão acesso a um grupo de discussão para compartilhar dúvidas e ideias, criando um ambiente colaborativo e de aprendizado mútuo.
+Desenvolvemos dois cursos para tornar o aprendizado de uma das linguagens de programação e análise de dados mais populares mais acessível, especialmente para aqueles que não têm formação em áreas de exatas, como TI e ciência da computação. O curso de ciência de dados em saúde explora dados de vacinação e de doenças infecciosas e, por enquanto, é o mais completo material do nosso projeto Vidya DataScience. Entretanto, também desenvolvemos um curso de R para bioinformática mais introdutório, utilizando dados de transcriptômica de pacientes vacinados com vacinas de covid-19. 
+
+A linguagem R é amplamente utilizada por cientistas devido à sua variedade de ferramentas para análise de dados em ciências biológicas e da saúde. Com uma abordagem prática e interativa, os participantes explorarão conceitos e ferramentas para realizar análises de dados de forma simples e intuitiva. Além disso, terão acesso a um grupo de discussão para compartilhar dúvidas e ideias, criando um ambiente colaborativo e de aprendizado mútuo.
 
 **Slides**: [Link](https://docs.google.com/presentation/d/10lQTfw8OPG2ok83Tc9ctVhnDyhQ8GB-olWmQ17Zxs6k/edit?usp=drivesdk)
 
@@ -75,6 +77,7 @@ Pronto! Agora você configurou o projeto do GitHub em seu RStudio e está pronto
 ## Recomendações para evitar erros comuns
 
 > 1.  **Para encontrar este documento com as linhas de códigos**, clique no arquivo **RMD** "**`Introducao_analise_exploratoria.rmd`**". Se clicar no `.md`, não funcionará.
-> 2.  **Siga o tutorial todo neste documento ou crie uma copia para fazer as anotações**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site.
-> 3.  **Ao fazer a parte prática** com suas análises, faça no mesmo documento. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
-> 4.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.
+> 2.   **Se você veio para o curso de bioinformática, entre na pasta **"Bioinformática"** e acesse o arquivo .RMD do diretório.** 
+> 3.  **Siga o tutorial todo neste documento ou crie uma copia para fazer as anotações**. Não se preocupe, que modificar este arquivo aqui não mudará nada no original do site.
+> 4.  **Ao fazer a parte prática** com suas análises, faça no mesmo documento. Se estiver muito complicado, mande mensagem no grupo do Whatsapp ou envie um e-mail. A prática deve ser fácil e descomplicada.
+> 5.  **Lembre-se de criar blocos de códigos abaixo dos blocos de códigos de exemplos do tutorial.** Também, descreva os gráficos e códigos no espaço em branco, ou seja, fora do bloco de código. Isso garantirá que seu documento estará organizado e fácil de alterar.

@@ -1325,15 +1325,12 @@ heatmap_table = expression_data %>%
 annotation_col = metadata %>% 
   mutate(condition = as.factor(condition))
 
+#Unir tabelas
 heatmap_table_annotated = heatmap_table %>% 
   inner_join(annotation_col,
              by = "sample")
 
-heatmap_table_annotated
-
-```
-
-```{r fig.height=10, fig.width=10}
+#Plotar heatmap
 heatmap_table_annotated %>% 
   ggplot() +
   aes(x = sample,
@@ -1343,11 +1340,11 @@ heatmap_table_annotated %>%
              space = "free_x",
              scales = "free") +
   geom_tile() +
+  theme_minimal() +
   theme(axis.text.x = element_text(angle = 90))
 ```
 Como clusterizar?
 ```{r fig.height=10, fig.width=10}
-
 #Crie a tabela no formato de matriz (wide)
 matrix_data = heatmap_table_annotated %>%
   pivot_wider(names_from = sample, values_from = expression) %>%
@@ -1378,7 +1375,14 @@ heatmap_table_annotated_ordered %>%
              space = "free_x",
              scales = "free") +
   geom_tile() +
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90)) +
+  #Mude a escala de cores
+  scale_fill_viridis_c(
+    option = "mako",
+    direction = 1,
+    limits = c(0, 20),           # Define o limites
+    oob = scales::squish         # "Espremer" os valores > limite para a cor máxima
+  )
 ```
 
 
@@ -1438,7 +1442,7 @@ Para esta prática, utilizaremos dados reais de vacinação com a vacina ChAdOx-
 
 -   Use o **esquisse** sempre para facilitar as análises iniciais. Os códigos podem ser complicados à primeira vista, mas o esquisse está aí para auxiliar nesse primeiro contato.
 
--   **Use o ChatGPT.** O ChatGPT é uma ferramenta extremamente útil para a sua evolução na programação e você precisa aprender a usá-lo e a fazer perguntas corretas. 80% das vezes ele dá respostas perfeitas. Você pode usá-lo para explicar, consertar e criar códigos!
+-   **Use a IA.** O ChatGPT é uma ferramenta extremamente útil para a sua evolução na programação e você precisa aprender a usá-lo e a fazer perguntas corretas. 80% das vezes ele dá respostas perfeitas. Você pode usá-lo para explicar, consertar e criar códigos!
 
     -   Copie e cole um bloco de código e peça para ele **explicar** cada linha e função.
 

@@ -119,22 +119,11 @@ install.packages("janitor")
 install.packages("esquisse")
 install.packages("ggthemes")
 install.packages("plotly")
-install.packages("gghighlight")
 install.packages("patchwork")
 install.packages("ggsci")
 install.packages("here")
 install.packages("scales")
-install.packages("GGally")
-install.packages("ggpmisc")
 install.packages("ggpubr")
-
-#Pacotes do BioConductor
-install.packages("BiocManager")
-library(BiocManager)
-# BiocManager::install(version = '3.22')
-BiocManager::install("ComplexHeatmap")
-BiocManager::install("circlize")
-
 
 ```
 

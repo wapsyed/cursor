@@ -112,18 +112,18 @@ Observe que o código abaixo está com `#` antes da função. Ao rodar pela prim
 ```{r message=FALSE, warning=FALSE}
 options(repos = c(CRAN = "https://cran.r-project.org"))
 
-# Baixar pacotes do CRAN para a biblioteca 
-install.packages("tidyverse")
-install.packages("skimr")
-install.packages("janitor")
-install.packages("esquisse")
-install.packages("ggthemes")
-install.packages("plotly")
-install.packages("patchwork")
-install.packages("ggsci")
-install.packages("here")
-install.packages("scales")
-install.packages("ggpubr")
+# # Baixar pacotes do CRAN para a biblioteca 
+# install.packages("tidyverse")
+# install.packages("skimr")
+# install.packages("janitor")
+# install.packages("esquisse")
+# install.packages("ggthemes")
+# install.packages("plotly")
+# install.packages("patchwork")
+# install.packages("ggsci")
+# install.packages("here")
+# install.packages("scales")
+# install.packages("ggpubr")
 
 ```
 
@@ -846,7 +846,8 @@ data_2 %>%
   #Títulos
   labs(x = "Gene", 
        y = "Factor",
-       title = "Factor") +
+       title = "Factor",
+       fill = "Classification") +
   
   #Renomeando levels
   scale_fill_discrete(labels = c("under" = "Under", 
@@ -951,15 +952,15 @@ Um gráfico com pontos que relaciona duas variáveis numéricas é interessante 
 
 data_2 %>% 
   ggplot() +
-  aes(x = variavel3,
+  aes(x = variavel2,
       y = factor,
       color = classification) +
   geom_point() +
   
   #Títulos
-    labs(x = "Variável 3", 
+    labs(x = "Variável 2", 
        y = "Factor",
-       title = "Factor versus Var 3",
+       title = "Factor versus Var 2",
        color = "Factor") +
   
   #Tema pré-estabelecido
@@ -984,13 +985,13 @@ Além disso, podemos criar um gradiente usando `scale_color_gradient()` e defini
 ```{r}
 data_2 %>% 
   ggplot() +
-  aes(x = variable3,
+  aes(x = variavel2,
       y = factor,
       color = factor) +
   geom_point() +
   
   #Títulos
-    labs(x = "Variable 3", 
+    labs(x = "Variable 2", 
        y = "Factor",
        title = "Factor versus Variable",
        color = "Factor") +
@@ -1023,19 +1024,19 @@ linha = data_2 %>%
   ggplot() +
   
   #Mapping
-  aes(x = variavel3,
+  aes(x = variavel2,
       y = factor,
-      color = factor) +
+      color = variavel1) +
   
   #Geometriasw
   geom_line(size = 2) +
   geom_point(size = 4) +
   
   #Títulos
-    labs(x = "Variable 3", 
+    labs(x = "Variable 2", 
        y = "Factor",
-       title = "Factor versus Variable 3",
-       color = "Factor") +
+       title = "Factor versus Variable 2",
+       color = "Classification") +
 
   #Tema pré-estabelecido
   theme_light() + 
@@ -1066,7 +1067,9 @@ Há diferentes tipos de arquivos, como jpeg e tiff, mas usaremos o png por ser m
 
 ```{r}
 linha %>% 
-  ggsave(file = here("Bioinformática","linha_factor.png"), width = 5, height = 5)
+  ggsave(file = here("Bioinformática","linha_factor.png"),
+         width = 5, 
+         height = 5)
 ```
 
 Uma outra forma de salvar a imagem é colar `linha` no console, printá-la (apertar `Enter`) e salvar diretamente da aba "Plots". Você poderá salvá-la como .png ou como pdf também!
@@ -1087,8 +1090,8 @@ O pacote **`esquisse`** é uma ferramenta interativa para a construção de grá
 **Lembre-se de retirar os `#` antes de rodar.** Teste todos os parâmetros, como filtragem, cores, escalas, e veja como os dados se comportam nos diferentes tipos de gráficos. Observe também, no botão do lado inferior direito, que você pode gerar os códigos do gráfico e copiar para o bloco de código. Dessa forma, você automatiza seu gráfico sem precisar ficar abrindo esta janela sempre.
 
 ```{r}
-# data_2 %>% 
-#   esquisser()
+data_2 %>%
+  esquisser()
 ```
 
 ## Uma figura, mais gráficos

@@ -1352,7 +1352,7 @@ Como clusterizar?
 
 Em outros pacotes, como o complexheatmap, do Bioconductor, as funções nativas para plotagem já lidam com a clusterização e outros parametros legais, como os dendrogramas. Entretanto, o posit cloud tem muita dificuldade de trabalhar com os pacotes do bioconductor, então optei por seguir com as opções do ggplot2. Em essência, não muda muito do que estamos fazendo aqui! 
 
-Abaixo, para clusterizarmos, transformamos novamente a matriz para formato largo, calculamos a distância e o agrupamento por genes e depois por amostras, aplicamos a ordem na tabela do heatmap input do ggplot, e finalmente plotamos nosso heatmap!
+Abaixo, para clusterizarmos, utilizamos a matriz original, calculamos a distância e o agrupamento por genes e depois por amostras, aplicamos a ordem na tabela do heatmap input do ggplot, e finalmente plotamos nosso heatmap!
 
 ```{r fig.height=10, fig.width=10}
 #Crie a tabela no formato de matriz (wide)

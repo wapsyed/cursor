@@ -99,7 +99,7 @@ O projeto consistirá na geração de pelo menos 5 gráficos acompanhados de dis
 >
 > ☕ Nos pague um café clicando neste link e contribuindo com o valor que puder: <https://nubank.com.br/cobrar/vnb4e/664de10a-76e1-42b3-a566-1c1a1331cf22>
 
-# Dia 1
+# Parte 1
 
 # 1. Biblioteca e pacotes
 
@@ -570,7 +570,7 @@ data_2 = data_2 %>%
   mutate(factor = variavel2 / (variavel1^2)) #Para cada linha da tabela, 
                                   #pegaremos o valor da variavel2 e dividiremos 
                                   #pela variavel1 ao quadrado.
-
+data_2
 ```
 
 Além disso, podemos criar uma coluna com a espécie do indivíduo. Como sabemos que todos humanos, podemos fazer dessa forma.
@@ -745,8 +745,7 @@ Por exemplo, abaixo:
 # Múltiplas operações em uma caixa
 mega_pipe = data_2 %>% 
   arrange(variavel2) %>% 
-  filter(variavel2 >= 30,
-         variavel3 >= 50) %>% 
+  filter(variavel2 >= 30) %>% 
   select(-gene) %>% 
   mutate(factor = round(factor, 1),
          var1_x_var2 = variavel1 * variavel2) %>%
@@ -798,7 +797,7 @@ data_2 %>%
   geom_col() + 
   
   #Tema pré-estabelecido
-  theme_minimal() + 
+  theme_classic() + 
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -832,7 +831,7 @@ data_2 %>%
   geom_col() + 
   
   #Tema pré-estabelecido
-  theme_light() + 
+  theme_classic() + 
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -881,7 +880,7 @@ data_2 %>%
   geom_col() +
   
   #Tema pré-estabelecido
-  theme_light() + 
+  theme_classic() + 
   
   #Adicionando títulos
   labs(x = "Gene", 
@@ -921,7 +920,7 @@ barras = data_2 %>%
        fill = "Classificação") +
   
   #Tema pré-estabelecido
-  theme_light() + 
+  theme_classic() + 
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -964,7 +963,7 @@ data_2 %>%
        color = "Factor") +
   
   #Tema pré-estabelecido
-  theme_light() + 
+  theme_classic() + 
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -988,7 +987,7 @@ data_2 %>%
   aes(x = variavel2,
       y = factor,
       color = factor) +
-  geom_point() +
+  geom_point(size = 3) +
   
   #Títulos
     labs(x = "Variable 2", 
@@ -997,7 +996,7 @@ data_2 %>%
        color = "Factor") +
   
   #Tema pré-estabelecido
-  theme_light() + 
+  theme_classic() + 
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -1026,7 +1025,11 @@ linha = data_2 %>%
   #Mapping
   aes(x = variavel2,
       y = factor,
-      color = variavel1) +
+      color = variavel1,
+      
+      #Vamos add um label para identificar os genes em cada ponto
+      label = gene
+      ) +
   
   #Geometriasw
   geom_line(size = 2) +
@@ -1039,7 +1042,7 @@ linha = data_2 %>%
        color = "Classification") +
 
   #Tema pré-estabelecido
-  theme_light() + 
+  theme_classic() + 
   
   #Modificando o tema
   theme(axis.text.x = element_text(size = 10,
@@ -1118,7 +1121,7 @@ linha_barra = linha / barras + plot_layout(guides = "collect")
 ggsave(linha_barra, file = here("Bioinformática","linha_barra.png"), width = 10, height = 5)
 ```
 
-# Dia 2
+# Parte 2
 
 # 5. Trabalhando com dados de bioinformática
 
@@ -1166,7 +1169,7 @@ expression_data_long_metadata = expression_data_long %>%
   inner_join(metadata, by = "sample")
 ```
 
-Visualizando dados
+## Visualizando dados
 
 ```{r eval=FALSE, include=FALSE}
 expression_data_long_metadata %>% 
@@ -1174,7 +1177,7 @@ expression_data_long_metadata %>%
   esquisser()
 ```
 
-Histograma
+### Histograma
 
 ```{r}
 expression_data_long_metadata %>% 
@@ -1190,7 +1193,7 @@ expression_data_long_metadata %>%
   
 ```
 
-Gráfico de densidade
+### Gráfico de densidade
 
 ```{r}
 expression_data_long_metadata %>% 
@@ -1202,7 +1205,7 @@ expression_data_long_metadata %>%
   scale_fill_npg()
 ```
 
-Boxplot simples
+### Boxplot simples
 
 ```{r}
 expression_data_long_metadata %>% 
@@ -1216,7 +1219,7 @@ expression_data_long_metadata %>%
   scale_fill_npg()
 ```
 
-Boxplot com violing plot e pontos
+###Boxplot com violin plot e pontos
 
 ```{r}
 p = expression_data_long_metadata %>% 
@@ -1240,7 +1243,7 @@ p
 
 ```
 
-Gráfico de barras com intervalo de confiança 95%
+### Gráfico de barras com intervalo de confiança 95%
 
 ```{r}
 table_genes_1_2 = expression_data_long_metadata %>% 
@@ -1272,23 +1275,29 @@ table_genes_1_2 %>%
 
 ```
 
-Teste t com ggpubr
+### Teste t com ggpubr
 
 ```{r}
-library(ggpubr)
+#Defina suas comparações
 my_comparisons <- list( c("Condition_A", "Condition_B"))
+
+#Add o teste no ggplot
 p + 
   stat_compare_means(comparisons = my_comparisons, 
                      method = "t.test")
 ```
 
-Gráfico de dispersão
+### Gráfico de dispersão
 
 ```{r}
+
+#Prepare os dados
 expression_data_long_metadata %>% 
   filter(gene %in% c("Gene_1", "Gene_2")) %>%
   pivot_wider(names_from = "gene",
               values_from = "value") %>% 
+  
+  #Plote
   ggplot()+
   aes(x = Gene_1, 
       y = Gene_2, 
@@ -1304,7 +1313,10 @@ expression_data_long_metadata %>%
   theme(legend.position = "top")
 ```
 
-Heatmap
+### Heatmap
+Para criar o heatmap no ggplot, é necessário pivotar para o formato longo, com uma coluna para genes, outra para o identificador da amostra, e finalmente uma coluna com os valores de expressão do gene correspondente.
+Como as amostras estão estratificadas por condição, a visualização se torna mais clara quando adicionamos a condição como metadado. Com dados reais, podemos adicionar quantos metadados forem necessários, mas é importante tomar cuidado com a ordem deles. 
+
 
 ```{r fig.height=10, fig.width=10}
 
@@ -1313,6 +1325,7 @@ heatmap_table = expression_data %>%
   pivot_longer(cols = -gene,
                names_to = "sample",
                values_to = "expression")
+
 #Tabela com anotações
 annotation_col = metadata %>% 
   mutate(condition = as.factor(condition))
@@ -1336,10 +1349,14 @@ heatmap_table_annotated %>%
   theme(axis.text.x = element_text(angle = 90))
 ```
 Como clusterizar?
+
+Em outros pacotes, como o complexheatmap, do Bioconductor, as funções nativas para plotagem já lidam com a clusterização e outros parametros legais, como os dendrogramas. Entretanto, o posit cloud tem muita dificuldade de trabalhar com os pacotes do bioconductor, então optei por seguir com as opções do ggplot2. Em essência, não muda muito do que estamos fazendo aqui! 
+
+Abaixo, para clusterizarmos, transformamos novamente a matriz para formato largo, calculamos a distância e o agrupamento por genes e depois por amostras, aplicamos a ordem na tabela do heatmap input do ggplot, e finalmente plotamos nosso heatmap!
+
 ```{r fig.height=10, fig.width=10}
 #Crie a tabela no formato de matriz (wide)
-matrix_data = heatmap_table_annotated %>%
-  pivot_wider(names_from = sample, values_from = expression) %>%
+matrix_data = expression_data %>% 
   column_to_rownames("gene")
 
 #Calcule a distância e o agrupamento para GENES (linhas)

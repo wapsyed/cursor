@@ -135,20 +135,17 @@ Não se preocupe com os "erros" dos outputs ao chamar as libraries, especialment
 
 ```{r message=FALSE, warning=FALSE}
 # Chamando os pacotes da biblioteca
-library(tidyverse) #Metapacote 
-library(skimr) #Diagnóstico de tabela
+library(tidyverse) #Metapacote
 library(janitor) #Limpeza de tabelas
 library(esquisse) #Plotagem de gráficos prática
 library(ggthemes) #Temas de ggplot
 library(plotly) #Gráficos interativos
 library(patchwork) #Unir gráficos
-library(ggsci) #Paleta de cores 
-library(ggpmisc) 
-library(ggpubr)
-library(scales)
-library(here)
-library(circlize)
-library(readxl)
+library(ggsci) #Paleta de cores
+library(ggpubr) #Funções interessantes para publicações
+library(scales) #Lidar com números, estatísticas e escalas
+library(here) #Acessar diretórios rapidamente
+library(readxl) #Importar arquivos de excel
 ```
 
 # 2. Operações básicas

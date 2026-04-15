@@ -113,17 +113,17 @@ Observe que o código abaixo está com `#` antes da função. Ao rodar pela prim
 options(repos = c(CRAN = "https://cran.r-project.org"))
 
 # # Baixar pacotes do CRAN para a biblioteca 
-# install.packages("tidyverse")
-# install.packages("skimr")
-# install.packages("janitor")
-# install.packages("esquisse")
-# install.packages("ggthemes")
-# install.packages("plotly")
-# install.packages("patchwork")
-# install.packages("ggsci")
-# install.packages("here")
-# install.packages("scales")
-# install.packages("ggpubr")
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+install.packages("esquisse")
+install.packages("ggthemes")
+install.packages("plotly")
+install.packages("patchwork")
+install.packages("ggsci")
+install.packages("here")
+install.packages("scales")
+install.packages("ggpubr")
 
 ```
 
